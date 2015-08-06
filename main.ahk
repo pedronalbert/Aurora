@@ -9,25 +9,27 @@ SYSTEM_HEAL_TO_REPAIR := 10
 SYSTEM_COLLECT_BOXS := false
 SYSTEM_BOX_COLLECTED := 0
 
-TrayTip, Esperando comando, F1 - Iniciar Recollection `n F2 - Pausar Recollection
+
+client := new Client()
+minimap := new Minimap()
+ship := new Ship()
+
+TrayTip, Configuracion Lista, F1 - Iniciar Recollection `n F2 - Pausar Recollection
 
 F1::
 	SYSTEM_COLLECT_BOXS := true
-	client := new Client()
-	minimap := new Minimap()
-	ship := new Ship()
 	
 	TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
 
 	Loop {
 		if SYSTEM_COLLECT_BOXS {
-			ship.checkHealPercent()
+			healPercent := ship.getHealPercent()
 
 			if Not ship.isInvisible() {
 				ship.setInvisible()
 			}
 
-			if (ship.healPercent > SYSTEM_HEAL_TO_REPAIR) { 
+			if (healPercent > SYSTEM_HEAL_TO_REPAIR) { 
 				if ship.isMoving() {
 					bonus_box := Client.searchBonusBox()
 
@@ -56,16 +58,14 @@ F1::
 					
 				}
 			} else { ;Si no tiene vida suficiente
-				ship.checkAlive()
-				ship.checkConnectState()
-
-				if Not ship.alive { ;si esta muerto
-					ship.revive()
+				if Not (Client.isConnected()) {
+					Client.connect()
+				} else {
+					if Not ship.isAlive(){ ;si esta muerto
+						ship.revive()
+					}
 				}
 
-				if Not ship.connected {
-					ship.connect()
-				}
 			}
 		} else { ;Si detienen el bot cerramos el ciclo
 			break

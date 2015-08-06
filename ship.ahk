@@ -6,18 +6,16 @@ class Ship {
 	healPercent := 0
 	collectAttemps := 1
 	connected := false
-	alive := false
-	lastCollectCors := [0, 0]
-	minimapAvailableCors := {}
-	minimapBoxCors := {}
+	static lastCollectCorsBox := {x1: 0, y1: 0, x2: 0, y2: 0}
+	static minimapAvailableCors := {}
+	static minimapBoxCors := {}
 
 	__New() {
-		this.checkHealPercent()
+		this.getHealPercent()
 		this.checkConnectState()
-		this.checkAlive()
 	}
 
-	checkHealPercent() {
+	getHealPercent() {
 		this.healPercent := 0
 		healBarCorsX := Client.shipStatsBoxCors.x1 + 27
 		healBarCorsY := Client.shipStatsBoxCors.y1 + 46
@@ -31,9 +29,12 @@ class Ship {
 			if ErrorLevel = 0
 				this.healPercent := this.healPercent + 4.761904761904762
 		}
+
+		return this.healPercent
 	}
 
 	approach(cors) {
+		miliSecondsWait := 0
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
 
@@ -56,59 +57,95 @@ class Ship {
 
 		MouseClick, Left, corsX, corsY, 1, 0
 
-		Sleep, 300
+		Sleep, 200
 
 		Loop {
+			Sleep, 100
+
 			if Not this.isMoving() {
-				Sleep, 100
 				break
+			} else {
+				miliSecondsWait += 100
+
+				if(miliSecondsWait > 3000) {
+					MouseClick, Left, (Client.boxCors.x2 / 2) - 50, Client.boxCors.y2 / 2, 1, 0
+					break
+				}
 			}
+
 		}
 	}
 
+	setLastCollectCorsBox(cors) {
+		this.lastCollectCorsBox.x1 := cors[1] - 5
+		this.lastCollectCorsBox.y1 := cors[2] - 5
+		this.lastCollectCorsBox.x2 := cors[1] + 5
+		this.lastCollectCorsBox.y2 := cors[2] + 5
+	}
+
+	isNearLastCollect(cors) {
+		if ((cors[1] >= this.lastCollectCorsBox.x1) and (cors[1] <= this.lastCollectCorsBox.x2)) {
+			if ((cors[2] >= this.lastCollectCorsBox.y1) and (cors[2] <= this.lastCollectCorsBox.y2)) {
+				return true
+			}
+		}
+
+		return false
+	}
+
 	collect(cors) {
-		if ((this.lastCollectCors[1] = cors[1]) and (this.lastCollectCors[2] = cors[2])) {
+		miliSecondsWait := 0
+
+		if (this.isNearLastCollect(cors)) {
 			this.collectAttemps++
 
-			if(this.collectAttemps > 4) {
-				this.moveRandom()
-				Sleep, 3000	
+			if (this.collectAttemps > 4) {
+				this.goAway()
 			} else {
 				Sleep, 500
 			}
-
 		} else {
 			this.collectAttemps := 1
 
 			MouseClick, Left, cors[1] + 5, cors[2] + 5, 1, 0
 
-			this.lastCollectCors := [cors[1], cors[2]]
+			this.setLastCollectCorsBox(cors)
 
-			Sleep, 300
+			Sleep, 100
 
 			Loop { ;esperamos hasta que se quede quieto
 				Sleep, 100
 				
-				if Not this.isMoving()
+				if Not this.isMoving() {
 					break
+				} else {
+					miliSecondsWait += 100
+
+					if (miliSecondsWait > 7000) {
+						this.goAway()
+						break
+					} 
+				}
 			}
 
-			Sleep, 250
+			Sleep, 250 ;Time to disappear the box
 		}
 	}
 
-	checkAlive() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_portal.bmp
-
-		if ErrorLevel = 0
-			this.alive := false
-		else
-			this.alive := true
+	goAway() {
+		this.moveRandom()
+		Sleep, 3000
 	}
 
-	checkConnectState() {
-		if Not this.isDisconnect() and Not this.isConnecting()
-			this.connected := true
+	isAlive() {
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_button.bmp
+
+		if (ErrorLevel = 0) {
+			return false
+		} else {
+			return true
+		}
+
 	}
 
 	revive() {
@@ -116,6 +153,8 @@ class Ship {
 
 		Sleep, randomTime
 
+		MouseMove, 50, 50 , 15
+		
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_portal.bmp
 
 		if (ErrorLevel = 0) {
@@ -123,28 +162,16 @@ class Ship {
 
 			Sleep, 1000
 
-			ImageSearch, corsX, corsY, 0, 0, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_button.bmp
+			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_button.bmp
 
-			MouseClick, Left, corsX + 30, corsY + 5, 1, 50 ;click on repair button
+			if (ErrorLevel = 0) {
+				MouseClick, Left, corsX + 30, corsY + 5, 1, 50 ;click on repair button
 
-			Sleep, 10000
+				Sleep, 8000
 
-			this.alive := true
-		}
-	}
-
-	connect() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2,, *15 ./img/disconnect.bmp
-
-		if (ErrorLevel = 0) {
-			MouseClick, Left, corsX, corsY + 65, 1, 50
-			
-			Sleep, 10000
-
-			this.checkConnectState()
-
-			if Not this.connected
-				ship.reloadClient()
+				if Not this.isAlive()
+					Client.reloadClient()
+			}
 		}
 	}
 
@@ -167,7 +194,7 @@ class Ship {
 
 		MouseClick, Left, corsX, corsY, 1, 0
 
-		Sleep, 300
+		Sleep, 200
 	}
 
 	isMoving() {
@@ -186,38 +213,9 @@ class Ship {
 		}
 	}
 
-	reloadClient() {
-		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *15 ./img/reload_firefox.bmp
-
-		MouseClick, Left, corsX + 3, corsY + 3, 1, 40
-
-		Sleep, 1000
-
-		Loop { ;esperamos el mensaje de connecting
-			if this.isConnecting
-				break
-		}
-
-		Sleep, 10000
-
-		this.checkConnectState()
-
-		if Not this.connected
-			this.reloadClient()
-	}
 
 	isConnecting() {
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/connecting.bmp
-
-		if (ErrorLevel = 0) {
-			return true
-		} else {
-			return false
-		}
-	}
-
-	isDisconnect() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/disconnect.bmp
 
 		if (ErrorLevel = 0) {
 			return true

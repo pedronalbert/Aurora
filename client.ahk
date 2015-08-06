@@ -1,3 +1,5 @@
+#Include, ./ship.ahk
+
 class Client {
 	static boxCors := {}
 	static shipStatsBoxCors := {}
@@ -89,4 +91,110 @@ class Client {
 			Sleep, 5000
 		}
 	}
+
+	reloadClient() {
+		secondsWaiting := 0
+
+		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *15 ./img/reload_firefox.bmp
+
+		MouseClick, Left, corsX + 3, corsY + 3, 1, 40
+
+		Sleep, 1000
+
+		Loop { ;waiting connecting box
+			if this.isConnecting() {
+				break
+			}
+			else {
+				Sleep, 1000
+				secondsWaiting++
+
+				if (secondsWaiting > 120) {
+					break
+				}
+			} 
+
+		}
+
+		secondsWaiting := 0
+
+		Loop { ;waiting connected
+			if (this.isConnected()) {
+				break
+			}
+			else {
+				Sleep, 1000
+				secondsWaiting++
+
+				if (secondsWaiting > 10) {
+					break
+				}
+			} 
+
+		}
+
+		if Not this.isConnected()
+			this.reloadClient()
+
+	}
+
+	isConnected() {
+
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/minimap_box.bmp
+
+		if (ErrorLevel = 0) {
+			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/ship_stats_box.bmp
+
+			if (ErrorLevel = 0) {
+				return true
+			}
+			else {
+				return false
+			}
+		}
+		else {
+			return false
+		}
+	}
+
+	connect() {
+		secondsWaiting := 0
+
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/disconnect.bmp
+
+		if (ErrorLevel = 0) {
+			MouseClick, Left, corsX, corsY + 65, 1, 30
+			
+			Loop { ;waiting connected
+				if (this.isConnected()) {
+					break
+				}
+				else {
+					Sleep, 1000
+					secondsWaiting++
+
+					if (secondsWaiting > 10) {
+						break
+					}
+				} 
+			}
+
+			if Not this.isConnected()
+				this.reloadClient()
+
+		} else {
+			this.reloadClient()
+		}
+	}
+
+	isConnecting() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/connecting.bmp
+
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
+	}
+
 }
