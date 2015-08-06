@@ -93,7 +93,7 @@ class Ship {
 					break
 			}
 
-			Sleep, 100
+			Sleep, 250
 		}
 	}
 
