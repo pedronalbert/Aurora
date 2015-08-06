@@ -1,7 +1,7 @@
 class Client {
 	static boxCors := {}
 	static shipStatsBoxCors := {}
-	static bonusBoxShader := 130
+	static bonusBoxShader := 60
 	static statsBoxShader := 15
 	static bonusBoxSize := 0
 	static searchBoxsSize := [{}, {}, {}, {}]
