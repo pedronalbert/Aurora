@@ -1,6 +1,9 @@
+#SingleInstance, Force
+
 #Include, ./client.ahk
 #Include, ./minimap.ahk
 #Include, ./ship.ahk
+
 
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
@@ -59,7 +62,12 @@ F1::
 				}
 			} else { ;Si no tiene vida suficiente
 				if Not (Client.isConnected()) {
-					Client.connect()
+					Ship.goAway() ;Si esta en zona radioactiva lo alejamos para asegurar que si esta disconnect
+
+					if Not (Client.isConnected()) {
+						Client.connect()
+					}
+					
 				} else {
 					if Not ship.isAlive(){ ;si esta muerto
 						ship.revive()
