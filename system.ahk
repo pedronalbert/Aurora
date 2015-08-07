@@ -7,6 +7,7 @@ class System {
 	static collectBoxs := false
 
 	initCollect() {
+
 		this.collectBoxs := true
 
 		TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
@@ -19,6 +20,10 @@ class System {
 
 				if Not ship.isInvisible() {
 					ship.setInvisible()
+				}
+
+				If Client.isDisconnect() { ;Disconnect screen
+					Client.connect()
 				}
 
 				if (healPercent > this.healToRepair) { 
@@ -50,19 +55,15 @@ class System {
 						
 					}
 				} else { ;Si no tiene vida suficiente
-					if Not (Client.isConnected()) {
-						ship.goAway() ;Si esta en zona radioactiva lo alejamos para asegurar que si esta disconnect
+					if (healPercent = 0) { ;si no se ve la vida
+						Sleep, 5000 ;damos un tiempo por si se esta muriendo
 
-						if Not (Client.isConnected()) {
-							Client.connect()
-						}
-						
-					} else {
-						if Not ship.isAlive(){ ;si esta muerto
+						if (!ship.isAlive()) {
 							ship.revive()
 						}
+					} else {
+						;TODO go to repair
 					}
-
 				}
 			} else { ;Si detienen el bot cerramos el ciclo
 				break

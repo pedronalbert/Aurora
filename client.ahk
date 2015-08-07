@@ -153,24 +153,30 @@ class Client {
 	}
 
 	isConnected() {
-
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
-
-		if (ErrorLevel = 0) {
-			return true
-		}
-		else {
-			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/repair_button.bmp
+		if (this.isDisconnect()) {
+			return false
+		} else { ;puede NO estar desconectado pero validamos con que se vea el minimapa
+			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
 
 			if (ErrorLevel = 0) {
 				return true
 			}
 			else {
 				return false
-			}
+			}	
 		}
 
+	}
 
+	isDisconnect() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
+
+		if (ErrorLevel = 0) {
+			return true
+		}
+		else {
+			return false
+		}
 	}
 
 	connect() {
