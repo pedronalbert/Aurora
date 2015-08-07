@@ -3,16 +3,27 @@
 class Client {
 	static boxCors := {}
 	static shipStatsBoxCors := {}
-	static bonusBoxShader := 60
-	static statsBoxShader := 15
-	static bonusBoxSize := 0
+	static bonusBoxShader := 20
 	static searchBoxsSize := [{}, {}, {}, {}]
+	static corsSetted := false
+	static minimapBoxCors := {}
+	static minimapAvailableBoxCors := {}
 
-	__New() {
-		this.setClientCors()
-		this.setShipStatsBoxCors()
-		this.setBonusBoxSize()
+	init() {
+		if(!this.corsSetted) {
+			this.setClientCors()
+		}
+
 		this.setSearchBoxsSize()
+	}
+
+	isReady() {
+		if (this.setShipStatsBoxCors() and this.setMinimapCors()) {
+			return true
+		}
+		else {
+			return false
+		}
 	}
 
 	setClientCors() {
@@ -30,32 +41,34 @@ class Client {
 		MouseGetPos, corsX, corsY
 		this.boxCors.x2 := A_ScreenWidth
 		this.boxCors.y2 := corsY
+
+		this.corsSetted := true
 	}
 
 	setSearchBoxsSize() {
+		percentToIgnore := 0.10
+		pixelsToIgnore := this.boxCors.y2 * percentToIgnore
+		percentPosToIgnore := 0.60
+
 		this.searchBoxsSize[1].x1 := this.boxCors.x1
 		this.searchBoxsSize[1].y1 := this.boxCors.y1
 		this.searchBoxsSize[1].x2 := this.boxCors.x2
-		this.searchBoxsSize[1].y2 := (this.boxCors.y2 * 0.6150) - (this.bonusBoxSize * 0.50)
+		this.searchBoxsSize[1].y2 := this.boxCors.y2 * percentPosToIgnore
 
 		this.searchBoxsSize[2].x1 := this.boxCors.x1
-		this.searchBoxsSize[2].y1 := (this.boxCors.y2 * 0.6150) + (this.bonusBoxSize * 0.50)
+		this.searchBoxsSize[2].y1 := this.searchBoxsSize[1].y2 + pixelsToIgnore
 		this.searchBoxsSize[2].x2 := this.boxCors.x2
 		this.searchBoxsSize[2].y2 := this.boxCors.y2 
 
 		this.searchBoxsSize[3].x1 := this.boxCors.x1
-		this.searchBoxsSize[3].y1 := (this.boxCors.y2 * 0.30)
-		this.searchBoxsSize[3].x2 := (this.boxCors.x2 * 0.50) - (this.bonusBoxSize * 0.50)
-		this.searchBoxsSize[3].y2 := this.boxCors.y2
+		this.searchBoxsSize[3].y1 := (this.boxCors.y2 * 0.40)
+		this.searchBoxsSize[3].x2 := (this.boxCors.x2 * 0.50) - pixelsToIgnore
+		this.searchBoxsSize[3].y2 := this.boxCors.y2 * 0.80
 
-		this.searchBoxsSize[4].x1 := (this.boxCors.x2 * 0.50) + (this.bonusBoxSize * 0.50)
-		this.searchBoxsSize[4].y1 := (this.boxCors.y2 * 0.30)
+		this.searchBoxsSize[4].x1 := (this.boxCors.x2 * 0.50) + pixelsToIgnore
+		this.searchBoxsSize[4].y1 := (this.boxCors.y2 * 0.40)
 		this.searchBoxsSize[4].x2 := this.boxCors.x2
-		this.searchBoxsSize[4].y2 := this.boxCors.y2
-	}
-
-	setBonusBoxSize() {
-		this.bonusBoxSize := this.boxCors.x2 * 0.0650
+		this.searchBoxsSize[4].y2 := this.boxCors.y2 * 0.80
 	}
 
 	searchBonusBox() {
@@ -68,7 +81,6 @@ class Client {
 			if (ErrorLevel = 0) {
 				return [corsX, corsY]
 			} 
-
 			i++
 		}
 
@@ -77,25 +89,27 @@ class Client {
 
 
 	setShipStatsBoxCors() {
-		shaderVariation := 15
 
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *%shaderVariation% ./img/ship_stats_box.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/ship_stats_box.bmp
 
 		If (ErrorLevel = 0) {
 			this.shipStatsBoxCors.x1 := corsX
 			this.shipStatsBoxCors.y1 := corsY
 			this.shipStatsBoxCors.x2 := corsX + 190
 			this.shipStatsBoxCors.y2 := corsY + 105
+
+			return true
 		} else {
-			TrayTip, ERROR!, No se encuentra el estado de la nave
-			Sleep, 5000
+			MsgBox, ERROR!, No se encuentra el estado de la nave
+
+			return false
 		}
 	}
 
 	reloadClient() {
 		secondsWaiting := 0
 
-		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *15 ./img/reload_firefox.bmp
+		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *5 ./img/reload_firefox.bmp
 
 		MouseClick, Left, corsX + 3, corsY + 3, 1, 40
 
@@ -140,10 +154,13 @@ class Client {
 
 	isConnected() {
 
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/minimap_box.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
 
 		if (ErrorLevel = 0) {
-			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/ship_stats_box.bmp
+			return true
+		}
+		else {
+			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/repair_button.bmp
 
 			if (ErrorLevel = 0) {
 				return true
@@ -152,15 +169,14 @@ class Client {
 				return false
 			}
 		}
-		else {
-			return false
-		}
+
+
 	}
 
 	connect() {
 		secondsWaiting := 0
 
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/disconnect.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
 
 		if (ErrorLevel = 0) {
 			MouseClick, Left, corsX, corsY + 65, 1, 30
@@ -188,11 +204,33 @@ class Client {
 	}
 
 	isConnecting() {
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *15 ./img/connecting.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/connecting.bmp
 
 		if (ErrorLevel = 0) {
 			return true
 		} else {
+			return false
+		}
+	}
+
+	setMinimapCors() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
+
+		If (ErrorLevel = 0) {
+			this.minimapBoxCors.x1 := corsX
+			this.minimapBoxCors.y1 := corsY
+			this.minimapBoxCors.x2 := corsX + 176
+			this.minimapBoxCors.y2 := corsY + 190
+
+			this.minimapAvailableBoxCors.x1 := corsX + 25
+			this.minimapAvailableBoxCors.y1 := corsY + 49
+			this.minimapAvailableBoxCors.x2 := corsX + 212
+			this.minimapAvailableBoxCors.y2 := corsY + 163
+
+			return true
+		} else {
+			MsgBox, ERROR!, No se ha encontrado el minimapa
+
 			return false
 		}
 	}

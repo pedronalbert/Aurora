@@ -1,3 +1,8 @@
-#Darkorbit Bot by Alberto Pedron
+# Darkorbit Bot by Alberto Pedron
 
-Version: 0.1.03
+Version: 0.1.04
+
+## Todo
+- Improve the stop
+- Jump when is attacking
+- Improve the gui

@@ -1,33 +1,36 @@
-#Include, ./minimap.ahk
 #Include, ./client.ahk
 
 class Ship {
-	statsBox := {} 
-	healPercent := 0
-	collectAttemps := 1
-	connected := false
+	static healPercent := 0
+	static collectAttemps := 1
 	static lastCollectCorsBox := {x1: 0, y1: 0, x2: 0, y2: 0}
-	static minimapAvailableCors := {}
-	static minimapBoxCors := {}
+	static healBarsShader := 15
+
+	;caching varis
+	static cloackCors := {x: 0, y: 0}
+	static hasCloacks := true
 
 	__New() {
-		this.getHealPercent()
-		this.checkConnectState()
+		this.setCloacks()
 	}
 
 	getHealPercent() {
 		this.healPercent := 0
 		healBarCorsX := Client.shipStatsBoxCors.x1 + 27
 		healBarCorsY := Client.shipStatsBoxCors.y1 + 46
+		healBarsShader := this.healBarsShader
+		healBarsColor := 0x7FD878
+		healPercentPerBar := 4.761904761904762
+
 		i := 0
 
 		Loop, 21 {
 			i++
 			healBarCorsX := healBarCorsX + 3
-			PixelSearch, barCorsX, barCorsY, healBarCorsX, healBarCorsY, healBarCorsX, healBarCorsY, 0x7FD878, 50, Fast
+			PixelSearch, barCorsX, barCorsY, healBarCorsX, healBarCorsY, healBarCorsX, healBarCorsY, healBarsColor, healBarsShader, Fast
 
 			if ErrorLevel = 0
-				this.healPercent := this.healPercent + 4.761904761904762
+				this.healPercent := this.healPercent + healPercentPerBar
 		}
 
 		return this.healPercent
@@ -35,6 +38,7 @@ class Ship {
 
 	approach(cors) {
 		miliSecondsWait := 0
+
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
 
@@ -42,15 +46,15 @@ class Ship {
 		corsY := (centerY + cors[2]) / 2
 
 		if(corsX > centerX) {
-			diferencia := corsX - centerX
+			diff := corsX - centerX
 
-			if(diferencia < 170) {
+			if(diff < 170) {
 				corsX := centerX + 170
 			}
 		} else {
-			diferencia := centerX - corsX
+			diff := centerX - corsX
 
-			if(diferencia < 170) {
+			if(diff < 170) {
 				corsX := centerX - 170
 			}
 		}
@@ -67,7 +71,7 @@ class Ship {
 			} else {
 				miliSecondsWait += 100
 
-				if(miliSecondsWait > 3000) {
+				if(miliSecondsWait > 3000) { ;si tiene tiempo esperando a que se aproxime es bug
 					MouseClick, Left, (Client.boxCors.x2 / 2) - 50, Client.boxCors.y2 / 2, 1, 0
 					break
 				}
@@ -138,7 +142,7 @@ class Ship {
 	}
 
 	isAlive() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_button.bmp
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
 
 		if (ErrorLevel = 0) {
 			return false
@@ -155,14 +159,14 @@ class Ship {
 
 		MouseMove, 50, 50 , 15
 		
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_portal.bmp
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_portal.bmp
 
 		if (ErrorLevel = 0) {
 			MouseClick, Left, corsX + 5, corsY + 5, 1, 50 ;click on repair portal
 
 			Sleep, 1000
 
-			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/repair_button.bmp
+			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
 
 			if (ErrorLevel = 0) {
 				MouseClick, Left, corsX + 30, corsY + 5, 1, 50 ;click on repair button
@@ -189,8 +193,8 @@ class Ship {
 			Random, corsY, 116, 126
 		}
 
-		corsX := Minimap.availableCors.x1 + (corsX * pixelEquivalent)
-		corsY := Minimap.availableCors.y1 + (corsY * pixelEquivalent)
+		corsX := Client.minimapAvailableBoxCors.x1 + (corsX * pixelEquivalent)
+		corsY := Client.minimapAvailableBoxCors.y1 + (corsY * pixelEquivalent)
 
 		MouseClick, Left, corsX, corsY, 1, 0
 
@@ -198,24 +202,21 @@ class Ship {
 	}
 
 	isMoving() {
-		x1 := Minimap.boxCors.x1 + 106
-		x2 := Minimap.boxCors.x1 + 145
-		y1 := Minimap.boxCors.y1 + 31
-		y2 := Minimap.boxCors.y1 + 43
+		x := Client.minimapBoxCors.x1 + 114
+		y := Client.minimapBoxCors.y1 + 37
 
-		PixelSearch, corsX, corsY, x1, y1, x2, y2, 0xFFFFFF, 20, Fast
+		PixelGetColor, color, x, y
 
-		if (ErrorLevel = 0) {
+		if (color = "0xFFFFFF") {
 			return true
-		}
-		else {
+		} else {
 			return false
 		}
 	}
 
 
 	isConnecting() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/connecting.bmp
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/connecting.bmp
 
 		if (ErrorLevel = 0) {
 			return true
@@ -224,22 +225,22 @@ class Ship {
 		}
 	}
 
-	getCloackCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *15 ./img/cloack_10.bmp
+	setCloacks() {
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/cloack_10.bmp
 
 		if (ErrorLevel = 0) {
-			return [corsX, corsY]
+			this.cloackCors.x := corsX
+			this.cloackCors.y := corsY 
+			this.hasCloacks := true 
 		}
 		else {
-			return false
+			this.hasCloacks := false
 		}
 	}
 
 	isInvisible() {
-		cloackCors := this.getCloackCors()
-
-		if cloackCors {
-			PixelGetColor, color, cloackCors[1] - 2, cloackCors[2] + 2
+		if (this.hasCloacks) {
+			PixelGetColor, color, this.cloackCors.x - 2, this.cloackCors.y + 2
 
 			if (color = "0x68B8C8") {
 				return true
@@ -247,17 +248,19 @@ class Ship {
 				return false
 			}
 		} else {
-			return true ; devolvemos true si no hay cloacks
+			return true
 		}
 	}
 
 	setInvisible()  {
-		cloackCors := this.getCloackCors()
+		if (this.hasCloacks) {
+			MouseClick, Left, this.cloackCors.x + 10, this.cloackCors.y + 10, 1, 5
 
-		if (cloackCors) {
-			MouseClick, Left, cloackCors[1] + 10, cloackCors[2] + 10, 1, 5
+			Sleep, 3000
 
-			Sleep, 2000
+			if (!this.isInvisible) {
+				this.hasCloacks := false
+			}
 		}
 	}
 }
