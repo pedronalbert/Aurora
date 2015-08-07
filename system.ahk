@@ -3,6 +3,7 @@
 
 class System {
 	static healToRepair := 50
+	static bonusBoxShader := 20
 	static bonusBoxCollected := 0
 	static collectBoxs := false
 
@@ -56,10 +57,15 @@ class System {
 					}
 				} else { ;Si no tiene vida suficiente
 					if (healPercent = 0) { ;si no se ve la vida
-						Sleep, 5000 ;damos un tiempo por si se esta muriendo
+						ship.moveRandom() ;lo sacamos de la zona radioactiva
+						Sleep, 3000
 
-						if (!ship.isAlive()) {
-							ship.revive()
+						if (ship.getHealPercent = 0) {
+							Sleep, 2000 ;damos un tiempo por si se esta muriendo
+
+							if (!ship.isAlive()) {
+								ship.revive()
+							}		
 						}
 					} else {
 						;TODO go to repair

@@ -3,19 +3,10 @@
 class Client {
 	static boxCors := {}
 	static shipStatsBoxCors := {}
-	static bonusBoxShader := 20
 	static searchBoxsSize := [{}, {}, {}, {}]
 	static corsSetted := false
 	static minimapBoxCors := {}
 	static minimapAvailableBoxCors := {}
-
-	init() {
-		if(!this.corsSetted) {
-			this.setClientCors()
-		}
-
-		this.setSearchBoxsSize()
-	}
 
 	isReady() {
 		if (this.setShipStatsBoxCors() and this.setMinimapCors()) {
@@ -26,23 +17,38 @@ class Client {
 		}
 	}
 
-	setClientCors() {
-		TrayTip, Configuracion, Colocar puntero sobre esquina SUPERIOR del juego y presionar Numpad8, 10000
-		KeyWait, Numpad8, D
+	setClientCors(manual, top := 0, bottom := 0) {
+		if (manual) { ;Set manually
+			TrayTip, Configuracion, Colocar puntero sobre esquina SUPERIOR del juego y presionar F3
+			KeyWait, F3, D
 
 
-		MouseGetPos, corsX, corsY
-		this.boxCors.x1 := 0
-		this.boxCors.y1 := corsY
+			MouseGetPos, corsX, corsY
+			this.boxCors.x1 := 0
+			this.boxCors.y1 := corsY
 
-		TrayTip, Configuracion, Colocar puntero sobre esquina INFERIOR del juego y presionar Numpad2, 10000
-		KeyWait, Numpad2, D
+			TrayTip, Configuracion, Colocar puntero sobre esquina INFERIOR del juego y presionar F4
+			KeyWait, F4, D
 
-		MouseGetPos, corsX, corsY
-		this.boxCors.x2 := A_ScreenWidth
-		this.boxCors.y2 := corsY
+			MouseGetPos, corsX, corsY
+			this.boxCors.x2 := A_ScreenWidth
+			this.boxCors.y2 := corsY
 
-		this.corsSetted := true
+			TrayTip, Configuracion Exitosa, Se han actualizado las coordenadas del cliente
+
+			this.corsSetted := true
+			
+		} else {
+			this.boxCors.x1 := 0
+			this.boxCors.y1 := top
+
+			this.boxCors.x2 := A_ScreenWidth
+			this.boxCors.y2 := bottom
+
+			this.corsSetted := true
+		}
+
+		this.setSearchBoxsSize()
 	}
 
 	setSearchBoxsSize() {
@@ -72,7 +78,7 @@ class Client {
 	}
 
 	searchBonusBox() {
-		shaderVariation := this.bonusBoxShader
+		shaderVariation := System.bonusBoxShader
 		i := 1
 
 		Loop, 4 {
@@ -100,7 +106,7 @@ class Client {
 
 			return true
 		} else {
-			MsgBox, ERROR!, No se encuentra el estado de la nave
+			MsgBox , , ERROR!, No se encuentra el estado de la nave `n `n Reconfigure las coordenadas y abra el estado de la nave con barras visibles.
 
 			return false
 		}
@@ -235,7 +241,7 @@ class Client {
 
 			return true
 		} else {
-			MsgBox, ERROR!, No se ha encontrado el minimapa
+			MsgBox, , ERROR!, No se encuentra el minimapa `n `n Reconfigure las coordenadas y abra el minimapa.
 
 			return false
 		}

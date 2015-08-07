@@ -42,8 +42,8 @@ class Ship {
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
 
-		corsX := (centerX + cors[1]) / 2
-		corsY := (centerY + cors[2]) / 2
+		corsX := (centerX + cors[1]) / 2 ;punto medio
+		corsY := (centerY + cors[2]) / 2 ;punto medio
 
 		if(corsX > centerX) {
 			diff := corsX - centerX
@@ -153,23 +153,20 @@ class Ship {
 	}
 
 	revive() {
-		Random, randomTime, 2000, 5000
 
-		Sleep, randomTime
-
-		MouseMove, 50, 50 , 15
+		MouseMove, 0, 0 , 0
 		
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_portal.bmp
 
 		if (ErrorLevel = 0) {
-			MouseClick, Left, corsX + 5, corsY + 5, 1, 50 ;click on repair portal
+			MouseClick, Left, corsX + 5, corsY + 5, 1, 15 ;click on repair portal
 
 			Sleep, 1000
 
 			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
 
 			if (ErrorLevel = 0) {
-				MouseClick, Left, corsX + 30, corsY + 5, 1, 50 ;click on repair button
+				MouseClick, Left, corsX + 30, corsY + 5, 1, 15 ;click on repair button
 
 				Sleep, 8000
 
@@ -208,17 +205,6 @@ class Ship {
 		PixelGetColor, color, x, y
 
 		if (color = "0xFFFFFF") {
-			return true
-		} else {
-			return false
-		}
-	}
-
-
-	isConnecting() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/connecting.bmp
-
-		if (ErrorLevel = 0) {
 			return true
 		} else {
 			return false
