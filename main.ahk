@@ -28,7 +28,7 @@ InitCollect:
 
 	Gui, Destroy
 
-	if (Client.isReady()) {
+	if (System.isReady()) {
 		System.initCollect()	
 	} else {
 		Gosub, Gui

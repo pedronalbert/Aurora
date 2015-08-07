@@ -1,10 +1,12 @@
 #Include, ./client.ahk
+#Include, ./minimap.ahk
 
 class Ship {
 	static healPercent := 0
 	static collectAttemps := 1
 	static lastCollectCorsBox := {x1: 0, y1: 0, x2: 0, y2: 0}
 	static healBarsShader := 15
+	static statsBoxCors := {}
 
 	;caching varis
 	static cloackCors := {x: 0, y: 0}
@@ -14,10 +16,35 @@ class Ship {
 		this.setCloacks()
 	}
 
+	isReady() {
+		if (this.setStatsBoxCors()) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	setStatsBoxCors() {
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/ship_stats_box.bmp
+
+		If (ErrorLevel = 0) {
+			this.statsBoxCors.x1 := corsX
+			this.statsBoxCors.y1 := corsY
+			this.statsBoxCors.x2 := corsX + 190
+			this.statsBoxCors.y2 := corsY + 105
+
+			return true
+		} else {
+			MsgBox , , ERROR!, No se encuentra el estado de la nave `n `n Reconfigure las coordenadas y abra el estado de la nave con barras visibles.
+
+			return false
+		}
+	}
+
 	getHealPercent() {
 		this.healPercent := 0
-		healBarCorsX := Client.shipStatsBoxCors.x1 + 27
-		healBarCorsY := Client.shipStatsBoxCors.y1 + 46
+		healBarCorsX := this.statsBoxCors.x1 + 27
+		healBarCorsY := this.statsBoxCors.y1 + 46
 		healBarsShader := this.healBarsShader
 		healBarsColor := 0x7FD878
 		healPercentPerBar := 4.761904761904762
@@ -153,7 +180,6 @@ class Ship {
 	}
 
 	revive() {
-
 		MouseMove, 0, 0 , 0
 		
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_portal.bmp
@@ -177,7 +203,6 @@ class Ship {
 	}
 
 	moveRandom() {
-		pixelEquivalent := 0.8984375
 		Random, corsX, 40, 160
 
 		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
@@ -190,17 +215,17 @@ class Ship {
 			Random, corsY, 116, 126
 		}
 
-		corsX := Client.minimapAvailableBoxCors.x1 + (corsX * pixelEquivalent)
-		corsY := Client.minimapAvailableBoxCors.y1 + (corsY * pixelEquivalent)
+		corsX := Minimap.availableBoxCors.x1 + (corsX * Minimap.pixelEquivalentX)
+		corsY := Minimap.availableBoxCors.y1 + (corsY * Minimap.pixelEquivalentY)
 
 		MouseClick, Left, corsX, corsY, 1, 0
 
-		Sleep, 200
+		Sleep, 50
 	}
 
 	isMoving() {
-		x := Client.minimapBoxCors.x1 + 114
-		y := Client.minimapBoxCors.y1 + 37
+		x := Minimap.boxCors.x1 + 114
+		y := Minimap.boxCors.y1 + 37
 
 		PixelGetColor, color, x, y
 
@@ -249,4 +274,5 @@ class Ship {
 			}
 		}
 	}
+
 }

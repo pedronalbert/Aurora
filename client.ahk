@@ -2,19 +2,10 @@
 
 class Client {
 	static boxCors := {}
-	static shipStatsBoxCors := {}
 	static searchBoxsSize := [{}, {}, {}, {}]
-	static corsSetted := false
-	static minimapBoxCors := {}
-	static minimapAvailableBoxCors := {}
 
 	isReady() {
-		if (this.setShipStatsBoxCors() and this.setMinimapCors()) {
-			return true
-		}
-		else {
-			return false
-		}
+		return true
 	}
 
 	setClientCors(manual, top := 0, bottom := 0) {
@@ -45,7 +36,6 @@ class Client {
 			this.boxCors.x2 := A_ScreenWidth
 			this.boxCors.y2 := bottom
 
-			this.corsSetted := true
 		}
 
 		this.setSearchBoxsSize()
@@ -77,41 +67,6 @@ class Client {
 		this.searchBoxsSize[4].y2 := this.boxCors.y2 * 0.80
 	}
 
-	searchBonusBox() {
-		shaderVariation := System.bonusBoxShader
-		i := 1
-
-		Loop, 4 {
-			ImageSearch, corsX, corsY, this.searchBoxsSize[i].x1, this.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%shaderVariation% ./img/bonus_box.bmp
-
-			if (ErrorLevel = 0) {
-				return [corsX, corsY]
-			} 
-			i++
-		}
-
-		return false
-	}
-
-
-	setShipStatsBoxCors() {
-
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/ship_stats_box.bmp
-
-		If (ErrorLevel = 0) {
-			this.shipStatsBoxCors.x1 := corsX
-			this.shipStatsBoxCors.y1 := corsY
-			this.shipStatsBoxCors.x2 := corsX + 190
-			this.shipStatsBoxCors.y2 := corsY + 105
-
-			return true
-		} else {
-			MsgBox , , ERROR!, No se encuentra el estado de la nave `n `n Reconfigure las coordenadas y abra el estado de la nave con barras visibles.
-
-			return false
-		}
-	}
-
 	reloadClient() {
 		secondsWaiting := 0
 
@@ -121,7 +76,7 @@ class Client {
 
 		Sleep, 1000
 
-		Loop { ;waiting connecting box
+		Loop { ;waiting connecting message
 			if this.isConnecting() {
 				break
 			}
@@ -155,13 +110,12 @@ class Client {
 
 		if Not this.isConnected()
 			this.reloadClient()
-
 	}
 
 	isConnected() {
 		if (this.isDisconnect()) {
 			return false
-		} else { ;puede NO estar desconectado pero validamos con que se vea el minimapa
+		} else { ;the may seem connect because the disconnect box doesn't appear but need to validate with the minimap
 			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
 
 			if (ErrorLevel = 0) {
@@ -171,7 +125,6 @@ class Client {
 				return false
 			}	
 		}
-
 	}
 
 	isDisconnect() {
@@ -221,28 +174,6 @@ class Client {
 		if (ErrorLevel = 0) {
 			return true
 		} else {
-			return false
-		}
-	}
-
-	setMinimapCors() {
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
-
-		If (ErrorLevel = 0) {
-			this.minimapBoxCors.x1 := corsX
-			this.minimapBoxCors.y1 := corsY
-			this.minimapBoxCors.x2 := corsX + 176
-			this.minimapBoxCors.y2 := corsY + 190
-
-			this.minimapAvailableBoxCors.x1 := corsX + 25
-			this.minimapAvailableBoxCors.y1 := corsY + 49
-			this.minimapAvailableBoxCors.x2 := corsX + 212
-			this.minimapAvailableBoxCors.y2 := corsY + 163
-
-			return true
-		} else {
-			MsgBox, , ERROR!, No se encuentra el minimapa `n `n Reconfigure las coordenadas y abra el minimapa.
-
 			return false
 		}
 	}

@@ -1,14 +1,25 @@
 #Include, ./client.ahk
 #Include, ./ship.ahk
+#Include, ./minimap.ahk
 
 class System {
 	static healToRepair := 50
 	static bonusBoxShader := 20
 	static bonusBoxCollected := 0
 	static collectBoxs := false
+	static map := 0
+
+	isReady() {
+		if (Client.isReady() and Minimap.isReady() and Ship.isReady()) {
+			return true
+		} else {
+			return false
+		}
+	}
 
 	initCollect() {
-
+		this.escapeToPortal()
+		
 		this.collectBoxs := true
 
 		TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
@@ -29,12 +40,12 @@ class System {
 
 				if (healPercent > this.healToRepair) { 
 					if ship.isMoving() {
-						bonus_box := Client.searchBonusBox()
+						bonus_box := this.findBonusBox()
 
 						if bonus_box { ;Si consigue una caja se le acerca
 							ship.approach(bonus_box)
 
-							bonus_box := Client.searchBonusBox()
+							bonus_box := this.findBonusBox()
 
 							if bonus_box {
 								ship.collect(bonus_box)
@@ -45,7 +56,7 @@ class System {
 						}
 
 					} else { ;Si no se mueve
-						bonus_box := Client.searchBonusBox()
+						bonus_box := this.findBonusBox()
 
 						if bonus_box {
 							ship.collect(bonus_box)
@@ -82,5 +93,29 @@ class System {
 		boxCollected := this.bonusBoxCollected
 
 		TrayTip, Recoleccion pausada, Cajas obtenidas: %boxCollected%
+	}
+
+	findBonusBox() {
+		shaderVariation := this.bonusBoxShader
+		i := 1
+
+		Loop, 4 {
+			ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, Client.searchBoxsSize[i].x2, Client.searchBoxsSize[i].y2 , *%shaderVariation% ./img/bonus_box.bmp
+
+			if (ErrorLevel = 0) {
+				return [corsX, corsY]
+			} 
+			i++
+		}
+		return false
+	}
+
+	escapeToPortal() {
+		this.collectBoxs := false
+
+		portalCors := Minimap.getNearPortalCors()
+
+		Minimap.goTo(portalCors)
+		ExitApp
 	}
 }
