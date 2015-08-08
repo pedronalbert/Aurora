@@ -8,14 +8,6 @@ class Ship {
 	static healBarsShader := 15
 	static statsBoxCors := {}
 
-	;caching varis
-	static cloackCors := {x: 0, y: 0}
-	static hasCloacks := true
-
-	__New() {
-		this.setCloacks()
-	}
-
 	isReady() {
 		if (this.setStatsBoxCors()) {
 			return true
@@ -64,8 +56,6 @@ class Ship {
 	}
 
 	approach(cors) {
-		miliSecondsWait := 0
-
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
 
@@ -88,23 +78,6 @@ class Ship {
 
 		MouseClick, Left, corsX, corsY, 1, 0
 
-		Sleep, 200
-
-		Loop {
-			Sleep, 100
-
-			if Not this.isMoving() {
-				break
-			} else {
-				miliSecondsWait += 100
-
-				if(miliSecondsWait > 3000) { ;si tiene tiempo esperando a que se aproxime es bug
-					MouseClick, Left, (Client.boxCors.x2 / 2) - 50, Client.boxCors.y2 / 2, 1, 0
-					break
-				}
-			}
-
-		}
 	}
 
 	setLastCollectCorsBox(cors) {
@@ -125,42 +98,7 @@ class Ship {
 	}
 
 	collect(cors) {
-		miliSecondsWait := 0
-
-		if (this.isNearLastCollect(cors)) {
-			this.collectAttemps++
-
-			if (this.collectAttemps > 4) {
-				this.goAway()
-			} else {
-				Sleep, 500
-			}
-		} else {
-			this.collectAttemps := 1
-
-			MouseClick, Left, cors[1] + 5, cors[2] + 5, 1, 0
-
-			this.setLastCollectCorsBox(cors)
-
-			Sleep, 100
-
-			Loop { ;esperamos hasta que se quede quieto
-				Sleep, 100
-				
-				if Not this.isMoving() {
-					break
-				} else {
-					miliSecondsWait += 100
-
-					if (miliSecondsWait > 7000) {
-						this.goAway()
-						break
-					} 
-				}
-			}
-
-			Sleep, 250 ;Time to disappear the box
-		}
+		MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
 	}
 
 	goAway() {
@@ -215,12 +153,9 @@ class Ship {
 			Random, corsY, 116, 126
 		}
 
-		corsX := Minimap.availableBoxCors.x1 + (corsX * Minimap.pixelEquivalentX)
-		corsY := Minimap.availableBoxCors.y1 + (corsY * Minimap.pixelEquivalentY)
+		cors := [corsX, corsY]
 
-		MouseClick, Left, corsX, corsY, 1, 0
-
-		Sleep, 50
+		Minimap.goTo(cors)
 	}
 
 	isMoving() {
@@ -236,22 +171,25 @@ class Ship {
 		}
 	}
 
-	setCloacks() {
+
+	getCloackCors() {
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/cloack_10.bmp
 
 		if (ErrorLevel = 0) {
-			this.cloackCors.x := corsX
-			this.cloackCors.y := corsY 
-			this.hasCloacks := true 
-		}
-		else {
-			this.hasCloacks := false
+			return [corsX, corsY]
+		} else {
+			return false
 		}
 	}
 
 	isInvisible() {
-		if (this.hasCloacks) {
-			PixelGetColor, color, this.cloackCors.x - 2, this.cloackCors.y + 2
+		cloackCors := this.getCloackCors()
+
+		corsX := cloackCors[1]
+		corsY := cloackCors[2]
+
+		if (cloackCors) {
+			PixelGetColor, color, corsX - 2, corsY + 2
 
 			if (color = "0x68B8C8") {
 				return true
@@ -264,14 +202,13 @@ class Ship {
 	}
 
 	setInvisible()  {
-		if (this.hasCloacks) {
-			MouseClick, Left, this.cloackCors.x + 10, this.cloackCors.y + 10, 1, 5
+		cloackCors := this.getCloackCors()
 
-			Sleep, 3000
+		corsX := cloackCors[1]
+		corsY := cloackCors[2]
 
-			if (!this.isInvisible) {
-				this.hasCloacks := false
-			}
+		if (cloackCors) {
+			MouseClick, Left, corsX + 10, corsY + 10, 1, 5
 		}
 	}
 

@@ -6,7 +6,7 @@ class Minimap {
 	static availableBoxCors := {}
 	static portalsCors := []
 	static pixelEquivalentX := 1.112299465
-	static pixelEquivalentY := 1.18260869565217
+	static pixelEquivalentY := 1.18360869565217
 
 	isReady() {
 		if (this.setBoxCors()) {
