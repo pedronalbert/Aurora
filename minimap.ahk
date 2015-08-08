@@ -18,8 +18,9 @@ class Minimap {
 	}
 
 	setPortalsCors() {
-		this.portalsCors[27] := [[20, 115], [185, 20]]
-		this.portalsCors[28] := [[185, 115], [20, 185]]
+		this.portalsCors[25] := [[185, 19], [185, 116]]
+		this.portalsCors[27] := [[20, 116], [185, 19]]
+		this.portalsCors[28] := [[185, 116], [20, 185]]
 	}
 
 	setBoxCors() {

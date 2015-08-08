@@ -29,35 +29,35 @@ class System {
 		TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
 
 		this.setCheckTimers()
+		this.statePriority := 0
 		this.setState("FindBonusBox")
 
 		Loop {
 			if (this.state <> "Pause") {
 
-				healPercent := Ship.getHealPercent()
 
 				If Client.isDisconnect() { ;Disconnect screen
 					Client.connect()
 				}
 
-				if (healPercent < this.healToRepair) {
-					if (healPercent = 0) { ;Si no se le ve la vida
-						Ship.moveRandom() ;Get out radioactive zone
+				healPercent := Ship.getHealPercent()
 
-						Sleep, 3000
+				if (healPercent = 0) { ;Si no se le ve la vida
+					Ship.moveRandom() ;Get out radioactive zone
 
-						if (Ship.getHealPercent() = 0) {
-							;Si la vida sigue siendo 0 le damos un tiempo por si se esta muriendo
-							Sleep, 2000
+					Sleep, 3000
 
-							if (!Ship.isAlive()) {
-								Ship.revive()
-								this.setState("WaitForFinishRepair")
-							}
+					if (Ship.getHealPercent() = 0) {
+						;Si la vida sigue siendo 0 le damos un tiempo por si se esta muriendo
+						Sleep, 2000
+
+						if (!Ship.isAlive()) {
+							this.stopCheckTimers()
+							Ship.revive()
+							this.setState("WaitForFinishRepairAndSetTimers")
 						}
-					} else { ;Si aún le queda vida lo mandamos a reparar
-						this.setState("GoToRepair")
 					}
+
 				}
 
 				; ------------------------ STATES -------------------------------------
@@ -72,7 +72,7 @@ class System {
 							this.setState("ApproachingToBonusBox")
 						} else {
 							Ship.collect(bonusBox)
-							Sleep, 100
+							Sleep, 300
 							this.setState("CollectingBonusBox")
 						}
 					} else {
@@ -150,13 +150,19 @@ class System {
 
 				if (this.state = "ComingToMap") {
 					if (this.isInNewMap()) {
-						this.statePriority := 0
-						this.setState("WaitForFinishRepair")
-						this.setCheckTimers()
+						this.setState("WaitForFinishRepairAndSetTimers", 1)
 					}
 				}
 
-			} else { ;Si es paused
+				if (this.state = "WaitForFinishRepairAndSetTimers") {
+					if (Ship.getHealPercent() >= this.healToRepair) {
+						this.statePriority := 0
+						this.setCheckTimers()
+						this.setState("FindBonusBox")
+					}
+				}
+
+			} else {
 				break
 			}
 		}
@@ -217,12 +223,12 @@ class System {
 		if (priority >= this.statePriority) {
 			this.state := state
 			this.stateSeconds := -1
-			;TrayTip, State, %state%
+			;TrayTip, State, %state% prioriry %priority%
 
 			SetTimer, stateTimer, 1000
 
 			stateTimer:
-				this.stateSeconds += 1
+				System.stateSeconds += 1
 			return
 		}
 	}

@@ -18,6 +18,8 @@ Gui:
 	Gui, Add, Edit, w30 vhealToRepair, %ini_system_healToRepair%
 	Gui, Add, Text, , BonusBoxShader
 	Gui, Add, Edit, w30 vbonusBoxShader, %ini_system_bonusBoxShader%
+	Gui, Add, Text, , Mapa
+	Gui, Add, DropDownList, Choose1 vMap, 25|27|28
 	Gui, Add, Button, gInitCollect, Iniciar Recoleccion
 	Gui, Add, Button, gReconfigClient, Reconfigurar Coordenadas
 	Gui, Show
@@ -46,10 +48,12 @@ return
 setConfig() {
 	GuiControlGet, healToRepair
 	GuiControlGet, bonusBoxShader
+	GuiControlGet, map
 
 
 	System.healToRepair := healToRepair
 	System.bonusBoxShader := bonusBoxShader
+	System.map := map
 
 	updateSystemIni()
 
@@ -87,3 +91,6 @@ ReconfigClient:
 
 	Gosub, Gui
 return
+
+GuiClose:
+	ExitApp

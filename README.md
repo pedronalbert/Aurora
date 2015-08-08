@@ -11,6 +11,12 @@ Version: 0.1.07
 
 ## Changelog
 
+
+### [0.1.07]
+	- Add map selector
+	- Fix bugs on stateSeconds
+	- Fix bugs stopping the bot
+	
 ### [0.1.06]
 	- Create Minimap class
 	- Change method Class.isReady()
