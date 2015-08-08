@@ -42,7 +42,7 @@ class Client {
 	}
 
 	setSearchBoxsSize() {
-		percentToIgnore := 0.10
+		percentToIgnore := 0.08
 		pixelsToIgnore := this.boxCors.y2 * percentToIgnore
 		percentPosToIgnore := 0.60
 

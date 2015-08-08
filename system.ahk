@@ -72,7 +72,7 @@ class System {
 							this.setState("ApproachingToBonusBox")
 						} else {
 							Ship.collect(bonusBox)
-							Sleep, 300
+							Sleep, 100
 							this.setState("CollectingBonusBox")
 						}
 					} else {
@@ -96,7 +96,7 @@ class System {
 				if (this.state = "CollectingBonusBox") {
 					if (!Ship.isMoving()) {
 						this.bonusBoxCollected++
-						Sleep, 500
+						Sleep, 100
 						this.setState("FindBonusBox")
 					} else {
 						if (this.stateSeconds > 3) {
