@@ -52,6 +52,7 @@ class System {
 
 							if (!Ship.isAlive()) {
 								Ship.revive()
+								this.setState("WaitForFinishRepair")
 							}
 						}
 					} else { ;Si aún le queda vida lo mandamos a reparar
@@ -150,7 +151,7 @@ class System {
 				if (this.state = "ComingToMap") {
 					if (this.isInNewMap()) {
 						this.statePriority := 0
-						this.setState("FindBonusBox")
+						this.setState("WaitForFinishRepair")
 						this.setCheckTimers()
 					}
 				}
