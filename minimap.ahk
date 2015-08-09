@@ -48,7 +48,7 @@ class Minimap {
 	}
 
 	getNearPortalCors() {
-		map := 27
+		map := System.map
 		minDistance := 9999
 		portalNearPos := 0
 		shipCors := this.getShipCors()
