@@ -19,7 +19,7 @@ Gui:
 	Gui, Add, Text, , BonusBoxShader
 	Gui, Add, Edit, w30 vbonusBoxShader, %ini_system_bonusBoxShader%
 	Gui, Add, Text, , Mapa
-	Gui, Add, DropDownList, Choose1 vMap, 25|27|28
+	Gui, Add, DropDownList, Choose1 vMap, 25|27|28|37|38
 	Gui, Add, Button, gInitCollect, Iniciar Recoleccion
 	Gui, Add, Button, gReconfigClient, Reconfigurar Coordenadas
 	Gui, Show
