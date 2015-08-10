@@ -8,7 +8,6 @@ CoordMode, Mouse, Screen
 #Include, ./system.ahk
 
 
-
 Gui:
 	userConfig := getUserConfigIni()
 	Client.setClientCors(false, userConfig.clientTop, userConfig.clientBottom)
@@ -16,7 +15,7 @@ Gui:
 	Gui, Add, Tab, w300 h400Center, Basic Settings|Advanced Settings
 
 	Gui, Add, Text, xp80 yp+40, Map:
-	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 37|38
+	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 35|36|37|38
 
 	Gui, Add, GroupBox, x40 yp+30 w240 h85, Escape System
 	Gui, Add, Text,x60 yp+20, Activate
@@ -49,6 +48,15 @@ Gui:
 	Gui, Show, , DarkOrbit Bot by pedronalbert
 Return
 
+;---------------------------------------------------
+F2::
+	Gui, Destroy
+	System.pauseCollect()
+	Gosub, Gui
+return
+
+;--------------------------------------------
+
 InitCollect:
 	setSystemConfig()
 	updateUserConfigIni()
@@ -62,12 +70,19 @@ InitCollect:
 	}
 return 
 
+ReconfigClient:
+	Gui, Hide
 
-F2::
+	Client.setClientCors(true) 
+	setSystemConfig()
+	updateUserConfigIni()
+
 	Gui, Destroy
-	System.pauseCollect()
 	Gosub, Gui
 return
+
+GuiClose:
+	ExitApp
 
 ;-------------------------------------------------------------------
 
@@ -123,17 +138,3 @@ setSystemConfig() {
 	System.bonusBoxShader := System_BonusBoxShader
 	System.map := Map
 }
-
-ReconfigClient:
-	Gui, Hide
-
-	Client.setClientCors(true) 
-	setSystemConfig()
-	updateUserConfigIni()
-
-	Gui, Destroy
-	Gosub, Gui
-return
-
-GuiClose:
-	ExitApp

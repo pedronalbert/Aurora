@@ -18,11 +18,10 @@ class Minimap {
 	}
 
 	setPortalsCors() {
-		this.portalsCors[25] := [[185, 19], [185, 116]]
-		this.portalsCors[27] := [[20, 116], [185, 19]]
-		this.portalsCors[28] := [[185, 116], [20, 185]]
-		this.portalsCors[37] := [[20, 116], [185, 116]]
-		this.portalsCors[38] := [[20, 19], [20, 116]]
+		this.portalsCors[35] := [[16, 102], [166, 102]]
+		this.portalsCors[36] := [[16, 15], [166, 102]]
+		this.portalsCors[37] := [[16, 102], [166, 102]]
+		this.portalsCors[38] := [[16, 102], [16, 16]]
 	}
 
 	setBoxCors() {
@@ -60,7 +59,7 @@ class Minimap {
 			b := (portalCors[2] - shipCors[2])
 			b := b * b
 
-			distance := Sqrt( a - b )
+			distance := Sqrt( a + b )
 
 			if (distance < minDistance) {
 				minDistance := distance
@@ -71,30 +70,12 @@ class Minimap {
 
 
 		cors := [this.portalsCors[map][portalNearPos][1], this.portalsCors[map][portalNearPos][2]]
-
-		a := cors[1]
-		b := cors[2]
-
 		return cors
 	}
 
-	screenPosToCors(x, y) {
-		x := (x - this.availableBoxCors.x1) * this.pixelEquivalentX
-		y := (y - this.availableBoxCors.y1) * this.pixelEquivalentY
-
-		return [x, y]
-	}
-
-	corsToScreenPos(x, y) {
-		x := (x / this.pixelEquivalentX) + this.availableBoxCors.x1
-		y := (y / this.pixelEquivalentY) + this.availableBoxCors.y1
-
-		return [x, y]
-	}
-
 	getShipCors() {
-		x := this.availableBoxCors.x2 * 0.50
-		y := this.availableBoxCors.y2 * 0.50
+		x := this.availableBoxCors.x1 + 96
+		y := this.availableBoxCors.y2 + 58
 
 		ImageSearch, corsX, corsY, this.availableBoxCors.x1, this.availableBoxCors.y1, this.availableBoxCors.x2, this.availableBoxCors.y2, *5 ./img/minimap_vertical_bar.bmp
 	
@@ -108,16 +89,15 @@ class Minimap {
 			y := corsY
 		}
 
-		cors := this.screenPosToCors(x, y)
+		cors := [x - this.availableBoxCors.x1, y - this.availableBoxCors.y1]
 
 		return cors
 	}
 
 	goTo(cors) {
-		cors := this.corsToScreenPos(cors[1], cors[2])
 
-		corsX := cors[1]
-		corsY := cors[2]
+		corsX := cors[1] + this.availableBoxCors.x1
+		corsY := cors[2] + this.availableBoxCors.y1
 
 		MouseClick, Left, corsX, corsY, 1 , 0
 

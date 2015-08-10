@@ -192,6 +192,8 @@ class System {
 			SetTimer, damageCheck, % this.damageCheckTime
 		}
 
+		return
+
 		invisibleCheck:
 			if (!Ship.isInvisible()) {
 				Ship.setInvisible()
@@ -201,8 +203,6 @@ class System {
 		damageCheck:
 			shieldPercent := Ship.shieldPercent
 			healPercent := Ship.healPercent
-
-			MsgBox, % shieldPercent
 
 			if (healPercent > 0) { ;no puede estar muerto
 				if (shieldPercent < System.escapeShield) {
@@ -269,4 +269,3 @@ class System {
 	}
 
 }
-

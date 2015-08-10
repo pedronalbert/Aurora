@@ -145,16 +145,16 @@ class Ship {
 	}
 
 	moveRandom() {
-		Random, corsX, 40, 160
+		Random, corsX, 34, 145
 
 		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
 
 		if (sector <= 2) {
-			Random, corsY, 2, 12
+			Random, corsY, 1, 17
 		} else if (sector = 3) {
-			Random, corsY, 20, 100
+			Random, corsY, 18, 102
 		} else if (sector >= 4) {
-			Random, corsY, 116, 126
+			Random, corsY, 103, 114
 		}
 
 		cors := [corsX, corsY]
