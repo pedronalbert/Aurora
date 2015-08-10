@@ -108,7 +108,7 @@ class System {
 						this.setState("FindBonusBox")
 					} else {
 						if (this.stateSeconds > 3) {
-							this.setState("FindBonusBox")
+							this.goAway()
 						}
 					}
 				}
@@ -224,6 +224,8 @@ class System {
 			;TrayTip, State, %state% Priority: %priority%
 
 			SetTimer, stateTimer, 1000
+
+			return 
 
 			stateTimer:
 				System.stateSeconds += 1

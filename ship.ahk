@@ -7,6 +7,7 @@ class Ship {
 	static healBarsShader := 15
 	static shieldBarsShader := 15
 	static statsBoxCors := {}
+	static lastCollectCors := [0,0]
 
 	isReady() {
 		if (this.setStatsBoxCors()) {
@@ -103,7 +104,17 @@ class Ship {
 	}
 
 	collect(cors) {
-		MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
+		lastCollectX := this.lastCollectCors[1]
+		lastCollectY := this.lastCollectCors[2]
+
+		if ( (cors[1] >= (lastCollectX - 5)) and (cors[1] <= (lastCollectX + 5)) ) {
+			if ( (cors[2] >= (lastCollectY - 5)) and (cors[2] <= (lastCollectY + 5)) ) {
+				this.goAway()
+			}
+		} else {
+			this.lastCollectCors := cors
+			MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
+		}
 	}
 
 	goAway() {
