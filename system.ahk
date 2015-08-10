@@ -6,16 +6,21 @@
 	ApproachToBonusBox
 */
 class System {
-	static healToRepair := 50
-	static bonusBoxShader := 20
+	static healToRepair := 95
 	static bonusBoxCollected := 0
-	static map := 0
-	static state := "None"
+	static state := 
 	static statePriority := 0
 	static stateSeconds := 0
 	static lastShipCors := []
-	static lastHealCheck := 0
-	static healChecksDanger := 0
+
+	static escapeActivated := 
+	static escapeShield := 
+	static invisibleActivated := 
+	static invisibleCheckTime := 
+	static bonusBoxShader := 
+	static damageCheckTime :=
+	static map := 
+
 
 	isReady() {
 		if (Client.isReady() and Minimap.isReady() and Ship.isReady()) {
@@ -28,26 +33,29 @@ class System {
 	initCollect() {
 		TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
 
-		this.setCheckTimers()
+		Ship.getHealPercent() ;update class property
+		Ship.getShieldPercent() ;update class property
+
 		this.statePriority := 0
 		this.setState("FindBonusBox")
+		this.setCheckTimers()
 
 		Loop {
 			if (this.state <> "Pause") {
 
+				healPercent := Ship.getHealPercent()
+				shieldPercent := Ship.getShieldPercent()
 
 				If Client.isDisconnect() { ;Disconnect screen
 					Client.connect()
 				}
-
-				healPercent := Ship.getHealPercent()
 
 				if (healPercent = 0) { ;Si no se le ve la vida
 					Ship.moveRandom() ;Get out radioactive zone
 
 					Sleep, 3000
 
-					if (Ship.getHealPercent() = 0) {
+					if (Ship.getHealPercent() = 0) { ;reget the heal
 						;Si la vida sigue siendo 0 le damos un tiempo por si se esta muriendo
 						Sleep, 2000
 
@@ -105,24 +113,8 @@ class System {
 					}
 				}
 
-				if (this.state = "GoToRepair") {
-					portalCors := Minimap.getNearPortalCors()
-
-					Minimap.goTo(portalCors)
-
-					Sleep, 100
-
-					this.setState("WaitToArriveToPortalForRepair")
-				}
-
-				if (this.state = "WaitToArriveToPortalForRepair") {
-					if (!Ship.isMoving()) {
-						this.setState("WaitForFinishRepair")
-					}
-				}
-
 				if (this.state = "WaitForFinishRepair") {
-					if (Ship.getHealPercent() >= this.healToRepair) {
+					if (healPercent >= this.healToRepair and shieldPercent >= this.escapeShield) {
 						this.setState("FindBonusBox")
 					}
 				}
@@ -155,7 +147,7 @@ class System {
 				}
 
 				if (this.state = "WaitForFinishRepairAndSetTimers") {
-					if (Ship.getHealPercent() >= this.healToRepair) {
+					if (healPercent >= this.healToRepair and shieldPercent >= this.escapeShield) {
 						this.statePriority := 0
 						this.setCheckTimers()
 						this.setState("FindBonusBox")
@@ -192,8 +184,13 @@ class System {
 	}
 
 	setCheckTimers() {
-		SetTimer, invisibleCheck, 10000
-		SetTimer, damageCheck, 3000
+		if (this.invisibleActivated = 1) {
+			SetTimer, invisibleCheck, % this.invisibleCheckTime
+		}
+
+		if (this.escapeActivated = 1) {
+			SetTimer, damageCheck, % this.damageCheckTime
+		}
 
 		invisibleCheck:
 			if (!Ship.isInvisible()) {
@@ -202,14 +199,15 @@ class System {
 		return
 
 		damageCheck:
-			healPercent := Ship.getHealPercent()
+			shieldPercent := Ship.shieldPercent
+			healPercent := Ship.healPercent
+
+			MsgBox, % shieldPercent
 
 			if (healPercent > 0) { ;no puede estar muerto
-				if (healPercent < System.healToRepair) {
+				if (shieldPercent < System.escapeShield) {
 						System.escapeToPortal()
-				} else {
-					System.lastHealCheck := healPercent
-				}	
+				}
 			}
 		return
 	}
@@ -223,7 +221,7 @@ class System {
 		if (priority >= this.statePriority) {
 			this.state := state
 			this.stateSeconds := -1
-			;TrayTip, State, %state% prioriry %priority%
+			;TrayTip, State, %state% Priority: %priority%
 
 			SetTimer, stateTimer, 1000
 

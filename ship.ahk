@@ -2,10 +2,10 @@
 #Include, ./minimap.ahk
 
 class Ship {
-	static healPercent := 0
-	static collectAttemps := 1
-	static lastCollectCorsBox := {x1: 0, y1: 0, x2: 0, y2: 0}
+	static healPercent := 
+	static shieldPercent :=
 	static healBarsShader := 15
+	static shieldBarsShader := 15
 	static statsBoxCors := {}
 
 	isReady() {
@@ -55,6 +55,29 @@ class Ship {
 		return this.healPercent
 	}
 
+	getShieldPercent() {
+		this.shieldPercent := 0
+		shieldBarsCorsX := this.statsBoxCors.x1 + 27
+		shieldBarsCorsY := this.statsBoxCors.y1 + 63
+		shieldBarsShader := this.shieldBarsShader
+		shieldBarsColor := 0xD8D378
+		shieldPercentBar := 4.761904761904762
+
+		i := 0
+
+		Loop, 21 {
+			i++
+			shieldBarsCorsX := shieldBarsCorsX + 3
+
+			PixelSearch, barCorsX, barCorsY, shieldBarsCorsX, shieldBarsCorsY, shieldBarsCorsX, shieldBarsCorsY, shieldBarsColor, shieldBarsShader, Fast
+			
+			if ErrorLevel = 0
+				this.shieldPercent := this.shieldPercent + shieldPercentBar
+		}
+
+		return this.shieldPercent
+	}
+
 	approach(cors) {
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
@@ -77,24 +100,6 @@ class Ship {
 		}
 
 		MouseClick, Left, corsX, corsY, 1, 0
-
-	}
-
-	setLastCollectCorsBox(cors) {
-		this.lastCollectCorsBox.x1 := cors[1] - 5
-		this.lastCollectCorsBox.y1 := cors[2] - 5
-		this.lastCollectCorsBox.x2 := cors[1] + 5
-		this.lastCollectCorsBox.y2 := cors[2] + 5
-	}
-
-	isNearLastCollect(cors) {
-		if ((cors[1] >= this.lastCollectCorsBox.x1) and (cors[1] <= this.lastCollectCorsBox.x2)) {
-			if ((cors[2] >= this.lastCollectCorsBox.y1) and (cors[2] <= this.lastCollectCorsBox.y2)) {
-				return true
-			}
-		}
-
-		return false
 	}
 
 	collect(cors) {
@@ -114,7 +119,6 @@ class Ship {
 		} else {
 			return true
 		}
-
 	}
 
 	revive() {
@@ -170,7 +174,6 @@ class Ship {
 			return false
 		}
 	}
-
 
 	getCloackCors() {
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/cloack_10.bmp

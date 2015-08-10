@@ -10,23 +10,48 @@ CoordMode, Mouse, Screen
 
 
 Gui:
-	IniRead, ini_system_healToRepair, config.ini, System, healToRepair
-  IniRead, ini_system_bonusBoxShader, config.ini, System, bonusBoxShader
+	userConfig := getUserConfigIni()
+	Client.setClientCors(false, userConfig.clientTop, userConfig.clientBottom)
 
-	Gui, New
-	Gui, Add, Text, , Reparar
-	Gui, Add, Edit, w30 vhealToRepair, %ini_system_healToRepair%
-	Gui, Add, Text, , BonusBoxShader
-	Gui, Add, Edit, w30 vbonusBoxShader, %ini_system_bonusBoxShader%
-	Gui, Add, Text, , Mapa
-	Gui, Add, DropDownList, Choose1 vMap, 25|27|28|37|38
-	Gui, Add, Button, gInitCollect, Iniciar Recoleccion
-	Gui, Add, Button, gReconfigClient, Reconfigurar Coordenadas
-	Gui, Show
-return
+	Gui, Add, Tab, w300 h400Center, Basic Settings|Advanced Settings
+
+	Gui, Add, Text, xp80 yp+40, Map:
+	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 37|38
+
+	Gui, Add, GroupBox, x40 yp+30 w240 h85, Escape System
+	Gui, Add, Text,x60 yp+20, Activate
+	Gui, Add, Checkbox,% "xp+50 yp vEscapeSystem_Activated Checked" userConfig.escapeSystem_Activated
+	Gui, Add, Text,x60 yp+25, Shield (`%)
+	Gui, Add, Slider, xp+50 yp-1 Range1-99 ToolTipRight vEscapeSystem_Shield,% userConfig.escapeSystem_Shield
+
+	Gui, Add, GroupBox, x40 yp+50 w240 h50, Invisible System
+	Gui, Add, Text,x60 yp+20, Activate
+	Gui, Add, Checkbox,% "xp+50 yp vInvisibleSystem_Activated Checked" userConfig.invisibleSystem_Activated
+
+	Gui, Add, GroupBox, x40 yp+40 w240 h80, Client Coors 
+	Gui, Add, Text,x60 yp+20 ,% "Coors   Top: " userConfig.clientTop " Bottom: " userConfig.clientBottom
+	Gui, Add, Button, x90 yp+20 w150 gReconfigClient, Set Client Coors
+
+	Gui, Add, Button, x60 yp+70 w200 h30 gInitCollect, Iniciar Recoleccion
+
+	; ---------- Tab2 ----------------
+
+	Gui, Tab, 2
+	Gui, Add, Text, x40 y60, Bonus Box Shader
+	Gui, Add, Slider, xp+120 yp-3 Range1-50 ThickInterval1 Thick18 ToolTipRight vSystem_BonusBoxShader, % userConfig.system_BonusBoxShader
+
+	Gui, Add, Text, x40 yp50, Damage Checker (ms)
+	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_DamageCheckTime, % userConfig.system_DamageCheckTime
+
+	Gui, Add, Text, x40 yp40, Invisible Checker (ms)
+	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_InvisibleCheckTime, % userConfig.invisibleSystem_CheckTime
+
+	Gui, Show, , DarkOrbit Bot by pedronalbert
+Return
 
 InitCollect:
-	setConfig()
+	setSystemConfig()
+	updateUserConfigIni()
 
 	Gui, Destroy
 
@@ -39,56 +64,74 @@ return
 
 
 F2::
+	Gui, Destroy
 	System.pauseCollect()
 	Gosub, Gui
 return
 
 ;-------------------------------------------------------------------
 
-setConfig() {
-	GuiControlGet, healToRepair
-	GuiControlGet, bonusBoxShader
-	GuiControlGet, map
-
-
-	System.healToRepair := healToRepair
-	System.bonusBoxShader := bonusBoxShader
-	System.map := map
-
-	updateSystemIni()
-
-	IniRead, ini_client_top, config.ini, Client, top
-  IniRead, ini_client_bottom, config.ini, Client, bottom
-
-	if (ini_client_top > -1) {
-		Client.setClientCors(false, ini_client_top, ini_client_bottom)
-	} else {
-		Client.setClientCors(true)
-		updateClientIni()
-	}
+updateUserConfigIni() {
+	IniWrite, % System.escapeActivated, config.ini, EscapeSystem, Activated
+	IniWrite, % System.escapeShield, config.ini, EscapeSystem, Shield
+	IniWrite, % System.invisibleActivated, config.ini, InvisibleSystem, Activated
+	IniWrite, % System.invisibleCheckTime, config.ini, InvisibleSystem, CheckTime
+	IniWrite, % System.bonusBoxShader, config.ini, System, BonusBoxShader
+	IniWrite, % System.damageCheckTime, config.ini, System, DamageCheckTime
+	IniWrite, % Client.boxCors.y1, config.ini, Client, Top
+	IniWrite, % Client.boxCors.y2, config.ini, Client, Bottom
 }
 
-updateSystemIni() {
-	healToRepair := System.healToRepair
-	bonusBoxShader := System.bonusBoxShader
+getUserConfigIni() {
+	userConfig := {}
 
-	IniWrite, %healToRepair%, config.ini, System, healToRepair
-	IniWrite, %bonusBoxShader%, config.ini, System, bonusBoxShader
+	IniRead, System_BonusBoxShader, config.ini, System, BonusBoxShader
+	IniRead, System_DamageCheckTime, config.ini, System, DamageCheckTime
+	IniRead, EscapeSystem_Activated, config.ini, EscapeSystem, Activated
+	IniRead, EscapeSystem_Shield, config.ini, EscapeSystem, Shield
+	IniRead, InvisibleSystem_Activated, config.ini, InvisibleSystem, Activated
+	IniRead, InvisibleSystem_CheckTime, config.ini, InvisibleSystem, CheckTime
+	IniRead, ClientTop, config.ini, Client, Top
+	IniRead, ClientBottom, config.ini, Client, Bottom
+
+	userConfig.system_BonusBoxShader := System_BonusBoxShader
+	userConfig.system_DamageCheckTime := System_DamageCheckTime
+	userConfig.escapeSystem_Activated := EscapeSystem_Activated
+	userConfig.escapeSystem_Shield := EscapeSystem_Shield
+	userConfig.invisibleSystem_Activated := InvisibleSystem_Activated
+	userConfig.invisibleSystem_CheckTime := InvisibleSystem_CheckTime
+	userConfig.clientTop := ClientTop
+	userConfig.clientBottom := ClientBottom
+
+	return userConfig
 }
 
-updateClientIni() {
-	client_top := Client.boxCors.y1
-	client_bottom := Client.boxCors.y2
+setSystemConfig() {
+	GuiControlGet, Map
+	GuiControlGet, EscapeSystem_Activated
+	GuiControlGet, EscapeSystem_Shield
+	GuiControlGet, InvisibleSystem_Activated
+	GuiControlGet, System_InvisibleCheckTime
+	GuiControlGet, System_BonusBoxShader
+	GuiControlGet, System_DamageCheckTime
 
-	IniWrite, %client_top%, config.ini, Client, top
-	IniWrite, %client_bottom%, config.ini, Client, bottom
+	System.escapeActivated := EscapeSystem_Activated
+	System.escapeShield := EscapeSystem_Shield
+	System.damageCheckTime := System_DamageCheckTime
+	System.invisibleActivated := InvisibleSystem_Activated
+	System.invisibleCheckTime := System_InvisibleCheckTime
+	System.bonusBoxShader := System_BonusBoxShader
+	System.map := Map
 }
 
 ReconfigClient:
-	Client.setClientCors(true)
+	Gui, Hide
 
-	updateClientIni()
+	Client.setClientCors(true) 
+	setSystemConfig()
+	updateUserConfigIni()
 
+	Gui, Destroy
 	Gosub, Gui
 return
 
