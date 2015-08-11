@@ -4,70 +4,39 @@ class Client {
 	static boxCors := {}
 	static searchBoxsSize := [{}, {}, {}, {}]
 
-	isReady() {
+	init() {
 		return true
 	}
 
-	setClientCors(manual, top := 0, bottom := 0) {
-		if (manual) { ;Set manually
-			TrayTip, Configuracion, Colocar puntero sobre esquina SUPERIOR del juego y presionar F3
-			KeyWait, F3, D
+	setCors(top := 0, bottom := 0) {
+		this.boxCors.x1 := 0
+		this.boxCors.y1 := top
 
-
-			MouseGetPos, corsX, corsY
-			this.boxCors.x1 := 0
-			this.boxCors.y1 := corsY
-
-			TrayTip, Configuracion, Colocar puntero sobre esquina INFERIOR del juego y presionar F4
-			KeyWait, F4, D
-
-			MouseGetPos, corsX, corsY
-			this.boxCors.x2 := A_ScreenWidth
-			this.boxCors.y2 := corsY
-
-			TrayTip, Configuracion Exitosa, Se han actualizado las coordenadas del cliente
-
-			this.corsSetted := true
-			
-		} else {
-			this.boxCors.x1 := 0
-			this.boxCors.y1 := top
-
-			this.boxCors.x2 := A_ScreenWidth
-			this.boxCors.y2 := bottom
-
-		}
-
+		this.boxCors.x2 := A_ScreenWidth
+		this.boxCors.y2 := bottom
+		
 		this.setSearchBoxsSize()
 	}
 
-	setSearchBoxsSize() {
-		percentToIgnore := 0.08
-		pixelsToIgnore := this.boxCors.y2 * percentToIgnore
-		percentPosToIgnore := 0.60
+	/*
+		Get cloack cors
+		@param {Number} type - 10 | 50
+	*/
+	getCloackCors() {
+		type := System.invisibleCpu
+		
+		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
 
-		this.searchBoxsSize[1].x1 := this.boxCors.x1
-		this.searchBoxsSize[1].y1 := this.boxCors.y1
-		this.searchBoxsSize[1].x2 := this.boxCors.x2
-		this.searchBoxsSize[1].y2 := this.boxCors.y2 * percentPosToIgnore
+		if (ErrorLevel = 0) {
+			MouseMove, x, y, 10 
+			return [x, y]
+		} else {
 
-		this.searchBoxsSize[2].x1 := this.boxCors.x1
-		this.searchBoxsSize[2].y1 := this.searchBoxsSize[1].y2 + pixelsToIgnore
-		this.searchBoxsSize[2].x2 := this.boxCors.x2
-		this.searchBoxsSize[2].y2 := this.boxCors.y2 
-
-		this.searchBoxsSize[3].x1 := this.boxCors.x1
-		this.searchBoxsSize[3].y1 := (this.boxCors.y2 * 0.40)
-		this.searchBoxsSize[3].x2 := (this.boxCors.x2 * 0.50) - pixelsToIgnore
-		this.searchBoxsSize[3].y2 := this.boxCors.y2 * 0.80
-
-		this.searchBoxsSize[4].x1 := (this.boxCors.x2 * 0.50) + pixelsToIgnore
-		this.searchBoxsSize[4].y1 := (this.boxCors.y2 * 0.40)
-		this.searchBoxsSize[4].x2 := this.boxCors.x2
-		this.searchBoxsSize[4].y2 := this.boxCors.y2 * 0.80
+			return false
+		}
 	}
 
-	reloadClient() {
+	reload() {
 		secondsWaiting := 0
 
 		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *5 ./img/reload_firefox.bmp
@@ -77,7 +46,7 @@ class Client {
 		Sleep, 1000
 
 		Loop { ;waiting connecting message
-			if this.isConnecting() {
+			if (this.isConnecting()) {
 				break
 			}
 			else {
@@ -85,31 +54,28 @@ class Client {
 				secondsWaiting++
 
 				if (secondsWaiting > 120) {
-					break
+					this.reload()
 				}
 			} 
-
 		}
 
 		secondsWaiting := 0
 
-		Loop { ;waiting connected
+		Loop { ;waiting connected or dead
 			if (this.isConnected()) {
-				break
+				return true
+			} else if (Ship.isDead()) {
+				Ship.revive()
 			}
 			else {
 				Sleep, 1000
 				secondsWaiting++
 
 				if (secondsWaiting > 10) {
-					break
+					this.reload()
 				}
 			} 
-
 		}
-
-		if Not this.isConnected()
-			this.reloadClient()
 	}
 
 	isConnected() {
@@ -148,23 +114,19 @@ class Client {
 			
 			Loop { ;waiting connected
 				if (this.isConnected()) {
-					break
+					return true
 				}
 				else {
 					Sleep, 1000
 					secondsWaiting++
 
 					if (secondsWaiting > 10) {
-						break
+						this.reload()
 					}
 				} 
 			}
-
-			if Not this.isConnected()
-				this.reloadClient()
-
 		} else {
-			this.reloadClient()
+			this.reload()
 		}
 	}
 
@@ -176,6 +138,51 @@ class Client {
 		} else {
 			return false
 		}
+	}
+
+	setSearchBoxsSize() {
+		percentToIgnore := 0.08
+		pixelsToIgnore := this.boxCors.y2 * percentToIgnore
+		percentPosToIgnore := 0.60
+
+		this.searchBoxsSize[1].x1 := this.boxCors.x1
+		this.searchBoxsSize[1].y1 := this.boxCors.y1
+		this.searchBoxsSize[1].x2 := this.boxCors.x2
+		this.searchBoxsSize[1].y2 := this.boxCors.y2 * percentPosToIgnore
+
+		this.searchBoxsSize[2].x1 := this.boxCors.x1
+		this.searchBoxsSize[2].y1 := this.searchBoxsSize[1].y2 + pixelsToIgnore
+		this.searchBoxsSize[2].x2 := this.boxCors.x2
+		this.searchBoxsSize[2].y2 := this.boxCors.y2 
+
+		this.searchBoxsSize[3].x1 := this.boxCors.x1
+		this.searchBoxsSize[3].y1 := (this.boxCors.y2 * 0.40)
+		this.searchBoxsSize[3].x2 := (this.boxCors.x2 * 0.50) - pixelsToIgnore
+		this.searchBoxsSize[3].y2 := this.boxCors.y2 * 0.80
+
+		this.searchBoxsSize[4].x1 := (this.boxCors.x2 * 0.50) + pixelsToIgnore
+		this.searchBoxsSize[4].y1 := (this.boxCors.y2 * 0.40)
+		this.searchBoxsSize[4].x2 := this.boxCors.x2
+		this.searchBoxsSize[4].y2 := this.boxCors.y2 * 0.80
+	}
+
+	openCorsSetter() {
+		TrayTip, Put the cursor on the TOP of the game and press F3
+		KeyWait, F3, D
+
+
+		MouseGetPos, corsX, corsY
+		this.boxCors.x1 := 0
+		this.boxCors.y1 := corsY
+
+		TrayTip, Put the cursor on the BOTTOM of the game and press F4
+		KeyWait, F4, D
+
+		MouseGetPos, corsX, corsY
+		this.boxCors.x2 := A_ScreenWidth
+		this.boxCors.y2 := corsY
+
+		TrayTip, Client coors setted successfully
 	}
 
 }

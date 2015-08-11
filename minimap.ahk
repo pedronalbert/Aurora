@@ -7,21 +7,19 @@ class Minimap {
 	static portalsCors := []
 	static pixelEquivalentX := 1.112299465
 	static pixelEquivalentY := 1.18360869565217
+	static routes := []
+	static routePosition :=
+	static route :=
 
-	isReady() {
+	init() {
 		if (this.setBoxCors()) {
 			this.setPortalsCors()
+			this.setRoutes()
+			OutputDebug, % "Minimap is Ready!"
 			return true
 		} else {
 			return false
 		}
-	}
-
-	setPortalsCors() {
-		this.portalsCors[35] := [[16, 102], [166, 102]]
-		this.portalsCors[36] := [[16, 15], [166, 102]]
-		this.portalsCors[37] := [[16, 102], [166, 102]]
-		this.portalsCors[38] := [[16, 102], [16, 16]]
 	}
 
 	setBoxCors() {
@@ -40,37 +38,8 @@ class Minimap {
 
 			return true
 		} else {
-			MsgBox, , ERROR!, No se encuentra el minimapa `n `n Reconfigure las coordenadas y abra el minimapa.
-
 			return false
 		}
-	}
-
-	getNearPortalCors() {
-		map := System.map
-		minDistance := 9999
-		portalNearPos := 0
-		shipCors := this.getShipCors()
-
-		for k, portalCors in this.portalsCors[map] {
-			a := (portalCors[1] - shipCors[1])
-			a := a * a
-
-			b := (portalCors[2] - shipCors[2])
-			b := b * b
-
-			distance := Sqrt( a + b )
-
-			if (distance < minDistance) {
-				minDistance := distance
-				portalNearPos := k
-			}
-		} 
-
-
-
-		cors := [this.portalsCors[map][portalNearPos][1], this.portalsCors[map][portalNearPos][2]]
-		return cors
 	}
 
 	getShipCors() {
@@ -94,13 +63,131 @@ class Minimap {
 		return cors
 	}
 
+
 	goTo(cors) {
 
-		corsX := cors[1] + this.availableBoxCors.x1
-		corsY := cors[2] + this.availableBoxCors.y1
+		cors[1] += this.availableBoxCors.x1
+		cors[2] += this.availableBoxCors.y1
 
-		MouseClick, Left, corsX, corsY, 1 , 0
+		MouseClick, Left,% cors[1], % cors[2], 1 , 0
 
-		Sleep, 50
 	}
+
+	moveRandom() {
+		Random, corsX, 34, 145
+
+		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
+
+		if (sector <= 2) {
+			Random, corsY, 1, 17
+		} else if (sector = 3) {
+			Random, corsY, 18, 102
+		} else if (sector >= 4) {
+			Random, corsY, 103, 114
+		}
+
+		cors := [corsX, corsY]
+
+		this.goTo(cors)
+	}
+
+	setPortalsCors() {
+
+		this.portalsCors[35] := []
+		this.portalsCors[35][1] := {}
+		this.portalsCors[35][1].map := 36
+		this.portalsCors[35][1].cors := [16,102]
+		this.portalsCors[35][2] := {}
+		this.portalsCors[35][2].map := 37
+		this.portalsCors[35][2].cors := [166,102]
+
+		this.portalsCors[36] := []
+		this.portalsCors[36][1] := {}
+		this.portalsCors[36][1].map := 35
+		this.portalsCors[36][1].cors := [16,16]
+		this.portalsCors[36][2] := {}
+		this.portalsCors[36][2].map := 38
+		this.portalsCors[36][2].cors := [166,102]
+
+		this.portalsCors[37] := []
+		this.portalsCors[37][1] := {}
+		this.portalsCors[37][1].map := 35
+		this.portalsCors[37][1].cors := [16,102]
+		this.portalsCors[37][2] := {}
+		this.portalsCors[37][2].map := 38
+		this.portalsCors[37][2].cors := [166,102]
+
+		this.portalsCors[38] := []
+		this.portalsCors[38][1] := {}
+		this.portalsCors[38][1].map := 37
+		this.portalsCors[38][1].cors := [16,16]
+		this.portalsCors[38][2] := {}
+		this.portalsCors[38][2].map := 36
+		this.portalsCors[38][2].cors := [16,102]
+
+	}
+
+	setRoutes() {
+		this.routes[35] := [38, 37, 35]
+		this.routes[36] := [38, 36]
+		this.routes[37] := [38, 37]
+	}
+
+	generateRoute() {
+		this.route :=  this.routes[System.map]
+		this.routePosition := 1
+	}
+
+	goToNextPortal() {
+		nextMap := this.route[this.routePosition + 1]
+		actualMap := this.route[this.routePosition]
+
+		OutputDebug, % "next map: " nextMap " actual map: " actualMap
+
+		if (actualMap = System.map) {
+			return false
+		}
+
+		if (nextMap >= 11 and nextMap <= 38) {
+			for k, portal in this.portalsCors[actualMap] {
+				if (portal.map = nextMap) {
+					this.goTo(portal.cors)
+					this.routePosition++
+
+					return true
+				}
+			}
+			return false
+		} else {
+			return false
+		}
+	}
+
+	getNearPortalCors() {
+		map := System.map
+		minDistance := 9999
+		portalNearPos := 0
+		shipCors := this.getShipCors()
+
+		for k, portalCors in this.portalsCors[map] {
+			a := (portalCors.cors[1] - shipCors[1])
+			a := a * a
+
+			b := (portalCors.cors[2] - shipCors[2])
+			b := b * b
+
+			distance := Sqrt( a + b )
+
+			if (distance < minDistance) {
+				minDistance := distance
+				portalNearPos := k
+			}
+		} 
+
+		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
+
+		OutputDebug, % "Near portal: " cors[1] " , " cors[2] 
+		return cors
+	}
+
 }

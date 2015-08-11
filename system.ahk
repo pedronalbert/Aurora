@@ -17,13 +17,15 @@ class System {
 	static escapeShield := 
 	static invisibleActivated := 
 	static invisibleCheckTime := 
+	static invisibleCpu :=
 	static bonusBoxShader := 
 	static damageCheckTime :=
 	static map := 
+	static reviveMode :=
 
 
 	isReady() {
-		if (Client.isReady() and Minimap.isReady() and Ship.isReady()) {
+		if (Client.init() and Minimap.init() and Ship.init()) {
 			return true
 		} else {
 			return false
@@ -31,42 +33,30 @@ class System {
 	}
 
 	initCollect() {
-		TrayTip, Recoleccion iniciada, F2 - Pausar Recoleccion
-
-		Ship.getHealPercent() ;update class property
-		Ship.getShieldPercent() ;update class property
-
+		
 		this.statePriority := 0
 		this.setState("FindBonusBox")
 		this.setCheckTimers()
 
 		Loop {
 			if (this.state <> "Pause") {
+				Ship.updateStats()
 
-				healPercent := Ship.getHealPercent()
-				shieldPercent := Ship.getShieldPercent()
-
-				If Client.isDisconnect() { ;Disconnect screen
+				if (Client.isDisconnect()) { ;Disconnect screen
 					Client.connect()
 				}
 
-				if (healPercent = 0) { ;Si no se le ve la vida
-					Ship.moveRandom() ;Get out radioactive zone
-
-					Sleep, 3000
-
-					if (Ship.getHealPercent() = 0) { ;reget the heal
-						;Si la vida sigue siendo 0 le damos un tiempo por si se esta muriendo
-						Sleep, 2000
-
-						if (!Ship.isAlive()) {
-							this.stopCheckTimers()
-							Ship.revive()
-							this.setState("WaitForFinishRepairAndSetTimers")
-						}
+				if (Ship.isDead()) {
+					this.stopCheckTimers()
+					reviveModeUsed := Ship.revive()
+					
+					if (reviveModeUsed := "BASE") {
+						this.setState("FinishRepair_Next_GenerateRoute", 1)
+					} else {
+						this.setState("FinishRepair_Next_FindBonusBox_SetTimers", 1)
 					}
-
 				}
+
 
 				; ------------------------ STATES -------------------------------------
 
@@ -85,7 +75,7 @@ class System {
 						}
 					} else {
 						if (!Ship.isMoving()) {
-							Ship.moveRandom()
+							Minimap.moveRandom()
 							Sleep, 100
 						}
 					}
@@ -106,51 +96,81 @@ class System {
 						this.bonusBoxCollected++
 						Sleep, 100
 						this.setState("FindBonusBox")
-					} else {
-						if (this.stateSeconds > 3) {
-							this.goAway()
-						}
 					}
 				}
 
-				if (this.state = "WaitForFinishRepair") {
-					if (healPercent >= this.healToRepair and shieldPercent >= this.escapeShield) {
-						this.setState("FindBonusBox")
-					}
-				}
-
-				if (this.state = "GoToPortalForJump", 1) {
+				if (this.state = "GoToPortalForEscape") {
 					if (!Ship.isMoving()) {
 						this.lastShipCors := Minimap.getShipCors()
 						Sleep, 1000
 						Send {j}
 
-						this.setState("JumpingPortal", 1)
+						this.setState("EscapingToPortal_Next_BackToMap", 1)
 					}
 				}
 
-				if (this.state ="JumpingPortal") {
-					;Bug esperando salto
-					
+				if (this.state ="EscapingToPortal_Next_BackToMap") {
 					if (this.isInNewMap()) {
 						this.lastShipCors := Minimap.getShipCors()
 						Sleep, 1000
 						Send {j}
-						this.setState("ComingToMap", 1)
+						this.setState("BackingToMap", 1)
 					}
 				}
 
-				if (this.state = "ComingToMap") {
+				if (this.state = "BackingToMap") {
 					if (this.isInNewMap()) {
-						this.setState("WaitForFinishRepairAndSetTimers", 1)
+						this.setState("FinishRepair_Next_FindBonusBox", 1)
 					}
 				}
 
-				if (this.state = "WaitForFinishRepairAndSetTimers") {
-					if (healPercent >= this.healToRepair and shieldPercent >= this.escapeShield) {
+				if (this.state = "FinishRepair_Next_FindBonusBox") {
+					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
 						this.statePriority := 0
-						this.setCheckTimers()
 						this.setState("FindBonusBox")
+					}
+				}
+
+				if (this.state = "FinishRepair_Next_FindBonusBox_SetTimers") {
+					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
+						this.setCheckTimers()
+						this.statePriority := 0
+						this.setState("FindBonusBox")
+					}
+				}
+
+				if (this.state = "FinishRepair_Next_GenerateRoute" ) {
+					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
+						this.setCheckTimers()
+						Minimap.generateRoute()
+						this.setState("GoToNextPortal", 1)
+					}
+				}
+
+				if (this.state = "GoToNextPortal") {
+					if (Minimap.goToNextPortal()) {
+						Sleep, 200
+						this.setState("WaitForNextPortal_Next_JumpToNewMap", 1)
+					} else {
+						this.statePriority := 0
+						this.setState("FindBonusBox")
+					}
+				}
+
+				if (this.state = "WaitForNextPortal_Next_JumpToNewMap") {
+					if (!Ship.isMoving()) {
+						this.lastShipCors := Minimap.getShipCors()
+						Sleep, 1000
+						Send {j}
+
+						this.setState("WaitForNextMap_Next_GoToNextPortal", 1)
+					}
+				}
+
+				if (this.state = "WaitForNextMap_Next_GoToNextPortal", 1) {
+					if (this.isInNewMap()) {
+						Sleep, 300
+						this.setState("GoToNextPortal", 1)
 					}
 				}
 
@@ -165,7 +185,7 @@ class System {
 		this.stopCheckTimers()
 		bonusBox := this.bonusBoxCollected
 
-		TrayTip, Recoleccion pausada, Cajas obtenidas: %bonusBox%
+		TrayTip, Aurora Stopped, Boxs Collected: %bonusBox%
 	}
 
 	findBonusBox() {
@@ -221,7 +241,7 @@ class System {
 		if (priority >= this.statePriority) {
 			this.state := state
 			this.stateSeconds := -1
-			;TrayTip, State, %state% Priority: %priority%
+			OutputDebug, % "State: " state " Priority: " priority
 
 			SetTimer, stateTimer, 1000
 
@@ -242,7 +262,7 @@ class System {
 
 		Sleep, 100
 
-		this.setState("GoToPortalForJump", 1)
+		this.setState("GoToPortalForEscape", 1)
 	}
 
 	isInNewMap() {

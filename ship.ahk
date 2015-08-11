@@ -4,12 +4,15 @@
 class Ship {
 	static healPercent := 
 	static shieldPercent :=
+	static percentPerBar := 4.761904761904762
+	static healBarsColor := 0x7FD878
 	static healBarsShader := 15
-	static shieldBarsShader := 15
+	static shieldBarsColor := 0xD8D378
+	static shieldBarsShader := 20
 	static statsBoxCors := {}
 	static lastCollectCors := [0,0]
 
-	isReady() {
+	init() {
 		if (this.setStatsBoxCors()) {
 			return true
 		} else {
@@ -18,73 +21,85 @@ class Ship {
 	}
 
 	setStatsBoxCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/ship_stats_box.bmp
+		ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/ship_stats_box.bmp
 
 		If (ErrorLevel = 0) {
-			this.statsBoxCors.x1 := corsX
-			this.statsBoxCors.y1 := corsY
-			this.statsBoxCors.x2 := corsX + 190
-			this.statsBoxCors.y2 := corsY + 105
+			this.statsBoxCors.x1 := x
+			this.statsBoxCors.y1 := y
+			this.statsBoxCors.x2 := x + 190
+			this.statsBoxCors.y2 := y + 105
 
 			return true
 		} else {
-			MsgBox , , ERROR!, No se encuentra el estado de la nave `n `n Reconfigure las coordenadas y abra el estado de la nave con barras visibles.
-
 			return false
 		}
 	}
 
-	getHealPercent() {
-		this.healPercent := 0
-		healBarCorsX := this.statsBoxCors.x1 + 27
-		healBarCorsY := this.statsBoxCors.y1 + 46
-		healBarsShader := this.healBarsShader
-		healBarsColor := 0x7FD878
-		healPercentPerBar := 4.761904761904762
-
-		i := 0
-
-		Loop, 21 {
-			i++
-			healBarCorsX := healBarCorsX + 3
-			PixelSearch, barCorsX, barCorsY, healBarCorsX, healBarCorsY, healBarCorsX, healBarCorsY, healBarsColor, healBarsShader, Fast
-
-			if ErrorLevel = 0
-				this.healPercent := this.healPercent + healPercentPerBar
-		}
-
-		return this.healPercent
+	updateStats() {
+		this.updateHealPercent()
+		this.updateShieldPercent()
 	}
 
-	getShieldPercent() {
+	updateHealPercent() {
+		this.healPercent := 0
+
+		healBarsCorsX := this.statsBoxCors.x1 + 27
+		healBarsCorsY := this.statsBoxCors.y1 + 46
+
+		Loop, 21 {
+			healBarsCorsX := healBarsCorsX + 3
+			PixelSearch, x, y, healBarsCorsX, healBarsCorsY, healBarsCorsX, healBarsCorsY, % this.healBarsColor, % this.healBarsShader, Fast
+
+			if ErrorLevel = 0
+				this.healPercent += this.percentPerBar
+		}
+
+	}
+
+	updateShieldPercent() {
 		this.shieldPercent := 0
 		shieldBarsCorsX := this.statsBoxCors.x1 + 27
 		shieldBarsCorsY := this.statsBoxCors.y1 + 63
-		shieldBarsShader := this.shieldBarsShader
-		shieldBarsColor := 0xD8D378
-		shieldPercentBar := 4.761904761904762
-
-		i := 0
 
 		Loop, 21 {
-			i++
 			shieldBarsCorsX := shieldBarsCorsX + 3
 
-			PixelSearch, barCorsX, barCorsY, shieldBarsCorsX, shieldBarsCorsY, shieldBarsCorsX, shieldBarsCorsY, shieldBarsColor, shieldBarsShader, Fast
+			PixelSearch, x, y, shieldBarsCorsX, shieldBarsCorsY, shieldBarsCorsX, shieldBarsCorsY, % this.shieldBarsColor, % this.shieldBarsShader, Fast
 			
 			if ErrorLevel = 0
-				this.shieldPercent := this.shieldPercent + shieldPercentBar
+				this.shieldPercent += this.percentPerBar
 		}
+	}
 
-		return this.shieldPercent
+	isMoving() {
+		x := Minimap.boxCors.x1 + 114
+		y := Minimap.boxCors.y1 + 37
+
+		PixelGetColor, color, x, y
+
+		if (color = "0xFFFFFF") {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	isDead() {
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
+
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
 	}
 
 	approach(cors) {
 		centerX := Client.boxCors.x2 / 2
 		centerY := Client.boxCors.y2 / 2
 
-		corsX := (centerX + cors[1]) / 2 ;punto medio
-		corsY := (centerY + cors[2]) / 2 ;punto medio
+		corsX := (centerX + cors[1]) / 2 ;midle point
+		corsY := (centerY + cors[2]) / 2 ;middle point
 
 		if(corsX > centerX) {
 			diff := corsX - centerX
@@ -117,87 +132,64 @@ class Ship {
 		}
 	}
 
-	goAway() {
+	goAway(time := 3000) {
 		this.moveRandom()
-		Sleep, 3000
+		Sleep, time
 	}
 
-	isAlive() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
-
-		if (ErrorLevel = 0) {
-			return false
-		} else {
-			return true
-		}
-	}
-
+	/*
+	 * Revive the ship 
+	 * @param {string} mode - BASE | PORTAL | HERE
+	 * @return {string} mode used
+	*/
 	revive() {
-		MouseMove, 0, 0 , 0
+		MouseMove, 0, 0 , 0 ;move mouse away 
 		
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_portal.bmp
+		mode := System.reviveMode
+
+		if (mode = "BASE") {
+			image := "repair_base"
+		} else if (mode = "PORTAL") {
+			image := "repair_portal"
+		}
+
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, % "*5 ./img/" image ".bmp"
 
 		if (ErrorLevel = 0) {
-			MouseClick, Left, corsX + 5, corsY + 5, 1, 15 ;click on repair portal
+
+			MouseClick, Left, corsX + 5, corsY + 5, 1, 15 ;click on mode
 
 			Sleep, 1000
 
 			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
 
 			if (ErrorLevel = 0) {
-				MouseClick, Left, corsX + 30, corsY + 5, 1, 15 ;click on repair button
+				Random, variationX, 5, 100
+				Random, variationY, 5, 20
+
+				MouseClick, Left, corsX + variationX, corsY + variationY, 1, 15 ;click on repair button
 
 				Sleep, 8000
 
-				if Not this.isAlive()
+				if (this.isDead()) {
 					Client.reloadClient()
+				}
+				else {
+					OutputDebug, "Ship revive on: " mode
+					return mode
+				}
 			}
-		}
-	}
-
-	moveRandom() {
-		Random, corsX, 34, 145
-
-		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
-
-		if (sector <= 2) {
-			Random, corsY, 1, 17
-		} else if (sector = 3) {
-			Random, corsY, 18, 102
-		} else if (sector >= 4) {
-			Random, corsY, 103, 114
-		}
-
-		cors := [corsX, corsY]
-
-		Minimap.goTo(cors)
-	}
-
-	isMoving() {
-		x := Minimap.boxCors.x1 + 114
-		y := Minimap.boxCors.y1 + 37
-
-		PixelGetColor, color, x, y
-
-		if (color = "0xFFFFFF") {
-			return true
+		
 		} else {
-			return false
-		}
-	}
+			this.revive("BASE")
+			OutputDebug, "Ship revive on: " mode
 
-	getCloackCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/cloack_10.bmp
-
-		if (ErrorLevel = 0) {
-			return [corsX, corsY]
-		} else {
-			return false
+			return "BASE"
 		}
 	}
 
 	isInvisible() {
-		cloackCors := this.getCloackCors()
+		cloackCors := Client.getCloackCors()
 
 		corsX := cloackCors[1]
 		corsY := cloackCors[2]
@@ -216,14 +208,13 @@ class Ship {
 	}
 
 	setInvisible()  {
-		cloackCors := this.getCloackCors()
+		cloacksCors := this.getCloackCors()
 
-		corsX := cloackCors[1]
-		corsY := cloackCors[2]
+		corsX := cloacksCors[1]
+		corsY := cloacksCors[2]
 
 		if (cloackCors) {
 			MouseClick, Left, corsX + 10, corsY + 10, 1, 5
 		}
 	}
-
 }
