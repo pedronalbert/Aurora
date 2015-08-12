@@ -31,6 +31,7 @@ class Ship {
 
 			return true
 		} else {
+			MsgBox, % "ERRROR! the ship stats are not visible, set to visible or re-configure the client coors"
 			return false
 		}
 	}

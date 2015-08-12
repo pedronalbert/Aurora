@@ -38,6 +38,7 @@ class Minimap {
 
 			return true
 		} else {
+			MsgBox, % "ERROR!, the minimap is not visible, set to visible or re-configure the client coors"
 			return false
 		}
 	}
@@ -92,6 +93,156 @@ class Minimap {
 	}
 
 	setPortalsCors() {
+		this.portalsCors[11] := []
+		this.portalsCors[11][1] := {}
+		this.portalsCors[11][1].map := 12
+		this.portalsCors[11][1].cors := [16,102]
+
+		this.portalsCors[12] := []
+		this.portalsCors[12][1] := {}
+		this.portalsCors[12][1].map := 13
+		this.portalsCors[12][1].cors := [166,16]
+		this.portalsCors[12][2] := {}
+		this.portalsCors[12][2].map := 14
+		this.portalsCors[12][2].cors := [166,102]
+
+		this.portalsCors[13] := []
+		this.portalsCors[13][1] := {}
+		this.portalsCors[13][1].map := 12
+		this.portalsCors[13][1].cors := [16,102]
+		this.portalsCors[13][2] := {}
+		this.portalsCors[13][2].map := 14
+		this.portalsCors[13][2].cors := [166,102]
+
+		this.portalsCors[14] := []
+		this.portalsCors[14][1] := {}
+		this.portalsCors[14][1].map := 12
+		this.portalsCors[14][1].cors := [16,16]
+		this.portalsCors[14][2] := {}
+		this.portalsCors[14][2].map := 13
+		this.portalsCors[14][2].cors := [166,16]
+
+		this.portalsCors[15] := []
+		this.portalsCors[15][1] := {}
+		this.portalsCors[15][1].map := 16
+		this.portalsCors[15][1].cors := [16,16]
+		this.portalsCors[15][2] := {}
+		this.portalsCors[15][2].map := 17
+		this.portalsCors[15][2].cors := [16,102]
+
+		this.portalsCors[16] := []
+		this.portalsCors[16][1] := {}
+		this.portalsCors[16][1].map := 18
+		this.portalsCors[16][1].cors := [16,166]
+		this.portalsCors[16][2] := {}
+		this.portalsCors[16][2].map := 15
+		this.portalsCors[16][2].cors := [166,102]
+
+		this.portalsCors[17] := []
+		this.portalsCors[17][1] := {}
+		this.portalsCors[17][1].map := 18
+		this.portalsCors[17][1].cors := [16,16]
+		this.portalsCors[17][2] := {}
+		this.portalsCors[17][2].map := 15
+		this.portalsCors[17][2].cors := [166,16]
+
+		this.portalsCors[18] := []
+		this.portalsCors[18][1] := {}
+		this.portalsCors[18][1].map := 16
+		this.portalsCors[18][1].cors := [166,16]
+		this.portalsCors[18][2] := {}
+		this.portalsCors[18][2].map := 17
+		this.portalsCors[18][2].cors := [166,102]
+
+		this.portalsCors[21] := []
+		this.portalsCors[21][1] := {}
+		this.portalsCors[21][1].map := 22
+		this.portalsCors[21][1].cors := [16,102]
+
+		this.portalsCors[22] := []
+		this.portalsCors[22][1] := {}
+		this.portalsCors[22][1].map := 23
+		this.portalsCors[22][1].cors := [16,102]
+		this.portalsCors[22][2] := {}
+		this.portalsCors[22][2].map := 24
+		this.portalsCors[22][2].cors := [166,16]
+
+		this.portalsCors[23] := []
+		this.portalsCors[23][1] := {}
+		this.portalsCors[23][1].map := 22
+		this.portalsCors[23][1].cors := [166,16]
+		this.portalsCors[23][2] := {}
+		this.portalsCors[23][2].map := 24
+		this.portalsCors[23][2].cors := [166,102]
+
+		this.portalsCors[24] := []
+		this.portalsCors[24][1] := {}
+		this.portalsCors[24][1].map := 22
+		this.portalsCors[24][1].cors := [16,16]
+		this.portalsCors[24][2] := {}
+		this.portalsCors[24][2].map := 23
+		this.portalsCors[24][2].cors := [166,16]
+
+		this.portalsCors[25] := []
+		this.portalsCors[25][1] := {}
+		this.portalsCors[25][1].map := 26
+		this.portalsCors[25][1].cors := [16,16]
+		this.portalsCors[25][2] := {}
+		this.portalsCors[25][2].map := 27
+		this.portalsCors[25][2].cors := [166,16]
+
+		this.portalsCors[26] := []
+		this.portalsCors[26][1] := {}
+		this.portalsCors[26][1].map := 25
+		this.portalsCors[26][1].cors := [16,102]
+		this.portalsCors[26][2] := {}
+		this.portalsCors[26][2].map := 25
+		this.portalsCors[26][2].cors := [166,16]
+
+		this.portalsCors[27] := []
+		this.portalsCors[27][1] := {}
+		this.portalsCors[27][1].map := 25
+		this.portalsCors[27][1].cors := [16,102]
+		this.portalsCors[27][2] := {}
+		this.portalsCors[27][2].map := 28
+		this.portalsCors[27][2].cors := [166,16]
+
+		this.portalsCors[28] := []
+		this.portalsCors[28][1] := {}
+		this.portalsCors[28][1].map := 26
+		this.portalsCors[28][1].cors := [16,102]
+		this.portalsCors[28][2] := {}
+		this.portalsCors[28][2].map := 27
+		this.portalsCors[28][2].cors := [166,102]
+
+		this.portalsCors[31] := []
+		this.portalsCors[31][1] := {}
+		this.portalsCors[31][1].map := 32
+		this.portalsCors[31][1].cors := [16,16]
+
+		this.portalsCors[32] := []
+		this.portalsCors[32][1] := {}
+		this.portalsCors[32][1].map := 33
+		this.portalsCors[32][1].cors := [166,16]
+		this.portalsCors[32][2] := {}
+		this.portalsCors[32][2].map := 34
+		this.portalsCors[32][2].cors := [16,16]
+
+		this.portalsCors[33] := []
+		this.portalsCors[33][1] := {}
+		this.portalsCors[33][1].map := 34
+		this.portalsCors[33][1].cors := [16,102]
+		this.portalsCors[33][2] := {}
+		this.portalsCors[33][2].map := 32
+		this.portalsCors[33][2].cors := [166,102]
+
+		this.portalsCors[34] := []
+		this.portalsCors[34][1] := {}
+		this.portalsCors[34][1].map := 32
+		this.portalsCors[34][1].cors := [166,102]
+		this.portalsCors[34][2] := {}
+		this.portalsCors[34][2].map := 33
+		this.portalsCors[34][2].cors := [166,16]
 
 		this.portalsCors[35] := []
 		this.portalsCors[35][1] := {}
@@ -128,9 +279,33 @@ class Minimap {
 	}
 
 	setRoutes() {
+		this.routes[11] := [11]
+		this.routes[12] := [11, 12]
+		this.routes[13] := [11, 12, 13]
+		this.routes[14] := [11, 12, 14]
+		this.routes[15] := [18, 17, 15]
+		this.routes[16] := [18, 16]
+		this.routes[17] := [18, 17]
+		this.routes[18] := [18]
+
+		this.routes[21] := [21]
+		this.routes[22] := [21, 22]
+		this.routes[23] := [21, 22, 23]
+		this.routes[24] := [21, 22, 24]
+		this.routes[25] := [28, 27, 25]
+		this.routes[26] := [28, 26]
+		this.routes[27] := [28, 27]
+		this.routes[28] := [28]
+
+		this.routes[31] := [31]
+		this.routes[32] := [31, 32]
+		this.routes[33] := [31, 32, 33]
+		this.routes[34] := [31, 32, 34]
 		this.routes[35] := [38, 37, 35]
 		this.routes[36] := [38, 36]
 		this.routes[37] := [38, 37]
+		this.routes[38] := [38]
+
 	}
 
 	generateRoute() {

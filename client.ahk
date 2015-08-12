@@ -166,16 +166,16 @@ class Client {
 	}
 
 	openCorsSetter() {
-		TrayTip, Set Client coors, Put the cursor on the TOP of the game and press F3
-		KeyWait, F3, D
+		TrayTip, Set Client coors, Put the cursor on the TOP of the game and press F6
+		KeyWait, F6, D
 
 
 		MouseGetPos, corsX, corsY
 		this.boxCors.x1 := 0
 		this.boxCors.y1 := corsY
 
-		TrayTip, Set Client coors, Put the cursor on the BOTTOM of the game and press F4
-		KeyWait, F4, D
+		TrayTip, Set Client coors, Put the cursor on the BOTTOM of the game and press F7
+		KeyWait, F7, D
 
 		MouseGetPos, corsX, corsY
 		this.boxCors.x2 := A_ScreenWidth

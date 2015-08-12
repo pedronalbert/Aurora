@@ -15,7 +15,7 @@ Gui:
 	Gui, Add, Tab, w300 h450 Center, Basic Settings|Advanced Settings
 
 	Gui, Add, Text, xp80 yp+40, Map:
-	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 35|36|37|38
+	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 11|12|13|14|15|16|17|18|21|22|23|24|25|26|27|28|31|32|33|34|35|36|37|38
 
 	Gui, Add, Text, x70 yp+40, Revive On:
 	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_ReviveMode Choose1", PORTAL|BASE
@@ -36,7 +36,7 @@ Gui:
 	Gui, Add, Text,x60 yp+20 ,% "Coors   Top: " userConfig.client.top " Bottom: " userConfig.client.bottom
 	Gui, Add, Button, x90 yp+20 w150 gReconfigClient, Set Client Coors
 
-	Gui, Add, Button, x60 yp+70 w200 h30 gInitCollect, Iniciar Recoleccion
+	Gui, Add, Button, x60 yp+70 w200 h30 gInitCollect, Init Collect
 
 	; ---------- Tab2 ----------------
 
@@ -50,7 +50,7 @@ Gui:
 	Gui, Add, Text, x40 yp40, Invisible Checker (ms)
 	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_InvisibleCheckTime, % userConfig.invisibleSystem.checkTime
 
-	Gui, Show, , DarkOrbit Bot by pedronalbert
+	Gui, Show, , AuroraBot by @pedronalbert
 Return
 
 ;---------------------------------------------------
