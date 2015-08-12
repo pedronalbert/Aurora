@@ -48,22 +48,21 @@ class System {
 
 				if (Ship.isDead()) {
 					this.stopCheckTimers()
-					reviveModeUsed := Ship.revive()
+					reviveModeUsed := Ship.revive(this.reviveMode)
 					
-					if (reviveModeUsed := "BASE") {
+					if (reviveModeUsed = "BASE") {
 						this.setState("FinishRepair_Next_GenerateRoute", 1)
 					} else {
 						this.setState("FinishRepair_Next_FindBonusBox_SetTimers", 1)
 					}
 				}
-
-
 				; ------------------------ STATES -------------------------------------
 
 				if (this.state = "FindBonusBox") {
 					bonusBox := this.findBonusBox()
 
 					if (isObject(bonusBox)) {
+						OutputDebug, % "Bonus box find x: " bonusBox[1] " y: " bonusBox[2]
 						if (Ship.isMoving()) {
 							Ship.approach(bonusBox)
 							Sleep, 100
@@ -81,13 +80,9 @@ class System {
 					}
 				}
 
-				if (this.state = "ApproachingToBonusBox") {
+				if (this.state = "ApproachingToBonusBox") { 
 					if (!Ship.isMoving()) {
 						this.setState("FindBonusBox")
-					} else {
-						if (this.stateSeconds > 3) {
-							this.setState("FindBonusBox")
-						}
 					}
 				}
 
@@ -173,6 +168,7 @@ class System {
 						this.setState("GoToNextPortal", 1)
 					}
 				}
+
 
 			} else {
 				break

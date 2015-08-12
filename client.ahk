@@ -28,7 +28,6 @@ class Client {
 		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
 
 		if (ErrorLevel = 0) {
-			MouseMove, x, y, 10 
 			return [x, y]
 		} else {
 

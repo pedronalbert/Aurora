@@ -122,19 +122,17 @@ class Ship {
 		lastCollectX := this.lastCollectCors[1]
 		lastCollectY := this.lastCollectCors[2]
 
-		if ( (cors[1] >= (lastCollectX - 5)) and (cors[1] <= (lastCollectX + 5)) ) {
-			if ( (cors[2] >= (lastCollectY - 5)) and (cors[2] <= (lastCollectY + 5)) ) {
+		if ( (cors[1] >= (lastCollectX - 5)) and (cors[1] <= (lastCollectX + 5)) and (cors[2] >= (lastCollectY - 5)) and (cors[2] <= (lastCollectY + 5))) {
 				this.goAway()
-			}
 		} else {
 			this.lastCollectCors := cors
 			MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
 		}
 	}
 
-	goAway(time := 3000) {
-		this.moveRandom()
-		Sleep, time
+	goAway() {
+		Minimap.moveRandom()
+		Sleep, 3000
 	}
 
 	/*
@@ -142,10 +140,8 @@ class Ship {
 	 * @param {string} mode - BASE | PORTAL | HERE
 	 * @return {string} mode used
 	*/
-	revive() {
+	revive(mode) {
 		MouseMove, 0, 0 , 0 ;move mouse away 
-		
-		mode := System.reviveMode
 
 		if (mode = "BASE") {
 			image := "repair_base"
@@ -197,10 +193,10 @@ class Ship {
 		if (cloackCors) {
 			PixelGetColor, color, corsX - 2, corsY + 2
 
-			if (color = "0x68B8C8") {
-				return true
-			} else {
+			if (color = "0x846B29") {
 				return false
+			} else {
+				return true
 			}
 		} else {
 			return true
@@ -208,13 +204,10 @@ class Ship {
 	}
 
 	setInvisible()  {
-		cloacksCors := this.getCloackCors()
+		cloackCors := Client.getCloackCors()
 
-		corsX := cloacksCors[1]
-		corsY := cloacksCors[2]
-
-		if (cloackCors) {
-			MouseClick, Left, corsX + 10, corsY + 10, 1, 5
+		if (isObject(cloackCors)) {
+			MouseClick, % cloackCors[1], % cloackCors[2], 1, 0
 		}
 	}
 }
