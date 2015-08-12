@@ -26,7 +26,7 @@ Gui:
 	Gui, Add, Text,x60 yp+25, Shield (`%)
 	Gui, Add, Slider, xp+50 yp-1 Range1-99 ToolTipRight vEscapeSystem_Shield,% userConfig.escapeSystem_Shield
 
-	Gui, Add, GroupBox, x40 yp+50 w240 h65, Invisible System
+	Gui, Add, GroupBox, x40 yp+50 w240 h65, AutoCloack System
 	Gui, Add, Text,x60 yp+20, Activate
 	Gui, Add, Checkbox,% "xp+50 yp vInvisibleSystem_Activated Checked" userConfig.invisibleSystem_Activated
 	Gui, Add, Text,x60 yp+20, CPU

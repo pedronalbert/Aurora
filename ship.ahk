@@ -207,7 +207,7 @@ class Ship {
 		cloackCors := Client.getCloackCors()
 
 		if (isObject(cloackCors)) {
-			MouseClick, % cloackCors[1], % cloackCors[2], 1, 0
+			MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 2, 5
 		}
 	}
 }
