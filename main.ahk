@@ -10,7 +10,7 @@ CoordMode, Mouse, Screen
 
 Gui:
 	userConfig := getUserConfigIni()
-	Client.setCors(userConfig.clientTop, userConfig.clientBottom)
+	Client.setCors(userConfig.client.top, userConfig.client.bottom)
 
 	Gui, Add, Tab, w300 h450 Center, Basic Settings|Advanced Settings
 
@@ -22,18 +22,18 @@ Gui:
 
 	Gui, Add, GroupBox, x40 yp+30 w240 h85, Escape System
 	Gui, Add, Text,x60 yp+20, Activate
-	Gui, Add, Checkbox,% "xp+50 yp vEscapeSystem_Activated Checked" userConfig.escapeSystem_Activated
+	Gui, Add, Checkbox,% "xp+50 yp vEscapeSystem_Activated Checked" userConfig.escapeSystem.activated
 	Gui, Add, Text,x60 yp+25, Shield (`%)
-	Gui, Add, Slider, xp+50 yp-1 Range1-99 ToolTipRight vEscapeSystem_Shield,% userConfig.escapeSystem_Shield
+	Gui, Add, Slider, xp+50 yp-1 Range1-99 ToolTipRight vEscapeSystem_Shield,% userConfig.escapeSystem.shield
 
 	Gui, Add, GroupBox, x40 yp+50 w240 h65, AutoCloack System
 	Gui, Add, Text,x60 yp+20, Activate
-	Gui, Add, Checkbox,% "xp+50 yp vInvisibleSystem_Activated Checked" userConfig.invisibleSystem_Activated
+	Gui, Add, Checkbox,% "xp+50 yp vInvisibleSystem_Activated Checked" userConfig.invisibleSystem.activated
 	Gui, Add, Text,x60 yp+20, CPU
 	Gui, Add, DropDownList,% "w50 yp-1 xp+50 vInvisibleSystem_Cpu Choose1", 10|50
 
 	Gui, Add, GroupBox, x40 yp+40 w240 h80, Client Coors 
-	Gui, Add, Text,x60 yp+20 ,% "Coors   Top: " userConfig.clientTop " Bottom: " userConfig.clientBottom
+	Gui, Add, Text,x60 yp+20 ,% "Coors   Top: " userConfig.client.top " Bottom: " userConfig.client.bottom
 	Gui, Add, Button, x90 yp+20 w150 gReconfigClient, Set Client Coors
 
 	Gui, Add, Button, x60 yp+70 w200 h30 gInitCollect, Iniciar Recoleccion
@@ -42,13 +42,13 @@ Gui:
 
 	Gui, Tab, 2
 	Gui, Add, Text, x40 y60, Bonus Box Shader
-	Gui, Add, Slider, xp+120 yp-3 Range1-50 ThickInterval1 Thick18 ToolTipRight vSystem_BonusBoxShader, % userConfig.system_BonusBoxShader
+	Gui, Add, Slider, xp+120 yp-3 Range1-50 ThickInterval1 Thick18 ToolTipRight vSystem_BonusBoxShader, % userConfig.system.bonusBoxShader
 
 	Gui, Add, Text, x40 yp50, Damage Checker (ms)
-	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_DamageCheckTime, % userConfig.system_DamageCheckTime
+	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_DamageCheckTime, % userConfig.system.damageCheckTime
 
 	Gui, Add, Text, x40 yp40, Invisible Checker (ms)
-	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_InvisibleCheckTime, % userConfig.invisibleSystem_CheckTime
+	Gui, Add, Edit, xp+130 yp-3 w60 vSystem_InvisibleCheckTime, % userConfig.invisibleSystem.checkTime
 
 	Gui, Show, , DarkOrbit Bot by pedronalbert
 Return
@@ -106,28 +106,32 @@ updateUserConfigIni() {
 
 getUserConfigIni() {
 	userConfig := {}
+  userConfig.system := {}
+  userConfig.invisibleSystem := {}
+  userConfig.client := {}
+  userConfig.escapeSystem := {}
 
-	IniRead, System_BonusBoxShader, config.ini, System, BonusBoxShader
-	IniRead, System_ReviveMode, config.ini, System, ReviveMode
-	IniRead, System_DamageCheckTime, config.ini, System, DamageCheckTime
-	IniRead, EscapeSystem_Activated, config.ini, EscapeSystem, Activated
-	IniRead, EscapeSystem_Shield, config.ini, EscapeSystem, Shield
-	IniRead, InvisibleSystem_Activated, config.ini, InvisibleSystem, Activated
-	IniRead, InvisibleSystem_CheckTime, config.ini, InvisibleSystem, CheckTime
-	IniRead, InvisibleSystem_Cpu, config.ini, InvisibleSystem, Cpu
-	IniRead, ClientTop, config.ini, Client, Top
-	IniRead, ClientBottom, config.ini, Client, Bottom
+  IniRead, System_BonusBoxShader, config.ini, System, BonusBoxShader
+  IniRead, System_ReviveMode, config.ini, System, ReviveMode
+  IniRead, System_DamageCheckTime, config.ini, System, DamageCheckTime
+  IniRead, EscapeSystem_Activated, config.ini, EscapeSystem, Activated
+  IniRead, EscapeSystem_Shield, config.ini, EscapeSystem, Shield
+  IniRead, InvisibleSystem_Activated, config.ini, InvisibleSystem, Activated
+  IniRead, InvisibleSystem_CheckTime, config.ini, InvisibleSystem, CheckTime
+  IniRead, InvisibleSystem_Cpu, config.ini, InvisibleSystem, Cpu
+  IniRead, ClientTop, config.ini, Client, Top
+  IniRead, ClientBottom, config.ini, Client, Bottom
 
-	userConfig.system_BonusBoxShader := System_BonusBoxShader
-	userConfig.system_ReviveMode := System_ReviveMode
-	userConfig.system_DamageCheckTime := System_DamageCheckTime
-	userConfig.escapeSystem_Activated := EscapeSystem_Activated
-	userConfig.escapeSystem_Shield := EscapeSystem_Shield
-	userConfig.invisibleSystem_Activated := InvisibleSystem_Activated
-	userConfig.invisibleSystem_CheckTime := InvisibleSystem_CheckTime
-	userConfig.invisibleSystem_Cpu := InvisibleSystem_Cpu
-	userConfig.clientTop := ClientTop
-	userConfig.clientBottom := ClientBottom
+  userConfig.system.bonusBoxShader := System_BonusBoxShader
+	userConfig.system.reviveMode := System_ReviveMode
+	userConfig.system.damageCheckTime := System_DamageCheckTime
+	userConfig.escapeSystem.activated := EscapeSystem_Activated
+	userConfig.escapeSystem.shield := EscapeSystem_Shield
+	userConfig.invisibleSystem.activated := InvisibleSystem_Activated
+	userConfig.invisibleSystem.checkTime := InvisibleSystem_CheckTime
+	userConfig.invisibleSystem.cpu := InvisibleSystem_Cpu
+	userConfig.client.top := ClientTop
+	userConfig.client.bottom := ClientBottom
 
 	return userConfig
 }
