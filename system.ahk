@@ -40,7 +40,6 @@ class System {
 
 		Loop {
 			if (this.state <> "Pause") {
-				Ship.updateStats()
 
 				if (Client.isDisconnect()) { ;Disconnect screen
 					Client.connect()
@@ -217,8 +216,8 @@ class System {
 		return
 
 		damageCheck:
-			shieldPercent := Ship.shieldPercent
-			healPercent := Ship.healPercent
+			shieldPercent := Ship.getShieldPercent()
+			healPercent := Ship.getHealPercent()
 
 			if (healPercent > 0) { ;no puede estar muerto
 				if (shieldPercent < System.escapeShield) {

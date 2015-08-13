@@ -36,12 +36,7 @@ class Ship {
 		}
 	}
 
-	updateStats() {
-		this.updateHealPercent()
-		this.updateShieldPercent()
-	}
-
-	updateHealPercent() {
+	getHealPercent() {
 		this.healPercent := 0
 
 		healBarsCorsX := this.statsBoxCors.x1 + 27
@@ -55,9 +50,11 @@ class Ship {
 				this.healPercent += this.percentPerBar
 		}
 
+		return this.healPercent
+
 	}
 
-	updateShieldPercent() {
+	getShieldPercent() {
 		this.shieldPercent := 0
 		shieldBarsCorsX := this.statsBoxCors.x1 + 27
 		shieldBarsCorsY := this.statsBoxCors.y1 + 63
@@ -70,6 +67,8 @@ class Ship {
 			if ErrorLevel = 0
 				this.shieldPercent += this.percentPerBar
 		}
+
+		return this.shieldPercent
 	}
 
 	isMoving() {
