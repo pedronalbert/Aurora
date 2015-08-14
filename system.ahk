@@ -86,20 +86,21 @@ class System {
 
 						this.setState("EscapingToPortal_Next_BackToMap", 1)
 					}
-				}
-
-				if (this.state ="EscapingToPortal_Next_BackToMap") {
-					if (this.isInNewMap()) {
-						this.lastShipCors := Minimap.getShipCors()
-						Sleep, 1000
-						Send {j}
-						this.setState("BackingToMap", 1)
-					}
 
 					if (Ship.getShieldPercent() <= 10) {
 						Ship.changeConfig()
 						Sleep, 500
 					}
+        }
+
+        if (this.state ="EscapingToPortal_Next_BackToMap") {
+          if (this.isInNewMap()) {
+            this.lastShipCors := Minimap.getShipCors()
+            Sleep, 1000
+            Send {j}
+            this.setState("BackingToMap", 1)
+          }
+
 				}
 
 				if (this.state = "BackingToMap") {
@@ -113,8 +114,8 @@ class System {
 						Ship.changeConfig()
 						Sleep, 500
 
-						if (Ship.getShieldPercent() >= this.escapeShield) {
-							if (Ship.getHealPercent() >= this.healToRepair) {
+						if (Ship.getShieldPercent() >= 95) {
+							if (Ship.getHealPercent() >= 95) {
 								this.statePriority := 0
 								this.setState("FindBonusBox")
 							}
@@ -123,19 +124,33 @@ class System {
 				}
 
 				if (this.state = "FinishRepair_Next_FindBonusBox_SetTimers") {
-					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
-						this.setCheckTimers()
-						this.statePriority := 0
-						this.setState("FindBonusBox")
-					}
+					if (Ship.getShieldPercent() >= 95) {
+            Ship.changeConfig()
+            Sleep, 500
+
+            if (Ship.getShieldPercent() >= 95) {
+              if (Ship.getHealPercent() >= 95) {
+                this.setCheckTimers()
+                this.statePriority := 0
+                this.setState("FindBonusBox")
+              }
+            }
+          }
 				}
 
 				if (this.state = "FinishRepair_Next_GenerateRoute" ) {
-					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
-						this.setCheckTimers()
-						Minimap.generateRoute()
-						this.setState("GoToNextPortal", 1)
-					}
+          if (Ship.getShieldPercent() >= 95) {
+            Ship.changeConfig()
+            Sleep, 500
+
+            if (Ship.getShieldPercent() >= 95) {
+              if (Ship.getHealPercent() >= 95) {
+                this.setCheckTimers()
+            Minimap.generateRoute()
+            this.setState("GoToNextPortal", 1)
+              }
+            }
+          }
 				}
 
 				if (this.state = "GoToNextPortal") {
