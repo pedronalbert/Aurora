@@ -40,21 +40,6 @@ class System {
 
 		Loop {
 			if (this.state <> "Pause") {
-
-				if (Client.isDisconnect()) { ;Disconnect screen
-					Client.connect()
-				}
-
-				if (Ship.isDead()) {
-					this.stopCheckTimers()
-					reviveModeUsed := Ship.revive(this.reviveMode)
-					
-					if (reviveModeUsed = "BASE") {
-						this.setState("FinishRepair_Next_GenerateRoute", 1)
-					} else {
-						this.setState("FinishRepair_Next_FindBonusBox_SetTimers", 1)
-					}
-				}
 				; ------------------------ STATES -------------------------------------
 
 				if (this.state = "FindBonusBox") {
@@ -68,7 +53,7 @@ class System {
 							this.setState("ApproachingToBonusBox")
 						} else {
 							Ship.collect(bonusBox)
-							Sleep, 100
+							Sleep, 300
 							this.setState("CollectingBonusBox")
 						}
 					} else {
@@ -88,7 +73,7 @@ class System {
 				if (this.state = "CollectingBonusBox") {
 					if (!Ship.isMoving()) {
 						this.bonusBoxCollected++
-						Sleep, 100
+						Sleep, 300
 						this.setState("FindBonusBox")
 					}
 				}
@@ -110,6 +95,11 @@ class System {
 						Send {j}
 						this.setState("BackingToMap", 1)
 					}
+
+					if (Ship.getShieldPercent() <= 10) {
+						Ship.changeConfig()
+						Sleep, 500
+					}
 				}
 
 				if (this.state = "BackingToMap") {
@@ -119,9 +109,16 @@ class System {
 				}
 
 				if (this.state = "FinishRepair_Next_FindBonusBox") {
-					if (Ship.healPercent >= this.healToRepair and Ship.shieldPercent >= this.escapeShield) {
-						this.statePriority := 0
-						this.setState("FindBonusBox")
+					if (Ship.getShieldPercent() >= this.escapeShield) {
+						Ship.changeConfig()
+						Sleep, 500
+
+						if (Ship.getShieldPercent() >= this.escapeShield) {
+							if (Ship.getHealPercent() >= this.healToRepair) {
+								this.statePriority := 0
+								this.setState("FindBonusBox")
+							}
+						}
 					}
 				}
 
@@ -207,6 +204,9 @@ class System {
 			SetTimer, damageCheck, % this.damageCheckTime
 		}
 
+    SetTimer, disconnectCheck, 5000
+    SetTimer, deadCheck, 5000
+
 		return
 
 		invisibleCheck:
@@ -225,6 +225,25 @@ class System {
 				}
 			}
 		return
+
+    disconnectCheck:
+      if (Client.isDisconnect()) {
+        Client.connect()
+      }
+    return
+
+    deadCheck:
+      if (Ship.isDead()) {
+        System.stopCheckTimers()
+        reviveModeUsed := Ship.revive(System.reviveMode)
+        
+        if (reviveModeUsed = "BASE") {
+          System.setState("FinishRepair_Next_GenerateRoute", 1)
+        } else {
+          System.setState("FinishRepair_Next_FindBonusBox_SetTimers", 1)
+        }
+      }
+    return
 	}
 
 	stopCheckTimers() {

@@ -210,4 +210,8 @@ class Ship {
 			MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 2, 5
 		}
 	}
+
+	changeConfig() {
+		Send {c}
+	}
 }
