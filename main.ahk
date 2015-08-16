@@ -12,13 +12,16 @@ Gui:
 	userConfig := getUserConfigIni()
 	Client.setCors(userConfig.client.top, userConfig.client.bottom)
 
-	Gui, Add, Tab, w300 h450 Center, Basic Settings|Advanced Settings
+	Gui, Add, Tab, w300 h480 Center, Basic Settings|Advanced Settings
 
 	Gui, Add, Text, xp80 yp+40, Map:
 	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 11|12|13|14|15|16|17|18|21|22|23|24|25|26|27|28|31|32|33|34|35|36|37|38
 
 	Gui, Add, Text, x70 yp+40, Revive On:
 	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_ReviveMode Choose1", PORTAL|BASE
+
+	Gui, Add, Text, x70 yp+40, Move mode:
+	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_MoveMode Choose1", RANDOM|COMPLETE
 
 	Gui, Add, GroupBox, x40 yp+30 w240 h85, Escape System
 	Gui, Add, Text,x60 yp+20, Activate
@@ -146,6 +149,7 @@ setSystemConfig() {
 	GuiControlGet, System_BonusBoxShader
 	GuiControlGet, System_DamageCheckTime
 	GuiControlGet, System_ReviveMode
+	GuiControlGet, System_MoveMode
 
 	System.escapeActivated := EscapeSystem_Activated
 	System.escapeShield := EscapeSystem_Shield
@@ -156,4 +160,5 @@ setSystemConfig() {
 	System.invisibleCpu := InvisibleSystem_Cpu
 	System.bonusBoxShader := System_BonusBoxShader
 	System.map := Map
+	System.moveMode := System_MoveMode
 }

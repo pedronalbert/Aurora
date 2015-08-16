@@ -131,7 +131,7 @@ class Ship {
 	}
 
 	goAway() {
-		Minimap.moveRandom()
+		Minimap.move()
 		Sleep, 3000
 	}
 
@@ -140,7 +140,7 @@ class Ship {
 	 * @param {string} mode - BASE | PORTAL | HERE
 	 * @return {string} mode used
 	*/
-	revive(mode) {
+	revive(mode := "BASE") {
 		MouseMove, 0, 0 , 0 ;move mouse away 
 
 		if (mode = "BASE") {
@@ -214,4 +214,5 @@ class Ship {
 	changeConfig() {
 		Send {c}
 	}
+
 }

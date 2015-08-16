@@ -64,7 +64,7 @@ class Client {
 			if (this.isConnected()) {
 				return true
 			} else if (Ship.isDead()) {
-				Ship.revive()
+				return true
 			}
 			else {
 				Sleep, 1000

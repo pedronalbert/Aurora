@@ -7,14 +7,18 @@ class Minimap {
 	static portalsCors := []
 	static pixelEquivalentX := 1.112299465
 	static pixelEquivalentY := 1.18360869565217
-	static routes := []
-	static routePosition :=
-	static route :=
+	static backToMapRoutes := []
+	static backToMapRoutePosition :=
+	static backToMapRoute :=
+	static searchPointFlag := 1
+	static searchPoints := []
+	static searchPointBreak := []
 
 	init() {
 		if (this.setBoxCors()) {
 			this.setPortalsCors()
 			this.setRoutes()
+			this.setSearchPoints()
 			OutputDebug, % "Minimap is Ready!"
 			return true
 		} else {
@@ -43,6 +47,34 @@ class Minimap {
 		}
 	}
 
+	setSearchPoints() {
+		this.searchPoints[1] := [36, 2]
+		this.searchPoints[2] := [36, 110]
+		this.searchPoints[3] := [53, 110]
+		this.searchPoints[4] := [53, 2]
+		this.searchPoints[5] := [72, 2]
+		this.searchPoints[6] := [72, 110]
+		this.searchPoints[7] := [90, 110]
+		this.searchPoints[8] := [90, 2]
+		this.searchPoints[9] := [108, 2]
+		this.searchPoints[10] := [108, 110]
+		this.searchPoints[11] := [126, 110]
+		this.searchPoints[12] := [126, 2]
+		this.searchPoints[13] := [144, 2]
+		this.searchPoints[14] := [144, 110]
+		this.searchPoints[15] := [136, 110]
+		this.searchPoints[16] := [136, 2]
+		this.searchPoints[17] := [118, 2]
+		this.searchPoints[18] := [118, 110]
+		this.searchPoints[19] := [99, 110]
+		this.searchPoints[20] := [99, 2]
+		this.searchPoints[21] := [81, 2]
+		this.searchPoints[22] := [81, 110]
+		this.searchPoints[23] := [63, 110]
+		this.searchPoints[24] := [63, 2]
+		this.searchPoints[25] := [44, 2]
+	}
+
 	getShipCors() {
 		x := this.availableBoxCors.x1 + 96
 		y := this.availableBoxCors.y2 + 58
@@ -57,6 +89,12 @@ class Minimap {
 	
 		if (ErrorLevel = 0) {
 			y := corsY
+		} else {
+			ImageSearch, corsX, corsY, this.availableBoxCors.x1, this.availableBoxCors.y1, this.availableBoxCors.x2, this.availableBoxCors.y2, *8 ./img/minimap_arrow.bmp
+	
+			if (ErrorLevel = 0) {
+				y := corsY + 6
+			}
 		}
 
 		cors := [x - this.availableBoxCors.x1, y - this.availableBoxCors.y1]
@@ -67,11 +105,19 @@ class Minimap {
 
 	goTo(cors) {
 
-		cors[1] += this.availableBoxCors.x1
-		cors[2] += this.availableBoxCors.y1
+		x := cors[1] + this.availableBoxCors.x1
+		y := cors[2] + this.availableBoxCors.y1
 
-		MouseClick, Left,% cors[1], % cors[2], 1 , 0
+		MouseClick, Left, x, y, 1 , 0
 
+	}
+
+	move() {
+		if (System.moveMode = "RANDOM") {
+			this.moveRandom()
+		} else {
+			this.moveNextFlag()
+		}
 	}
 
 	moveRandom() {
@@ -279,43 +325,43 @@ class Minimap {
 	}
 
 	setRoutes() {
-		this.routes[11] := [11]
-		this.routes[12] := [11, 12]
-		this.routes[13] := [11, 12, 13]
-		this.routes[14] := [11, 12, 14]
-		this.routes[15] := [18, 17, 15]
-		this.routes[16] := [18, 16]
-		this.routes[17] := [18, 17]
-		this.routes[18] := [18]
+		this.backToMapRoutes[11] := [11]
+		this.backToMapRoutes[12] := [11, 12]
+		this.backToMapRoutes[13] := [11, 12, 13]
+		this.backToMapRoutes[14] := [11, 12, 14]
+		this.backToMapRoutes[15] := [18, 17, 15]
+		this.backToMapRoutes[16] := [18, 16]
+		this.backToMapRoutes[17] := [18, 17]
+		this.backToMapRoutes[18] := [18]
 
-		this.routes[21] := [21]
-		this.routes[22] := [21, 22]
-		this.routes[23] := [21, 22, 23]
-		this.routes[24] := [21, 22, 24]
-		this.routes[25] := [28, 27, 25]
-		this.routes[26] := [28, 26]
-		this.routes[27] := [28, 27]
-		this.routes[28] := [28]
+		this.backToMapRoutes[21] := [21]
+		this.backToMapRoutes[22] := [21, 22]
+		this.backToMapRoutes[23] := [21, 22, 23]
+		this.backToMapRoutes[24] := [21, 22, 24]
+		this.backToMapRoutes[25] := [28, 27, 25]
+		this.backToMapRoutes[26] := [28, 26]
+		this.backToMapRoutes[27] := [28, 27]
+		this.backToMapRoutes[28] := [28]
 
-		this.routes[31] := [31]
-		this.routes[32] := [31, 32]
-		this.routes[33] := [31, 32, 33]
-		this.routes[34] := [31, 32, 34]
-		this.routes[35] := [38, 37, 35]
-		this.routes[36] := [38, 36]
-		this.routes[37] := [38, 37]
-		this.routes[38] := [38]
+		this.backToMapRoutes[31] := [31]
+		this.backToMapRoutes[32] := [31, 32]
+		this.backToMapRoutes[33] := [31, 32, 33]
+		this.backToMapRoutes[34] := [31, 32, 34]
+		this.backToMapRoutes[35] := [38, 37, 35]
+		this.backToMapRoutes[36] := [38, 36]
+		this.backToMapRoutes[37] := [38, 37]
+		this.backToMapRoutes[38] := [38]
 
 	}
 
 	generateRoute() {
-		this.route :=  this.routes[System.map]
-		this.routePosition := 1
+		this.backToMapRoute :=  this.backToMapRoutes[System.map]
+		this.backToMapRoutePosition := 1
 	}
 
 	goToNextPortal() {
-		nextMap := this.route[this.routePosition + 1]
-		actualMap := this.route[this.routePosition]
+		nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
+		actualMap := this.backToMapRoute[this.backToMapRoutePosition]
 
 		OutputDebug, % "next map: " nextMap " actual map: " actualMap
 
@@ -327,7 +373,7 @@ class Minimap {
 			for k, portal in this.portalsCors[actualMap] {
 				if (portal.map = nextMap) {
 					this.goTo(portal.cors)
-					this.routePosition++
+					this.backToMapRoutePosition++
 
 					return true
 				}
@@ -365,4 +411,27 @@ class Minimap {
 		return cors
 	}
 
+	moveNextFlag() {
+		shipCors := this.getShipCors()
+		pointToGo := this.searchPoints[this.searchPointFlag]
+
+		if ((shipCors[1] >= (pointToGo[1] - 2)) and  (shipCors[1] <= (pointToGo[1] + 2)) and (shipCors[2] >= (pointToGo[2] - 3)) and (shipCors[2] <= (pointToGo[2] + 3))) {
+			;Move to next point
+			if (this.searchPointFlag = 25) {
+				this.searchPointFlag := 1
+			} else {
+				this.searchPointFlag++
+			}
+
+		} 
+
+		Random, variationX, 0, 2
+		Random, variationY, 0, 2
+
+		cors := []
+		cors[1] := this.searchPoints[this.searchPointFlag][1] + variationX
+		cors[2] := this.searchPoints[this.searchPointFlag][2] + variationY
+
+		this.goTo(cors)
+	}
 }

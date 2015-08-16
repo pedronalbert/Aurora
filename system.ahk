@@ -22,6 +22,8 @@ class System {
 	static damageCheckTime :=
 	static map := 
 	static reviveMode :=
+  static escapePortal := []
+  static moveMode :=
 
 
 	isReady() {
@@ -58,7 +60,7 @@ class System {
 						}
 					} else {
 						if (!Ship.isMoving()) {
-							Minimap.moveRandom()
+							Minimap.move()
 							Sleep, 100
 						}
 					}
@@ -79,6 +81,9 @@ class System {
 				}
 
 				if (this.state = "GoToPortalForEscape") {
+          Minimap.goTo(this.escapePortal)
+          Sleep, 200
+
 					if (!Ship.isMoving()) {
 						this.lastShipCors := Minimap.getShipCors()
 						Sleep, 1000
@@ -87,7 +92,7 @@ class System {
 						this.setState("EscapingToPortal_Next_BackToMap", 1)
 					}
 
-					if (Ship.getShieldPercent() <= 10) {
+					if (Ship.getShieldPercent() <= 15) {
 						Ship.changeConfig()
 						Sleep, 500
 					}
@@ -110,13 +115,14 @@ class System {
 				}
 
 				if (this.state = "FinishRepair_Next_FindBonusBox") {
-					if (Ship.getShieldPercent() >= this.escapeShield) {
+					if (Ship.getShieldPercent() >= 95) {
 						Ship.changeConfig()
-						Sleep, 500
+						Sleep, 2000
 
 						if (Ship.getShieldPercent() >= 95) {
 							if (Ship.getHealPercent() >= 95) {
 								this.statePriority := 0
+                this.setCheckTimers()
 								this.setState("FindBonusBox")
 							}
 						}
@@ -126,7 +132,7 @@ class System {
 				if (this.state = "FinishRepair_Next_FindBonusBox_SetTimers") {
 					if (Ship.getShieldPercent() >= 95) {
             Ship.changeConfig()
-            Sleep, 500
+            Sleep, 2000
 
             if (Ship.getShieldPercent() >= 95) {
               if (Ship.getHealPercent() >= 95) {
@@ -141,13 +147,13 @@ class System {
 				if (this.state = "FinishRepair_Next_GenerateRoute" ) {
           if (Ship.getShieldPercent() >= 95) {
             Ship.changeConfig()
-            Sleep, 500
+            Sleep, 2000
 
             if (Ship.getShieldPercent() >= 95) {
               if (Ship.getHealPercent() >= 95) {
                 this.setCheckTimers()
-            Minimap.generateRoute()
-            this.setState("GoToNextPortal", 1)
+                Minimap.generateRoute()
+                this.setState("GoToNextPortal", 1)
               }
             }
           }
@@ -159,6 +165,7 @@ class System {
 						this.setState("WaitForNextPortal_Next_JumpToNewMap", 1)
 					} else {
 						this.statePriority := 0
+            this.setCheckTimers()
 						this.setState("FindBonusBox")
 					}
 				}
@@ -233,7 +240,6 @@ class System {
 		damageCheck:
 			shieldPercent := Ship.getShieldPercent()
 			healPercent := Ship.getHealPercent()
-
 			if (healPercent > 0) { ;no puede estar muerto
 				if (shieldPercent < System.escapeShield) {
 						System.escapeToPortal()
@@ -269,29 +275,16 @@ class System {
 	setState(state, priority := 0) {
 		if (priority >= this.statePriority) {
 			this.state := state
-			this.stateSeconds := -1
 			OutputDebug, % "State: " state " Priority: " priority
 
-			SetTimer, stateTimer, 1000
-
-			return 
-
-			stateTimer:
-				System.stateSeconds += 1
-			return
 		}
 	}
 
 	escapeToPortal() {
 		this.stopCheckTimers()
-
-		portalCors := Minimap.getNearPortalCors()
-
-		Minimap.goTo(portalCors)
-
-		Sleep, 100
-
-		this.setState("GoToPortalForEscape", 1)
+    portalCors := Minimap.getNearPortalCors()
+    this.escapePortal := portalCors
+    this.setState("GoToPortalForEscape", 1)
 	}
 
 	isInNewMap() {
