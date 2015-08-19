@@ -1,6 +1,7 @@
 #Include, ./client.ahk
 #Include, ./ship.ahk
 #Include, ./minimap.ahk
+#Include, ./pet.ahk
 /*
 	FindBonusBox
 	ApproachToBonusBox
@@ -24,10 +25,18 @@ class System {
 	static reviveMode :=
   static escapePortal := []
   static moveMode :=
+  static petActivated :=
 
 
 	isReady() {
 		if (Client.init() and Minimap.init() and Ship.init()) {
+      if (this.petActivated = 1) {
+        if (Pet.init()) {
+          return true
+        } else {
+          return false
+        }
+      }
 			return true
 		} else {
 			return false
@@ -195,7 +204,7 @@ class System {
 	}
 
 	pauseCollect() {
-		this.setState("Pause", 1)
+		this.setState("Pause", 3)
 		this.stopCheckTimers()
 		bonusBox := this.bonusBoxCollected
 
@@ -211,7 +220,13 @@ class System {
 
 			if (ErrorLevel = 0) {
 				return [corsX, corsY]
-			} 
+			} else {
+				ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, Client.searchBoxsSize[i].x2, Client.searchBoxsSize[i].y2 , *%shaderVariation% ./img/event_box.bmp
+
+				if (ErrorLevel = 0) {
+				  return [corsX, corsY]
+        }
+			}
 			i++
 		}
 		return false
@@ -225,6 +240,10 @@ class System {
 		if (this.escapeActivated = 1) {
 			SetTimer, damageCheck, % this.damageCheckTime
 		}
+
+    if (this.petActivated = 1) {
+      SetTimer, petCheck, 10000
+    }
 
     SetTimer, disconnectCheck, 5000
     SetTimer, deadCheck, 5000
@@ -265,11 +284,31 @@ class System {
         }
       }
     return
+
+    petCheck:
+      if (Pet.isDead()) {
+        Pet.repair()
+        Sleep, 1000
+      }
+
+      if (Pet.isPaused()) {
+        Pet.play()
+        Sleep, 1000
+      }
+
+      if (Pet.isPasive()) {
+        Pet.selectCollect()
+        Sleep, 1000
+      }
+    return
 	}
 
 	stopCheckTimers() {
 		SetTimer, invisibleCheck, Off
 		SetTimer, damageCheck, Off
+    SetTimer, petCheck, Off
+    SetTimer, deadCheck, Off
+    SetTimer, disconnectCheck, Off
 	}
 
 	setState(state, priority := 0) {

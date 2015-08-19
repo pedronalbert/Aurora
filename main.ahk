@@ -6,6 +6,7 @@ CoordMode, Mouse, Screen
 #Include, ./client.ahk
 #Include, ./ship.ahk
 #Include, ./system.ahk
+#Include, ./pet.ahk
 
 
 Gui:
@@ -23,7 +24,10 @@ Gui:
 	Gui, Add, Text, x70 yp+40, Move mode:
 	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_MoveMode Choose1", RANDOM|COMPLETE
 
-	Gui, Add, GroupBox, x40 yp+30 w240 h85, Escape System
+	Gui, Add, Text, x120 yp+30, PET:
+	Gui, Add, Checkbox,% "xp+30 yp vPetSystem_Activated Checked" userConfig.petSystem.activated
+
+	Gui, Add, GroupBox, x40 yp+20 w240 h85, Escape System
 	Gui, Add, Text,x60 yp+20, Activate
 	Gui, Add, Checkbox,% "xp+50 yp vEscapeSystem_Activated Checked" userConfig.escapeSystem.activated
 	Gui, Add, Text,x60 yp+25, Shield (`%)
@@ -39,7 +43,7 @@ Gui:
 	Gui, Add, Text,x60 yp+20 ,% "Coors   Top: " userConfig.client.top " Bottom: " userConfig.client.bottom
 	Gui, Add, Button, x90 yp+20 w150 gReconfigClient, Set Client Coors
 
-	Gui, Add, Button, x60 yp+70 w200 h30 gInitCollect, Init Collect
+	Gui, Add, Button, x60 yp+60 w200 h30 gInitCollect, Init Collect
 
 	; ---------- Tab2 ----------------
 
@@ -105,6 +109,7 @@ updateUserConfigIni() {
 	IniWrite, % System.reviveMode, config.ini, System, ReviveMode
 	IniWrite, % Client.boxCors.y1, config.ini, Client, Top
 	IniWrite, % Client.boxCors.y2, config.ini, Client, Bottom
+	IniWrite, % System.petActivated, config.ini, Pet, Activated
 }
 
 getUserConfigIni() {
@@ -113,6 +118,7 @@ getUserConfigIni() {
   userConfig.invisibleSystem := {}
   userConfig.client := {}
   userConfig.escapeSystem := {}
+  userConfig.petSystem := {}
 
   IniRead, System_BonusBoxShader, config.ini, System, BonusBoxShader
   IniRead, System_ReviveMode, config.ini, System, ReviveMode
@@ -124,6 +130,7 @@ getUserConfigIni() {
   IniRead, InvisibleSystem_Cpu, config.ini, InvisibleSystem, Cpu
   IniRead, ClientTop, config.ini, Client, Top
   IniRead, ClientBottom, config.ini, Client, Bottom
+  IniRead, PetSystem_Activated, config.ini Pet, Activated
 
   userConfig.system.bonusBoxShader := System_BonusBoxShader
 	userConfig.system.reviveMode := System_ReviveMode
@@ -135,6 +142,7 @@ getUserConfigIni() {
 	userConfig.invisibleSystem.cpu := InvisibleSystem_Cpu
 	userConfig.client.top := ClientTop
 	userConfig.client.bottom := ClientBottom
+	userConfig.petSystem.activated := PetSystem_Activated
 
 	return userConfig
 }
@@ -150,6 +158,7 @@ setSystemConfig() {
 	GuiControlGet, System_DamageCheckTime
 	GuiControlGet, System_ReviveMode
 	GuiControlGet, System_MoveMode
+	GuiControlGet, PetSystem_Activated
 
 	System.escapeActivated := EscapeSystem_Activated
 	System.escapeShield := EscapeSystem_Shield
@@ -161,4 +170,5 @@ setSystemConfig() {
 	System.bonusBoxShader := System_BonusBoxShader
 	System.map := Map
 	System.moveMode := System_MoveMode
+	System.petActivated := PetSystem_Activated
 }
