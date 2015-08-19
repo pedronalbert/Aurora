@@ -11,18 +11,19 @@ CoordMode, Mouse, Screen
 
 Gui:
 	userConfig := getUserConfigIni()
+	maps := Minimap.getMapsString()
 	Client.setCors(userConfig.client.top, userConfig.client.bottom)
 
 	Gui, Add, Tab, w300 h480 Center, Basic Settings|Advanced Settings
 
 	Gui, Add, Text, xp80 yp+40, Map:
-	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap Choose1", 11|12|13|14|15|16|17|18|21|22|23|24|25|26|27|28|31|32|33|34|35|36|37|38
+	Gui, Add, DropDownList,% "w80 yp-1 xp+40 vMap AltSubmit Choose" userConfig.system.map, % maps
 
 	Gui, Add, Text, x70 yp+40, Revive On:
-	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_ReviveMode Choose1", PORTAL|BASE
+	Gui, Add, DropDownList,% "w80 yp-1 xp+60 AltSubmit vSystem_ReviveMode Choose" userConfig.system.reviveMode, PORTAL|BASE
 
 	Gui, Add, Text, x70 yp+40, Move mode:
-	Gui, Add, DropDownList,% "w80 yp-1 xp+60 vSystem_MoveMode Choose1", RANDOM|COMPLETE
+	Gui, Add, DropDownList,% "w80 yp-1 xp+60 AltSubmit vSystem_MoveMode Choose" userConfig.system.moveMode, RANDOM|COMPLETE
 
 	Gui, Add, Text, x120 yp+30, PET:
 	Gui, Add, Checkbox,% "xp+30 yp vPetSystem_Activated Checked" userConfig.petSystem.activated
@@ -99,6 +100,13 @@ GuiClose:
 ;-------------------------------------------------------------------
 
 updateUserConfigIni() {
+	GuiControlGet, Map
+	GuiControlGet, System_ReviveMode
+	GuiControlGet, System_MoveMode
+
+	IniWrite, % Map, config.ini, System, Map
+	IniWrite, % System_MoveMode, config.ini, System, MoveMode
+	IniWrite, % System_ReviveMode, config.ini, System, ReviveMode
 	IniWrite, % System.escapeActivated, config.ini, EscapeSystem, Activated
 	IniWrite, % System.escapeShield, config.ini, EscapeSystem, Shield
 	IniWrite, % System.invisibleActivated, config.ini, InvisibleSystem, Activated
@@ -106,7 +114,6 @@ updateUserConfigIni() {
 	IniWrite, % System.invisibleCpu, config.ini, InvisibleSystem, Cpu
 	IniWrite, % System.bonusBoxShader, config.ini, System, BonusBoxShader
 	IniWrite, % System.damageCheckTime, config.ini, System, DamageCheckTime
-	IniWrite, % System.reviveMode, config.ini, System, ReviveMode
 	IniWrite, % Client.boxCors.y1, config.ini, Client, Top
 	IniWrite, % Client.boxCors.y2, config.ini, Client, Bottom
 	IniWrite, % System.petActivated, config.ini, Pet, Activated
@@ -123,6 +130,8 @@ getUserConfigIni() {
   IniRead, System_BonusBoxShader, config.ini, System, BonusBoxShader
   IniRead, System_ReviveMode, config.ini, System, ReviveMode
   IniRead, System_DamageCheckTime, config.ini, System, DamageCheckTime
+  IniRead, System_MoveMode, config.ini, System, MoveMode
+  IniRead, System_Map, config.ini, System, Map
   IniRead, EscapeSystem_Activated, config.ini, EscapeSystem, Activated
   IniRead, EscapeSystem_Shield, config.ini, EscapeSystem, Shield
   IniRead, InvisibleSystem_Activated, config.ini, InvisibleSystem, Activated
@@ -130,11 +139,13 @@ getUserConfigIni() {
   IniRead, InvisibleSystem_Cpu, config.ini, InvisibleSystem, Cpu
   IniRead, ClientTop, config.ini, Client, Top
   IniRead, ClientBottom, config.ini, Client, Bottom
-  IniRead, PetSystem_Activated, config.ini Pet, Activated
+  IniRead, PetSystem_Activated, config.ini, Pet, Activated
 
   userConfig.system.bonusBoxShader := System_BonusBoxShader
 	userConfig.system.reviveMode := System_ReviveMode
 	userConfig.system.damageCheckTime := System_DamageCheckTime
+	userConfig.system.moveMode := System_MoveMode
+	userConfig.system.map := System_Map
 	userConfig.escapeSystem.activated := EscapeSystem_Activated
 	userConfig.escapeSystem.shield := EscapeSystem_Shield
 	userConfig.invisibleSystem.activated := InvisibleSystem_Activated
@@ -149,6 +160,8 @@ getUserConfigIni() {
 
 setSystemConfig() {
 	GuiControlGet, Map
+	GuiControlGet, System_ReviveMode
+	GuiControlGet, System_MoveMode
 	GuiControlGet, EscapeSystem_Activated
 	GuiControlGet, EscapeSystem_Shield
 	GuiControlGet, InvisibleSystem_Activated
@@ -156,19 +169,25 @@ setSystemConfig() {
 	GuiControlGet, System_InvisibleCheckTime
 	GuiControlGet, System_BonusBoxShader
 	GuiControlGet, System_DamageCheckTime
-	GuiControlGet, System_ReviveMode
-	GuiControlGet, System_MoveMode
 	GuiControlGet, PetSystem_Activated
 
+	mapsList := Minimap.getMapsArray()
+	reviveModeList := ["BASE", "PORTAL"]
+	moveModeList := ["RANDOM", "COMPLETE"]
+	
+	mapSelected := mapsList[Map]
+	reviveModeSelected := reviveModeList[System_ReviveMode]
+	moveModeSelected := moveModeList[System_MoveMode]
+
+	System.map := mapSelected
+	System.reviveMode := reviveModeSelected
+	System.moveMode := moveModeSelected
 	System.escapeActivated := EscapeSystem_Activated
 	System.escapeShield := EscapeSystem_Shield
 	System.damageCheckTime := System_DamageCheckTime
-	System.reviveMode := System_ReviveMode
 	System.invisibleActivated := InvisibleSystem_Activated
 	System.invisibleCheckTime := System_InvisibleCheckTime
 	System.invisibleCpu := InvisibleSystem_Cpu
 	System.bonusBoxShader := System_BonusBoxShader
-	System.map := Map
-	System.moveMode := System_MoveMode
 	System.petActivated := PetSystem_Activated
 }

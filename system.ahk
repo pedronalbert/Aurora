@@ -14,14 +14,15 @@ class System {
 	static stateSeconds := 0
 	static lastShipCors := []
 
-	static escapeActivated := 
-	static escapeShield := 
-	static invisibleActivated := 
-	static invisibleCheckTime := 
-	static invisibleCpu :=
-	static bonusBoxShader := 
-	static damageCheckTime :=
+  ;User config
 	static map := 
+  static escapeActivated := 
+  static escapeShield := 
+  static invisibleActivated := 
+  static invisibleCheckTime := 
+  static invisibleCpu :=
+  static bonusBoxShader := 
+  static damageCheckTime :=
 	static reviveMode :=
   static escapePortal := []
   static moveMode :=
