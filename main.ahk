@@ -172,7 +172,7 @@ setSystemConfig() {
 	GuiControlGet, PetSystem_Activated
 
 	mapsList := Minimap.getMapsArray()
-	reviveModeList := ["BASE", "PORTAL"]
+	reviveModeList := ["PORTAL", "BASE"]
 	moveModeList := ["RANDOM", "COMPLETE"]
 	
 	mapSelected := mapsList[Map]

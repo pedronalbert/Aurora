@@ -70,7 +70,7 @@ class Pet {
   selectCollect() {
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/pet_arrow.bmp
     
-    MouseClick, Left, x, y, 1, 0
+    MouseClick, Left,% x + 2,% y + 2, 1, 0
     Sleep, 500
 
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/pet_module_collector.bmp
