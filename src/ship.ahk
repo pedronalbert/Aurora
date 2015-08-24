@@ -1,6 +1,3 @@
-#Include, ./client.ahk
-#Include, ./minimap.ahk
-
 class Ship {
 	static healPercent := 
 	static shieldPercent :=
@@ -137,7 +134,7 @@ class Ship {
 
 	/*
 	 * Revive the ship 
-	 * @param {string} mode - BASE | PORTAL | HERE
+	 * @param {string} mode - BASE | PORTAL
 	 * @return {string} mode used
 	*/
 	revive(mode := "BASE") {

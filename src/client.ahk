@@ -1,38 +1,9 @@
-#Include, ./ship.ahk
-
 class Client {
 	static boxCors := {}
 	static searchBoxsSize := [{}, {}, {}, {}]
 
 	init() {
 		return true
-	}
-
-	setCors(top := 0, bottom := 0) {
-		this.boxCors.x1 := 0
-		this.boxCors.y1 := top
-
-		this.boxCors.x2 := A_ScreenWidth
-		this.boxCors.y2 := bottom
-		
-		this.setSearchBoxsSize()
-	}
-
-	/*
-		Get cloack cors
-		@param {Number} type - 10 | 50
-	*/
-	getCloackCors() {
-		type := System.invisibleCpu
-		
-		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
-
-		if (ErrorLevel = 0) {
-			return [x, y]
-		} else {
-
-			return false
-		}
 	}
 
 	reload() {
@@ -76,33 +47,7 @@ class Client {
 			} 
 		}
 	}
-
-	isConnected() {
-		if (this.isDisconnect()) {
-			return false
-		} else { ;the may seem connect because the disconnect box doesn't appear but need to validate with the minimap
-			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
-
-			if (ErrorLevel = 0) {
-				return true
-			}
-			else {
-				return false
-			}	
-		}
-	}
-
-	isDisconnect() {
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
-
-		if (ErrorLevel = 0) {
-			return true
-		}
-		else {
-			return false
-		}
-	}
-
+	
 	connect() {
 		secondsWaiting := 0
 
@@ -129,12 +74,60 @@ class Client {
 		}
 	}
 
+	isConnected() {
+		if (this.isDisconnect()) {
+			return false
+		} else { 
+		;validate with minimap
+			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
+
+			if (ErrorLevel = 0) {
+				return true
+			}
+			else {
+				return false
+			}	
+		}
+	}
+
+	isDisconnect() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
+
+		if (ErrorLevel = 0) {
+			return true
+		}
+		else {
+			return false
+		}
+	}
+
 	isConnecting() {
 		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/connecting.bmp
 
 		if (ErrorLevel = 0) {
 			return true
 		} else {
+			return false
+		}
+	}
+	
+	setCors(top := 0, bottom := 0) {
+		this.boxCors.x1 := 0
+		this.boxCors.y1 := top
+		this.boxCors.x2 := A_ScreenWidth
+		this.boxCors.y2 := bottom
+		this.setSearchBoxsSize()
+	}
+
+	getCloackCors() {
+		type := System.invisibleCpu
+		
+		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
+
+		if (ErrorLevel = 0) {
+			return [x, y]
+		} else {
+
 			return false
 		}
 	}
@@ -184,4 +177,25 @@ class Client {
 		TrayTip, Client coors setted successfully
 	}
 
+	findBonusBox(shader) {
+		shaderVariation := shader
+		i := 1
+
+		Loop, 4 {
+			ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%shaderVariation% ./img/bonus_box.bmp
+
+			if (ErrorLevel = 0) {
+				return [corsX, corsY]
+			} else {
+				ImageSearch, corsX, corsY, this.searchBoxsSize[i].x1, this.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%shaderVariation% ./img/event_box.bmp
+
+				if (ErrorLevel = 0) {
+				  return [corsX, corsY]
+        }
+			}
+			i++
+		}
+		return false
+	}
+	
 }

@@ -1,18 +1,8 @@
-#Include, ./client.ahk
-#Include, ./ship.ahk
-#Include, ./minimap.ahk
-#Include, ./pet.ahk
-/*
-	FindBonusBox
-	ApproachToBonusBox
-*/
 class System {
 	static healToRepair := 95
 	static bonusBoxCollected := 0
 	static state := 
 	static statePriority := 0
-	static stateSeconds := 0
-	static lastShipCors := []
 
   ;User config
 	static map := 
@@ -55,7 +45,7 @@ class System {
 				; ------------------------ STATES -------------------------------------
 
 				if (this.state = "FindBonusBox") {
-					bonusBox := this.findBonusBox()
+					bonusBox := Client.findBonusBox(this.bonusBoxShader)
 
 					if (isObject(bonusBox)) {
 						OutputDebug, % "Bonus box find x: " bonusBox[1] " y: " bonusBox[2]
@@ -65,7 +55,7 @@ class System {
 							this.setState("ApproachingToBonusBox")
 						} else {
 							Ship.collect(bonusBox)
-							Sleep, 300
+							Sleep, 200
 							this.setState("CollectingBonusBox")
 						}
 					} else {
@@ -85,7 +75,7 @@ class System {
 				if (this.state = "CollectingBonusBox") {
 					if (!Ship.isMoving()) {
 						this.bonusBoxCollected++
-						Sleep, 300
+						Sleep, 200
 						this.setState("FindBonusBox")
 					}
 				}
@@ -95,7 +85,7 @@ class System {
           Sleep, 200
 
 					if (!Ship.isMoving()) {
-						this.lastShipCors := Minimap.getShipCors()
+						Minimap.saveLastCors()
 						Sleep, 1000
 						Send {j}
 
@@ -109,8 +99,8 @@ class System {
         }
 
         if (this.state ="EscapingToPortal_Next_BackToMap") {
-          if (this.isInNewMap()) {
-            this.lastShipCors := Minimap.getShipCors()
+          if (Minimap.isInNewMap()) {
+            Minimap.saveLastCors()
             Sleep, 1000
             Send {j}
             this.setState("BackingToMap", 1)
@@ -119,7 +109,7 @@ class System {
 				}
 
 				if (this.state = "BackingToMap") {
-					if (this.isInNewMap()) {
+					if (Minimap.isInNewMap()) {
 						this.setState("FinishRepair_Next_FindBonusBox", 1)
 					}
 				}
@@ -162,7 +152,7 @@ class System {
             if (Ship.getShieldPercent() >= 95) {
               if (Ship.getHealPercent() >= 95) {
                 this.setCheckTimers()
-                Minimap.generateRoute()
+                Minimap.generateBackToMapRoute()
                 this.setState("GoToNextPortal", 1)
               }
             }
@@ -182,7 +172,7 @@ class System {
 
 				if (this.state = "WaitForNextPortal_Next_JumpToNewMap") {
 					if (!Ship.isMoving()) {
-						this.lastShipCors := Minimap.getShipCors()
+						Minimap.saveLastCors()
 						Sleep, 1000
 						Send {j}
 
@@ -191,7 +181,7 @@ class System {
 				}
 
 				if (this.state = "WaitForNextMap_Next_GoToNextPortal", 1) {
-					if (this.isInNewMap()) {
+					if (Minimap.isInNewMap()) {
 						Sleep, 300
 						this.setState("GoToNextPortal", 1)
 					}
@@ -210,27 +200,6 @@ class System {
 		bonusBox := this.bonusBoxCollected
 
 		TrayTip, Aurora Stopped, Boxs Collected: %bonusBox%
-	}
-
-	findBonusBox() {
-		shaderVariation := this.bonusBoxShader
-		i := 1
-
-		Loop, 4 {
-			ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, Client.searchBoxsSize[i].x2, Client.searchBoxsSize[i].y2 , *%shaderVariation% ./img/bonus_box.bmp
-
-			if (ErrorLevel = 0) {
-				return [corsX, corsY]
-			} else {
-				ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, Client.searchBoxsSize[i].x2, Client.searchBoxsSize[i].y2 , *%shaderVariation% ./img/event_box.bmp
-
-				if (ErrorLevel = 0) {
-				  return [corsX, corsY]
-        }
-			}
-			i++
-		}
-		return false
 	}
 
 	setCheckTimers() {
@@ -298,7 +267,7 @@ class System {
       }
 
       if (Pet.isPasive()) {
-        Pet.selectCollect()
+        Pet.selectModule("autocollector")
         Sleep, 1000
       }
     return
@@ -325,31 +294,6 @@ class System {
     portalCors := Minimap.getNearPortalCors()
     this.escapePortal := portalCors
     this.setState("GoToPortalForEscape", 1)
-	}
-
-	isInNewMap() {
-		lastCors := this.lastShipCors
-		newCors := Minimap.getShipCors()
-    
-		if (lastCors[1] > newCors[1]) {
-			diferencia := lastCors[1] - newCors[1]
-		} else {
-			diferencia := newCors[1] - lastCors[1]
-		}
-
-		if diferencia > 40
-			return true
-
-		if (lastCors[2] > newCors[2]) {
-			diferencia := lastCors[2] - newCors[2]
-		} else {
-			diferencia := newCors[2] - lastCors[2]
-		}
-
-		if diferencia > 40
-			return true
-
-		return false
 	}
 
 }

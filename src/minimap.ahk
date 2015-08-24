@@ -1,6 +1,3 @@
-#Include, ./client.ahk
-
-
 class Minimap {
 	static boxCors := {}
 	static availableBoxCors := {}
@@ -10,69 +7,107 @@ class Minimap {
 	static backToMapRoutes := []
 	static backToMapRoutePosition :=
 	static backToMapRoute :=
-	static searchPointFlag := 1
+	static searchPointPosition := 1
 	static searchPoints := []
-	static searchPointBreak := []
+	static shipLastCors := []
 
 	init() {
 		if (this.setBoxCors()) {
 			this.setPortalsCors()
-			this.setRoutes()
+			this.setBackToMapRoutes()
 			this.setSearchPoints()
-			OutputDebug, % "Minimap is Ready!"
 			return true
 		} else {
 			return false
 		}
 	}
 
-	setBoxCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/minimap_box.bmp
+	moveNextPoint() {
+		shipCors := this.getShipCors()
+		pointToGo := this.searchPoints[this.searchPointPosition]
 
-		If (ErrorLevel = 0) {
-			this.boxCors.x1 := corsX
-			this.boxCors.y1 := corsY
-			this.boxCors.x2 := corsX + 176
-			this.boxCors.y2 := corsY + 190
+		if ((shipCors[1] >= (pointToGo[1] - 2)) and  (shipCors[1] <= (pointToGo[1] + 2)) and (shipCors[2] >= (pointToGo[2] - 3)) and (shipCors[2] <= (pointToGo[2] + 3))) {
+			;Move to next point
+			if (this.searchPointPosition = 25) {
+				this.searchPointPosition := 1
+			} else {
+				this.searchPointPosition++
+			}
 
-			this.availableBoxCors.x1 := corsX + 25
-			this.availableBoxCors.y1 := corsY + 50
-			this.availableBoxCors.x2 := this.availableBoxCors.x1 + 187
-			this.availableBoxCors.y2 := this.availableBoxCors.y1 + 115
+		} 
 
-			return true
+		Random, variationX, 0, 2
+		Random, variationY, 0, 2
+
+		cors := []
+		cors[1] := this.searchPoints[this.searchPointPosition][1] + variationX
+		cors[2] := this.searchPoints[this.searchPointPosition][2] + variationY
+
+		this.goTo(cors)
+	}
+
+	generateBackToMapRoute() {
+		this.backToMapRoute :=  this.backToMapRoutes[System.map]
+		this.backToMapRoutePosition := 1
+	}
+
+	goTo(cors) {
+
+		x := cors[1] + this.availableBoxCors.x1
+		y := cors[2] + this.availableBoxCors.y1
+
+		MouseClick, Left, x, y, 1 , 0
+	}
+
+	goToNextPortal() {
+		nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
+		actualMap := this.backToMapRoute[this.backToMapRoutePosition]
+
+		OutputDebug, % "next map: " nextMap " actual map: " actualMap
+
+		if (actualMap = System.map) {
+			return false
+		}
+
+		if (nextMap >= 11 and nextMap <= 38) {
+			for k, portal in this.portalsCors[actualMap] {
+				if (portal.map = nextMap) {
+					this.goTo(portal.cors)
+					this.backToMapRoutePosition++
+
+					return true
+				}
+			}
+			return false
 		} else {
-			MsgBox, % "ERROR!, the minimap is not visible, set to visible or re-configure the client coors"
 			return false
 		}
 	}
 
-	setSearchPoints() {
-		this.searchPoints[1] := [36, 2]
-		this.searchPoints[2] := [36, 110]
-		this.searchPoints[3] := [53, 110]
-		this.searchPoints[4] := [53, 2]
-		this.searchPoints[5] := [72, 2]
-		this.searchPoints[6] := [72, 110]
-		this.searchPoints[7] := [90, 110]
-		this.searchPoints[8] := [90, 2]
-		this.searchPoints[9] := [108, 2]
-		this.searchPoints[10] := [108, 110]
-		this.searchPoints[11] := [126, 110]
-		this.searchPoints[12] := [126, 2]
-		this.searchPoints[13] := [144, 2]
-		this.searchPoints[14] := [144, 110]
-		this.searchPoints[15] := [136, 110]
-		this.searchPoints[16] := [136, 2]
-		this.searchPoints[17] := [118, 2]
-		this.searchPoints[18] := [118, 110]
-		this.searchPoints[19] := [99, 110]
-		this.searchPoints[20] := [99, 2]
-		this.searchPoints[21] := [81, 2]
-		this.searchPoints[22] := [81, 110]
-		this.searchPoints[23] := [63, 110]
-		this.searchPoints[24] := [63, 2]
-		this.searchPoints[25] := [44, 2]
+	move() {
+		if (System.moveMode = "RANDOM") {
+			this.moveRandom()
+		} else {
+			this.moveNextPoint()
+		}
+	}
+
+	moveRandom() {
+		Random, corsX, 34, 145
+
+		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
+
+		if (sector <= 2) {
+			Random, corsY, 1, 17
+		} else if (sector = 3) {
+			Random, corsY, 18, 102
+		} else if (sector >= 4) {
+			Random, corsY, 103, 114
+		}
+
+		cors := [corsX, corsY]
+
+		this.goTo(cors)
 	}
 
 	getShipCors() {
@@ -102,40 +137,43 @@ class Minimap {
 		return cors
 	}
 
+	getNearPortalCors() {
+		map := System.map
+		minDistance := 9999
+		portalNearPos := 0
+		shipCors := this.getShipCors()
 
-	goTo(cors) {
+		for k, portalCors in this.portalsCors[map] {
+			a := (portalCors.cors[1] - shipCors[1])
+			a := a * a
 
-		x := cors[1] + this.availableBoxCors.x1
-		y := cors[2] + this.availableBoxCors.y1
+			b := (portalCors.cors[2] - shipCors[2])
+			b := b * b
 
-		MouseClick, Left, x, y, 1 , 0
+			distance := Sqrt( a + b )
 
+			if (distance < minDistance) {
+				minDistance := distance
+				portalNearPos := k
+			}
+		} 
+
+		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
+
+		OutputDebug, % "Near portal: " cors[1] " , " cors[2] 
+		return cors
 	}
 
-	move() {
-		if (System.moveMode = "RANDOM") {
-			this.moveRandom()
-		} else {
-			this.moveNextFlag()
-		}
+	getMapsString() {
+		maps := "1-1|1-2|1-3|1-4|1-5|1-6|1-7|1-8|2-1|2-2|2-3|2-4|2-5|2-6|2-7|2-8|3-1|3-2|3-3|3-4|3-5|3-6|3-7|3-8"
+
+		return maps
 	}
 
-	moveRandom() {
-		Random, corsX, 34, 145
+	getMapsArray() {
+		maps := [11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38]
 
-		Random, sector, 1, 5  ; top (1, 2), center(3), bot(4, 5)
-
-		if (sector <= 2) {
-			Random, corsY, 1, 17
-		} else if (sector = 3) {
-			Random, corsY, 18, 102
-		} else if (sector >= 4) {
-			Random, corsY, 103, 114
-		}
-
-		cors := [corsX, corsY]
-
-		this.goTo(cors)
+		return maps
 	}
 
 	setPortalsCors() {
@@ -321,10 +359,37 @@ class Minimap {
 		this.portalsCors[38][2] := {}
 		this.portalsCors[38][2].map := 36
 		this.portalsCors[38][2].cors := [16,102]
-
 	}
 
-	setRoutes() {
+	setSearchPoints() {
+		this.searchPoints[1] := [36, 2]
+		this.searchPoints[2] := [36, 110]
+		this.searchPoints[3] := [53, 110]
+		this.searchPoints[4] := [53, 2]
+		this.searchPoints[5] := [72, 2]
+		this.searchPoints[6] := [72, 110]
+		this.searchPoints[7] := [90, 110]
+		this.searchPoints[8] := [90, 2]
+		this.searchPoints[9] := [108, 2]
+		this.searchPoints[10] := [108, 110]
+		this.searchPoints[11] := [126, 110]
+		this.searchPoints[12] := [126, 2]
+		this.searchPoints[13] := [144, 2]
+		this.searchPoints[14] := [144, 110]
+		this.searchPoints[15] := [136, 110]
+		this.searchPoints[16] := [136, 2]
+		this.searchPoints[17] := [118, 2]
+		this.searchPoints[18] := [118, 110]
+		this.searchPoints[19] := [99, 110]
+		this.searchPoints[20] := [99, 2]
+		this.searchPoints[21] := [81, 2]
+		this.searchPoints[22] := [81, 110]
+		this.searchPoints[23] := [63, 110]
+		this.searchPoints[24] := [63, 2]
+		this.searchPoints[25] := [44, 2]
+	}
+
+	setBackToMapRoutes() {
 		this.backToMapRoutes[11] := [11]
 		this.backToMapRoutes[12] := [11, 12]
 		this.backToMapRoutes[13] := [11, 12, 13]
@@ -351,99 +416,58 @@ class Minimap {
 		this.backToMapRoutes[36] := [38, 36]
 		this.backToMapRoutes[37] := [38, 37]
 		this.backToMapRoutes[38] := [38]
-
 	}
 
-	generateRoute() {
-		this.backToMapRoute :=  this.backToMapRoutes[System.map]
-		this.backToMapRoutePosition := 1
-	}
+	setBoxCors() {
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/minimap_box.bmp
 
-	goToNextPortal() {
-		nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
-		actualMap := this.backToMapRoute[this.backToMapRoutePosition]
+		If (ErrorLevel = 0) {
+			this.boxCors.x1 := corsX
+			this.boxCors.y1 := corsY
+			this.boxCors.x2 := corsX + 176
+			this.boxCors.y2 := corsY + 190
 
-		OutputDebug, % "next map: " nextMap " actual map: " actualMap
+			this.availableBoxCors.x1 := corsX + 25
+			this.availableBoxCors.y1 := corsY + 50
+			this.availableBoxCors.x2 := this.availableBoxCors.x1 + 187
+			this.availableBoxCors.y2 := this.availableBoxCors.y1 + 115
 
-		if (actualMap = System.map) {
-			return false
-		}
-
-		if (nextMap >= 11 and nextMap <= 38) {
-			for k, portal in this.portalsCors[actualMap] {
-				if (portal.map = nextMap) {
-					this.goTo(portal.cors)
-					this.backToMapRoutePosition++
-
-					return true
-				}
-			}
-			return false
+			return true
 		} else {
+			MsgBox, % "ERROR!, the minimap is not visible, set to visible or re-configure the client coors"
 			return false
 		}
 	}
 
-	getNearPortalCors() {
-		map := System.map
-		minDistance := 9999
-		portalNearPos := 0
-		shipCors := this.getShipCors()
-
-		for k, portalCors in this.portalsCors[map] {
-			a := (portalCors.cors[1] - shipCors[1])
-			a := a * a
-
-			b := (portalCors.cors[2] - shipCors[2])
-			b := b * b
-
-			distance := Sqrt( a + b )
-
-			if (distance < minDistance) {
-				minDistance := distance
-				portalNearPos := k
-			}
-		} 
-
-		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
-
-		OutputDebug, % "Near portal: " cors[1] " , " cors[2] 
-		return cors
+	/*
+		Save in lastCors
+	*/
+	saveLastCors() {
+		this.shipLastCors := this.getShipCors()
 	}
 
-	moveNextFlag() {
-		shipCors := this.getShipCors()
-		pointToGo := this.searchPoints[this.searchPointFlag]
+	isInNewMap() {
+		lastCors := this.lastShipCors
+		newCors := Minimap.getShipCors()
+    
+		if (lastCors[1] > newCors[1]) {
+			diff := lastCors[1] - newCors[1]
+		} else {
+			diff := newCors[1] - lastCors[1]
+		}
 
-		if ((shipCors[1] >= (pointToGo[1] - 2)) and  (shipCors[1] <= (pointToGo[1] + 2)) and (shipCors[2] >= (pointToGo[2] - 3)) and (shipCors[2] <= (pointToGo[2] + 3))) {
-			;Move to next point
-			if (this.searchPointFlag = 25) {
-				this.searchPointFlag := 1
-			} else {
-				this.searchPointFlag++
-			}
+		if diff > 40
+			return true
 
-		} 
+		if (lastCors[2] > newCors[2]) {
+			diff := lastCors[2] - newCors[2]
+		} else {
+			diff := newCors[2] - lastCors[2]
+		}
 
-		Random, variationX, 0, 2
-		Random, variationY, 0, 2
+		if diff > 40
+			return true
 
-		cors := []
-		cors[1] := this.searchPoints[this.searchPointFlag][1] + variationX
-		cors[2] := this.searchPoints[this.searchPointFlag][2] + variationY
-
-		this.goTo(cors)
-	}
-
-	getMapsString() {
-		maps := "1-1|1-2|1-3|1-4|1-5|1-6|1-7|1-8|2-1|2-2|2-3|2-4|2-5|2-6|2-7|2-8|3-1|3-2|3-3|3-4|3-5|3-6|3-7|3-8"
-
-		return maps
-	}
-
-	getMapsArray() {
-		maps := [11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38]
-
-		return maps
+		return false
 	}
 }
