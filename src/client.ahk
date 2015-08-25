@@ -119,8 +119,7 @@ class Client {
 		this.setSearchBoxsSize()
 	}
 
-	getCloackCors() {
-		type := System.invisibleCpu
+	getCloackCors(type) {
 		
 		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
 

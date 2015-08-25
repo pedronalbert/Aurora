@@ -221,8 +221,8 @@ class System {
 		return
 
 		invisibleCheck:
-			if (!Ship.isInvisible()) {
-				Ship.setInvisible()
+			if (!Ship.isInvisible(this.invisibleCpu)) {
+				Ship.setInvisible(this.invisibleCpu)
 			}
 		return
 

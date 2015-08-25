@@ -181,8 +181,8 @@ class Ship {
 		}
 	}
 
-	isInvisible() {
-		cloackCors := Client.getCloackCors()
+	isInvisible(invisibleCpu) {
+		cloackCors := Client.getCloackCors(invisibleCpu)
 
 		corsX := cloackCors[1]
 		corsY := cloackCors[2]
@@ -200,11 +200,11 @@ class Ship {
 		}
 	}
 
-	setInvisible()  {
-		cloackCors := Client.getCloackCors()
+	setInvisible(invisibleCpu)  {
+		cloackCors := Client.getCloackCors(invisibleCpu)
 
 		if (isObject(cloackCors)) {
-			MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 2, 5
+			MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 1, 5
 		}
 	}
 
