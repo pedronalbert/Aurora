@@ -447,8 +447,9 @@ class Minimap {
 	}
 
 	isInNewMap() {
-		lastCors := this.lastShipCors
-		newCors := Minimap.getShipCors()
+    lastCors := this.shipLastCors
+    newCors := this.getShipCors()
+
     
 		if (lastCors[1] > newCors[1]) {
 			diff := lastCors[1] - newCors[1]
@@ -465,8 +466,9 @@ class Minimap {
 			diff := newCors[2] - lastCors[2]
 		}
 
-		if diff > 40
+		if (diff > 40) {
 			return true
+    }
 
 		return false
 	}
