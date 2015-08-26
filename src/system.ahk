@@ -197,6 +197,8 @@ class System {
 	pauseCollect() {
 		this.setState("Pause", 3)
 		this.stopCheckTimers()
+    SetTimer, disconnectCheck, off
+    SetTimer, deadCheck, off
 		bonusBox := this.bonusBoxCollected
 
 		TrayTip, Aurora Stopped, Boxs Collected: %bonusBox%
@@ -277,8 +279,6 @@ class System {
 		SetTimer, invisibleCheck, Off
 		SetTimer, damageCheck, Off
     SetTimer, petCheck, Off
-    SetTimer, deadCheck, Off
-    SetTimer, disconnectCheck, Off
 	}
 
 	setState(state, priority := 0) {

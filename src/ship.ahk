@@ -18,7 +18,7 @@ class Ship {
 	}
 
 	setStatsBoxCors() {
-		ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/ship_stats_box.bmp
+		ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/ship_stats_box.bmp
 
 		If (ErrorLevel = 0) {
 			this.statsBoxCors.x1 := x
@@ -82,7 +82,7 @@ class Ship {
 	}
 
 	isDead() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/repair_button.bmp
 
 		if (ErrorLevel = 0) {
 			return true
@@ -146,7 +146,7 @@ class Ship {
 			image := "repair_portal"
 		}
 
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, % "*5 ./img/" image ".bmp"
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, % "*10 ./img/" image ".bmp"
 
 		if (ErrorLevel = 0) {
 
@@ -154,7 +154,7 @@ class Ship {
 
 			Sleep, 1000
 
-			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/repair_button.bmp
+			ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/repair_button.bmp
 
 			if (ErrorLevel = 0) {
 				Random, variationX, 5, 100
