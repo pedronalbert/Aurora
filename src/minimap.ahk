@@ -63,8 +63,6 @@ class Minimap {
 		nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
 		actualMap := this.backToMapRoute[this.backToMapRoutePosition]
 
-		OutputDebug, % "next map: " nextMap " actual map: " actualMap
-
 		if (actualMap = System.map) {
 			return false
 		}
@@ -159,8 +157,7 @@ class Minimap {
 		} 
 
 		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
-
-		OutputDebug, % "Near portal: " cors[1] " , " cors[2] 
+    
 		return cors
 	}
 

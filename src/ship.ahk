@@ -168,14 +168,12 @@ class Ship {
 					Client.reloadClient()
 				}
 				else {
-					OutputDebug, "Ship revive on: " mode
 					return mode
 				}
 			}
 		
 		} else {
 			this.revive("BASE")
-			OutputDebug, "Ship revive on: " mode
 
 			return "BASE"
 		}

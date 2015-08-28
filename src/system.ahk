@@ -231,6 +231,7 @@ class System {
 		damageCheck:
 			shieldPercent := Ship.getShieldPercent()
 			healPercent := Ship.getHealPercent()
+      OutputDebug, % "DamageCheck heal: " healPercent " shield: " shieldPercent
 			if (healPercent > 0) { ;no puede estar muerto
 				if (shieldPercent < System.escapeShield) {
 						System.escapeToPortal()
@@ -248,6 +249,8 @@ class System {
       if (Ship.isDead()) {
         System.stopCheckTimers()
         reviveModeUsed := Ship.revive(System.reviveMode)
+        
+        OutputDebug, % "Ship revived on: " reviveModeUsed
         
         if (reviveModeUsed = "BASE") {
           System.setState("FinishRepair_Next_GenerateRoute", 1)
@@ -282,6 +285,7 @@ class System {
 	}
 
 	setState(state, priority := 0) {
+    OutputDebug, % "State: " state " priority: " priority
 		if (priority >= this.statePriority) {
 			this.state := state
 			OutputDebug, % "State: " state " Priority: " priority
@@ -290,6 +294,7 @@ class System {
 	}
 
 	escapeToPortal() {
+    OutputDebug, % "EscapeToPortal Called"
 		this.stopCheckTimers()
     portalCors := Minimap.getNearPortalCors()
     this.escapePortal := portalCors
