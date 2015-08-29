@@ -34,7 +34,7 @@ class Minimap {
 				this.searchPointPosition++
 			}
 
-		} 
+		}
 
 		Random, variationX, 0, 2
 		Random, variationY, 0, 2
@@ -113,18 +113,18 @@ class Minimap {
 		y := this.availableBoxCors.y2 + 58
 
 		ImageSearch, corsX, corsY, this.availableBoxCors.x1, this.availableBoxCors.y1, this.availableBoxCors.x2, this.availableBoxCors.y2, *5 ./img/minimap_vertical_bar.bmp
-	
+
 		if (ErrorLevel = 0) {
 			x := corsX
 		}
 
 		ImageSearch, corsX, corsY, this.availableBoxCors.x1, this.availableBoxCors.y1, this.availableBoxCors.x2, this.availableBoxCors.y2, *5 ./img/minimap_horizontal_bar.bmp
-	
+
 		if (ErrorLevel = 0) {
 			y := corsY
 		} else {
 			ImageSearch, corsX, corsY, this.availableBoxCors.x1, this.availableBoxCors.y1, this.availableBoxCors.x2, this.availableBoxCors.y2, *8 ./img/minimap_arrow.bmp
-	
+
 			if (ErrorLevel = 0) {
 				y := corsY + 6
 			}
@@ -154,10 +154,10 @@ class Minimap {
 				minDistance := distance
 				portalNearPos := k
 			}
-		} 
+		}
 
 		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
-    
+
 		return cors
 	}
 
@@ -416,7 +416,7 @@ class Minimap {
 	}
 
 	setBoxCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *5 ./img/minimap_box.bmp
+		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/minimap_box.bmp
 
 		If (ErrorLevel = 0) {
 			this.boxCors.x1 := corsX
@@ -447,7 +447,7 @@ class Minimap {
     lastCors := this.shipLastCors
     newCors := this.getShipCors()
 
-    
+
 		if (lastCors[1] > newCors[1]) {
 			diff := lastCors[1] - newCors[1]
 		} else {

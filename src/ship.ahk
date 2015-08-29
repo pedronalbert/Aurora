@@ -1,5 +1,5 @@
 class Ship {
-	static healPercent := 
+	static healPercent :=
 	static shieldPercent :=
 	static percentPerBar := 4.761904761904762
 	static healBarsColor := 0x7FD878
@@ -46,7 +46,7 @@ class Ship {
 			if ErrorLevel = 0
 				this.healPercent += this.percentPerBar
 		}
-
+		OutputDebug, % "Ship heal: " this.healPercent
 		return this.healPercent
 
 	}
@@ -60,11 +60,11 @@ class Ship {
 			shieldBarsCorsX := shieldBarsCorsX + 3
 
 			PixelSearch, x, y, shieldBarsCorsX, shieldBarsCorsY, shieldBarsCorsX, shieldBarsCorsY, % this.shieldBarsColor, % this.shieldBarsShader, Fast
-			
+
 			if ErrorLevel = 0
 				this.shieldPercent += this.percentPerBar
 		}
-
+		OutputDebug, % "Ship shield: " this.shieldPercent
 		return this.shieldPercent
 	}
 
@@ -75,8 +75,10 @@ class Ship {
 		PixelGetColor, color, x, y
 
 		if (color = "0xFFFFFF") {
+		    OutputDebug, % "Ship is moving"
 			return true
 		} else {
+		    OutputDebug, % "Ship is stopped"
 			return false
 		}
 	}
@@ -85,8 +87,10 @@ class Ship {
 		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/repair_button.bmp
 
 		if (ErrorLevel = 0) {
+			OutputDebug, % "Ship is dead"
 			return true
 		} else {
+		    OutputDebug, % "Ship is alive"
 			return false
 		}
 	}
@@ -111,7 +115,7 @@ class Ship {
 				corsX := centerX - 170
 			}
 		}
-
+		OutputDebug, % "Ship approach to: " corsX " , " corsY
 		MouseClick, Left, corsX, corsY, 1, 0
 	}
 
@@ -123,22 +127,24 @@ class Ship {
 				this.goAway()
 		} else {
 			this.lastCollectCors := cors
+			OutputDebug, % "Ship collect: " cors[1] " , " cors[2]
 			MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
 		}
 	}
 
 	goAway() {
+		OutputDebug,% "Ship goAway"
 		Minimap.move()
 		Sleep, 3000
 	}
 
 	/*
-	 * Revive the ship 
+	 * Revive the ship
 	 * @param {string} mode - BASE | PORTAL
 	 * @return {string} mode used
 	*/
 	revive(mode := "BASE") {
-		MouseMove, 0, 0 , 0 ;move mouse away 
+		MouseMove, 0, 0 , 0 ;move mouse away
 
 		if (mode = "BASE") {
 			image := "repair_base"
@@ -168,13 +174,14 @@ class Ship {
 					Client.reloadClient()
 				}
 				else {
+					OutputDebug, % "Ship revived on " mode
 					return mode
 				}
 			}
-		
+
 		} else {
 			this.revive("BASE")
-
+			OutputDebug, % "Ship revived on BASE"
 			return "BASE"
 		}
 	}
@@ -189,8 +196,10 @@ class Ship {
 			PixelGetColor, color, corsX - 2, corsY + 2
 
 			if (color = "0x846B29") {
+				OutputDebug, % "Ship is invisible"
 				return false
 			} else {
+				OutputDebug, % "Ship is not invisible"
 				return true
 			}
 		} else {
@@ -202,11 +211,13 @@ class Ship {
 		cloackCors := Client.getCloackCors(invisibleCpu)
 
 		if (isObject(cloackCors)) {
+			OutputDebug, % "Ship set invisible"
 			MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 1, 5
 		}
 	}
 
 	changeConfig() {
+		OutputDebug, % "Ship change config"
 		Send {c}
 	}
 

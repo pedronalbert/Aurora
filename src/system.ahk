@@ -1,19 +1,19 @@
 class System {
 	static healToRepair := 95
 	static bonusBoxCollected := 0
-	static state := 
+	static state :=
 	static statePriority := 0
 
   ;User config
-	static map := 
-  static escapeActivated := 
-  static escapeShield := 
-  static invisibleActivated := 
-  static invisibleCheckTime := 
+  static map :=
+  static escapeActivated :=
+  static escapeShield :=
+  static invisibleActivated :=
+  static invisibleCheckTime :=
   static invisibleCpu :=
-  static bonusBoxShader := 
+  static bonusBoxShader :=
   static damageCheckTime :=
-	static reviveMode :=
+  static reviveMode :=
   static escapePortal := []
   static moveMode :=
   static petActivated :=
@@ -35,7 +35,7 @@ class System {
 	}
 
 	initCollect() {
-		
+
 		this.statePriority := 0
 		this.setState("FindBonusBox")
 		this.setCheckTimers()
@@ -66,7 +66,7 @@ class System {
 					}
 				}
 
-				if (this.state = "ApproachingToBonusBox") { 
+				if (this.state = "ApproachingToBonusBox") {
 					if (!Ship.isMoving()) {
 						this.setState("FindBonusBox")
 					}
@@ -81,8 +81,8 @@ class System {
 				}
 
 				if (this.state = "GoToPortalForEscape") {
-          Minimap.goTo(this.escapePortal)
-          Sleep, 200
+				  Minimap.goTo(this.escapePortal)
+                  Sleep, 200
 
 					if (!Ship.isMoving()) {
 						Minimap.saveLastCors()
@@ -122,7 +122,7 @@ class System {
 						if (Ship.getShieldPercent() >= 95) {
 							if (Ship.getHealPercent() >= 95) {
 								this.statePriority := 0
-                this.setCheckTimers()
+                                this.setCheckTimers()
 								this.setState("FindBonusBox")
 							}
 						}
@@ -223,8 +223,8 @@ class System {
 		return
 
 		invisibleCheck:
-			if (!Ship.isInvisible(this.invisibleCpu)) {
-				Ship.setInvisible(this.invisibleCpu)
+			if (!Ship.isInvisible(System.invisibleCpu)) {
+				Ship.setInvisible(System.invisibleCpu)
 			}
 		return
 
@@ -249,9 +249,9 @@ class System {
       if (Ship.isDead()) {
         System.stopCheckTimers()
         reviveModeUsed := Ship.revive(System.reviveMode)
-        
+
         OutputDebug, % "Ship revived on: " reviveModeUsed
-        
+
         if (reviveModeUsed = "BASE") {
           System.setState("FinishRepair_Next_GenerateRoute", 1)
         } else {

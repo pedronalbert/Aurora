@@ -19,42 +19,64 @@ class Pet {
   }
 
   play() {
+	OutputDebug, % "Pet Play"
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/play.bmp
 
     If (ErrorLevel = 0) {
       MouseClick, Left, x, y, 1, 0
       MouseMove, 0, 0, 0
-    }
+    } else {
+	  OutputDebug, % "ERROR! Pet Play button is not found"
+	}
 
   }
 
   repair() {
+	OutputDebug, % "Pet Repair"
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/repair.bmp
 
     If (ErrorLevel = 0) {
       MouseClick, Left, x, y, 1, 0
       MouseMove, 0, 0, 0
-    }
+    } else {
+	  OutputDebug, % "ERROR! Pet Repair buttton is not found"
+	}
+  }
+
+  openModules() {
+	OutputDebug, % "Ship OpenModules"
+
+	ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/arrow.bmp
+
+	If (ErrorLevel = 0) {
+	  MouseClick, Left,% x + 2,% y + 2, 1, 0
+		Sleep, 1000
+	} else {
+	  OutputDebug, % "ERROR! Pet select modules is not found"
+	}
   }
 
   selectModule(module) {
-    ;Open the dropdown
-    ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/arrow.bmp
-    
-    MouseClick, Left,% x + 2,% y + 2, 1, 0
-    Sleep, 500
+	OutputDebug, % "Pet selectModule " module
+    this.openModules()
 
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2,% "*10 ./img/pet/module_" module ".bmp"
 
-    MouseClick, Left, x, y, 1, 0    
+	If (ErrorLevel = 0) {
+	  MouseClick, Left, x, y, 1, 0
+	} else {
+	  OutputDebug, % "ERROR! Pet module: " module " is not found"
+	}
   }
 
   isDead() {
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/repair.bmp
 
     If (ErrorLevel = 0) {
+	  OutputDebug, % "Pet is dead"
       return true
     } else {
+	  OutputDebug, % "Pet is alive"
       return false
     }
   }
@@ -63,8 +85,10 @@ class Pet {
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/play.bmp
 
     If (ErrorLevel = 0) {
+	  OutputDebug, % "Pet is paused"
       return true
     } else {
+	  OutputDebug, % "Pet is playing"
       return false
     }
   }
@@ -73,8 +97,10 @@ class Pet {
     ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/pasive.bmp
 
     If (ErrorLevel = 0) {
+	  OutputDebug, % "Pet is pasive"
       return true
     } else {
+	  OutputDebug, % "Pet is not pasive"
       return false
     }
   }

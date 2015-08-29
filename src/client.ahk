@@ -7,15 +7,17 @@ class Client {
 	}
 
 	reload() {
+		OutputDebug, % "Client reload"
 		secondsWaiting := 0
 
-		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *5 ./img/reload_firefox.bmp
+		ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
-		MouseClick, Left, corsX + 3, corsY + 3, 1, 40
+		MouseClick, Left, corsX + 3, corsY + 3, 1, 25
 
 		Sleep, 1000
 
 		Loop { ;waiting connecting message
+			OutputDebug, % "Waiting for connecting"
 			if (this.isConnecting()) {
 				break
 			}
@@ -26,12 +28,13 @@ class Client {
 				if (secondsWaiting > 120) {
 					this.reload()
 				}
-			} 
+			}
 		}
 
 		secondsWaiting := 0
 
 		Loop { ;waiting connected or dead
+			OutputDebug, % "Waiting for connected or dead"
 			if (this.isConnected()) {
 				return true
 			} else if (Ship.isDead()) {
@@ -41,22 +44,24 @@ class Client {
 				Sleep, 1000
 				secondsWaiting++
 
-				if (secondsWaiting > 10) {
+				if (secondsWaiting > 30) {
 					this.reload()
 				}
-			} 
+			}
 		}
 	}
-	
+
 	connect() {
+	    OutputDebug, % "Client connect"
 		secondsWaiting := 0
 
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/disconnect.bmp
 
 		if (ErrorLevel = 0) {
 			MouseClick, Left, corsX, corsY + 65, 1, 30
-			
+
 			Loop { ;waiting connected
+				OutputDebug, % "Waiting for connected"
 				if (this.isConnected()) {
 					return true
 				}
@@ -64,10 +69,10 @@ class Client {
 					Sleep, 1000
 					secondsWaiting++
 
-					if (secondsWaiting > 10) {
+					if (secondsWaiting > 30) {
 						this.reload()
 					}
-				} 
+				}
 			}
 		} else {
 			this.reload()
@@ -77,40 +82,46 @@ class Client {
 	isConnected() {
 		if (this.isDisconnect()) {
 			return false
-		} else { 
+		} else {
 		;validate with minimap
-			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/minimap_box.bmp
+			ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/minimap_box.bmp
 
 			if (ErrorLevel = 0) {
+				OutputDebug, % "Client is connected because minimap is visible"
 				return true
 			}
 			else {
+				OutputDebug, % "Client is disconnect because minimap is not visible"
 				return false
-			}	
+			}
 		}
 	}
 
 	isDisconnect() {
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/disconnect.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/disconnect.bmp
 
 		if (ErrorLevel = 0) {
+			OutputDebug, % "Client is disconnect"
 			return true
 		}
 		else {
+			OutputDebug, % "Clien is not disconnect"
 			return false
 		}
 	}
 
 	isConnecting() {
-		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *5 ./img/connecting.bmp
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/connecting.bmp
 
 		if (ErrorLevel = 0) {
+			OutputDebug, % "Client is connecting"
 			return true
 		} else {
+			OutputDebug, % "Client is not connecting"
 			return false
 		}
 	}
-	
+
 	setCors(top := 0, bottom := 0) {
 		this.boxCors.x1 := 0
 		this.boxCors.y1 := top
@@ -119,14 +130,14 @@ class Client {
 		this.setSearchBoxsSize()
 	}
 
-	getCloackCors(type) {
-		
-		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*5 ./img/cloack_" type ".bmp"
+	getCloackCors(invisibleCpu) {
+		ImageSearch, x, y, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, % "*10 ./img/cloack_" invisibleCpu ".bmp"
 
 		if (ErrorLevel = 0) {
+			OutputDebug, % "Cloack CPU " invisibleCpu " found"
 			return [x, y]
 		} else {
-
+			OutputDebug, % "ERROR! Cloack CPU " invisibleCpu " is not found"
 			return false
 		}
 	}
@@ -144,7 +155,7 @@ class Client {
 		this.searchBoxsSize[2].x1 := this.boxCors.x1
 		this.searchBoxsSize[2].y1 := this.searchBoxsSize[1].y2 + pixelsToIgnore
 		this.searchBoxsSize[2].x2 := this.boxCors.x2
-		this.searchBoxsSize[2].y2 := this.boxCors.y2 
+		this.searchBoxsSize[2].y2 := this.boxCors.y2
 
 		this.searchBoxsSize[3].x1 := this.boxCors.x1
 		this.searchBoxsSize[3].y1 := (this.boxCors.y2 * 0.40)
@@ -177,6 +188,7 @@ class Client {
 	}
 
 	findBonusBox(shader) {
+		OutputDebug, % "FindBonusBox "
 		shaderVariation := shader
 		i := 1
 
@@ -196,5 +208,5 @@ class Client {
 		}
 		return false
 	}
-	
+
 }
