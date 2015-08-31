@@ -55,13 +55,13 @@ class System {
 							this.setState("ApproachingToBonusBox")
 						} else {
 							Ship.collect(bonusBox)
-							Sleep, 200
+							Sleep, 100
 							this.setState("CollectingBonusBox")
 						}
 					} else {
 						if (!Ship.isMoving()) {
 							Minimap.move()
-							Sleep, 100
+							Sleep, 500
 						}
 					}
 				}
@@ -75,14 +75,13 @@ class System {
 				if (this.state = "CollectingBonusBox") {
 					if (!Ship.isMoving()) {
 						this.bonusBoxCollected++
-						Sleep, 200
 						this.setState("FindBonusBox")
 					}
 				}
 
 				if (this.state = "GoToPortalForEscape") {
 				  Minimap.goTo(this.escapePortal)
-                  Sleep, 200
+          Sleep, 200
 
 					if (!Ship.isMoving()) {
 						Minimap.saveLastCors()

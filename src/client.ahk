@@ -197,15 +197,10 @@ class Client {
 
 			if (ErrorLevel = 0) {
 				return [corsX, corsY]
-			} else {
-				ImageSearch, corsX, corsY, this.searchBoxsSize[i].x1, this.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%shaderVariation% ./img/event_box.bmp
-
-				if (ErrorLevel = 0) {
-				  return [corsX, corsY]
-        }
 			}
 			i++
 		}
+
 		return false
 	}
 
