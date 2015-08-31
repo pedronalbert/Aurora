@@ -206,18 +206,23 @@ class System {
 	setCheckTimers() {
 		if (this.invisibleActivated = 1) {
 			SetTimer, invisibleCheck, % this.invisibleCheckTime
+      SetTimer, invisibleCheck, On
 		}
 
 		if (this.escapeActivated = 1) {
 			SetTimer, damageCheck, % this.damageCheckTime
+      SetTimer, damageCheck, On
 		}
 
     if (this.petActivated = 1) {
       SetTimer, petCheck, 10000
+      SetTimer, petCheck, On
     }
 
     SetTimer, disconnectCheck, 5000
+    SetTimer, disconnectCheck, On
     SetTimer, deadCheck, 5000
+    SetTimer, deadCheck, On
 
 		return
 
