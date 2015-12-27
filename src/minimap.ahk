@@ -11,7 +11,14 @@ class Minimap {
 	static searchPoints := []
 	static shipLastCors := []
 
-	init() {
+	;User config
+	static configMap :=
+	static configMoveMode :=
+
+	init(configMap, configMoveMode) {
+		this.configMap := configMap
+		this.configMoveMode := configMoveMode
+
 		if (this.setBoxCors()) {
 			this.setPortalsCors()
 			this.setBackToMapRoutes()
@@ -47,7 +54,7 @@ class Minimap {
 	}
 
 	generateBackToMapRoute() {
-		this.backToMapRoute :=  this.backToMapRoutes[System.map]
+		this.backToMapRoute :=  this.backToMapRoutes[this.configMap]
 		this.backToMapRoutePosition := 1
 	}
 
@@ -63,7 +70,7 @@ class Minimap {
 		nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
 		actualMap := this.backToMapRoute[this.backToMapRoutePosition]
 
-		if (actualMap = System.map) {
+		if (actualMap = this.configMap) {
 			return false
 		}
 
@@ -83,7 +90,7 @@ class Minimap {
 	}
 
 	move() {
-		if (System.moveMode = "RANDOM") {
+		if (this.configMoveMode = "RANDOM") {
 			this.moveRandom()
 		} else {
 			this.moveNextPoint()
@@ -136,12 +143,11 @@ class Minimap {
 	}
 
 	getNearPortalCors() {
-		map := System.map
 		minDistance := 9999
 		portalNearPos := 0
 		shipCors := this.getShipCors()
 
-		for k, portalCors in this.portalsCors[map] {
+		for k, portalCors in this.portalsCors[this.configMap] {
 			a := (portalCors.cors[1] - shipCors[1])
 			a := a * a
 
@@ -156,7 +162,7 @@ class Minimap {
 			}
 		}
 
-		cors := [this.portalsCors[map][portalNearPos].cors[1], this.portalsCors[map][portalNearPos].cors[2]]
+		cors := [this.portalsCors[this.configMap][portalNearPos].cors[1], this.portalsCors[this.configMap][portalNearPos].cors[2]]
 
 		return cors
 	}

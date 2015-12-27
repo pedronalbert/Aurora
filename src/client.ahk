@@ -1,8 +1,11 @@
 class Client {
 	static boxCors := {}
 	static searchBoxsSize := [{}, {}, {}, {}]
+	static configBonusBoxShader
 
-	init() {
+	init(bonusBoxShader) {
+		this.configBonusBoxShader := bonusBoxShader
+		
 		return true
 	}
 
@@ -187,13 +190,12 @@ class Client {
 		TrayTip, Client coors setted successfully
 	}
 
-	findBonusBox(shader) {
-		OutputDebug, % "FindBonusBox "
-		shaderVariation := shader
+	findBonusBox() {
+		bonusBoxShader := this.configBonusBoxShader
 		i := 1
 
 		Loop, 4 {
-			ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%shaderVariation% ./img/bonus_box.bmp
+			ImageSearch, corsX, corsY, Client.searchBoxsSize[i].x1, Client.searchBoxsSize[i].y1, this.searchBoxsSize[i].x2, this.searchBoxsSize[i].y2 , *%bonusBoxShader% ./img/bonus_box.bmp
 
 			if (ErrorLevel = 0) {
 				return [corsX, corsY]

@@ -3,25 +3,25 @@ class System {
 	static bonusBoxCollected := 0
 	static state :=
 	static statePriority := 0
+  static escapePortal := []
 
   ;User config
-  static map :=
-  static escapeActivated :=
-  static escapeShield :=
-  static invisibleActivated :=
-  static invisibleCheckTime :=
-  static invisibleCpu :=
-  static bonusBoxShader :=
-  static damageCheckTime :=
-  static reviveMode :=
-  static escapePortal := []
-  static moveMode :=
-  static petActivated :=
+  static configMap :=
+  static configEscapeActive :=
+  static configEscapeShield :=
+  static configInvisibleActive :=
+  static configInvisibleCheckTime :=
+  static configInvisibleCpu :=
+  static configBonusBoxShader :=
+  static configDamageCheckTime :=
+  static configReviveMode :=
+  static configMoveMode :=
+  static configPetActive :=
 
 
 	isReady() {
-		if (Client.init() and Minimap.init() and Ship.init()) {
-      if (this.petActivated = 1) {
+		if (Client.init(this.configBonusBoxShader) and Minimap.init(this.configMap, this.configMoveMode) and Ship.init()) {
+      if (this.configPetActive = 1) {
         if (Pet.init()) {
           return true
         } else {
@@ -45,17 +45,20 @@ class System {
 				; ------------------------ STATES -------------------------------------
 
 				if (this.state = "FindBonusBox") {
-					bonusBox := Client.findBonusBox(this.bonusBoxShader)
+					bonusBoxCors := Client.findBonusBox()
 
-					if (isObject(bonusBox)) {
-						OutputDebug, % "Bonus box find x: " bonusBox[1] " y: " bonusBox[2]
+					if (isObject(bonusBoxCors)) {
+						OutputDebug, % "Bonus box find x: " bonusBoxCors[1] " y: " bonusBoxCors[2]
+
 						if (Ship.isMoving()) {
-							Ship.approach(bonusBox)
+							Ship.approach(bonusBoxCors)
 							Sleep, 100
+
 							this.setState("ApproachingToBonusBox")
 						} else {
-							Ship.collect(bonusBox)
+							Ship.collect(bonusBoxCors)
 							Sleep, 100
+
 							this.setState("CollectingBonusBox")
 						}
 					} else {
@@ -74,6 +77,7 @@ class System {
 
 				if (this.state = "CollectingBonusBox") {
 					if (!Ship.isMoving()) {
+            Sleep, 100
 						this.bonusBoxCollected++
 						this.setState("FindBonusBox")
 					}
@@ -121,8 +125,8 @@ class System {
 						if (Ship.getShieldPercent() >= 95) {
 							if (Ship.getHealPercent() >= 95) {
 								this.statePriority := 0
-                                this.setCheckTimers()
 								this.setState("FindBonusBox")
+                this.setCheckTimers()
 							}
 						}
 					}
@@ -135,9 +139,9 @@ class System {
 
             if (Ship.getShieldPercent() >= 95) {
               if (Ship.getHealPercent() >= 95) {
-                this.setCheckTimers()
                 this.statePriority := 0
                 this.setState("FindBonusBox")
+                this.setCheckTimers()
               }
             }
           }
@@ -164,8 +168,8 @@ class System {
 						this.setState("WaitForNextPortal_Next_JumpToNewMap", 1)
 					} else {
 						this.statePriority := 0
-            this.setCheckTimers()
 						this.setState("FindBonusBox")
+            this.setCheckTimers()
 					}
 				}
 
@@ -204,19 +208,16 @@ class System {
 	}
 
 	setCheckTimers() {
-		if (this.invisibleActivated = 1) {
-			SetTimer, invisibleCheck, % this.invisibleCheckTime
-      SetTimer, invisibleCheck, On
+		if (this.configInvisibleActive = 1) {
+			SetTimer, invisibleCheck, % this.configInvisibleCheckTime
 		}
 
-		if (this.escapeActivated = 1) {
-			SetTimer, damageCheck, % this.damageCheckTime
-      SetTimer, damageCheck, On
+		if (this.configEscapeActive = 1) {
+			SetTimer, damageCheck, % this.configDamageCheckTime
 		}
 
-    if (this.petActivated = 1) {
+    if (this.configPetActive = 1) {
       SetTimer, petCheck, 10000
-      SetTimer, petCheck, On
     }
 
     SetTimer, disconnectCheck, 5000
@@ -227,8 +228,8 @@ class System {
 		return
 
 		invisibleCheck:
-			if (!Ship.isInvisible(System.invisibleCpu)) {
-				Ship.setInvisible(System.invisibleCpu)
+			if (!Ship.isInvisible(System.configInvisibleCpu)) {
+				Ship.setInvisible(System.configInvisibleCpu)
 			}
 		return
 
@@ -236,9 +237,9 @@ class System {
 			shieldPercent := Ship.getShieldPercent()
 			healPercent := Ship.getHealPercent()
       OutputDebug, % "DamageCheck heal: " healPercent " shield: " shieldPercent
-			if (healPercent > 0) { ;no puede estar muerto
-				if (shieldPercent < System.escapeShield) {
-						System.escapeToPortal()
+			if (healPercent > 0) { ;La vida tiene que ser visible o correra cuando este en zona radioactiva
+				if (shieldPercent < System.configEscapeShield) {
+					System.escapeToPortal()
 				}
 			}
 		return
@@ -252,7 +253,7 @@ class System {
     deadCheck:
       if (Ship.isDead()) {
         System.stopCheckTimers()
-        reviveModeUsed := Ship.revive(System.reviveMode)
+        reviveModeUsed := Ship.revive(System.configReviveMode)
 
         OutputDebug, % "Ship revived on: " reviveModeUsed
 
@@ -289,12 +290,12 @@ class System {
 	}
 
 	setState(state, priority := 0) {
-    OutputDebug, % "State: " state " priority: " priority
-		if (priority >= this.statePriority) {
+		if (priority >= this.statePriority and this.state <> state) {
 			this.state := state
-			OutputDebug, % "State: " state " Priority: " priority
 
-		}
+		  OutputDebug, % "New state: " state " Priority: " priority
+    }
+    
 	}
 
 	escapeToPortal() {

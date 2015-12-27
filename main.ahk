@@ -56,18 +56,18 @@ updateUserConfigIni() {
 	GuiControlGet, System_MoveMode
 
 	IniWrite, % Map, config.ini, System, Map
-	IniWrite, % System_MoveMode, config.ini, System, MoveMode
-	IniWrite, % System_ReviveMode, config.ini, System, ReviveMode
-	IniWrite, % System.escapeActivated, config.ini, EscapeSystem, Activated
-	IniWrite, % System.escapeShield, config.ini, EscapeSystem, Shield
-	IniWrite, % System.invisibleActivated, config.ini, InvisibleSystem, Activated
-	IniWrite, % System.invisibleCheckTime, config.ini, InvisibleSystem, CheckTime
-	IniWrite, % System.invisibleCpu, config.ini, InvisibleSystem, Cpu
-	IniWrite, % System.bonusBoxShader, config.ini, System, BonusBoxShader
-	IniWrite, % System.damageCheckTime, config.ini, System, DamageCheckTime
+	IniWrite, % System.configEscapeActive, config.ini, EscapeSystem, Activated
+	IniWrite, % System.configEscapeShield, config.ini, EscapeSystem, Shield
+	IniWrite, % System.configInvisibleActive, config.ini, InvisibleSystem, Activated
+	IniWrite, % System.configInvisibleCheckTime, config.ini, InvisibleSystem, CheckTime
+	IniWrite, % System.configInvisibleCpu, config.ini, InvisibleSystem, Cpu
+	IniWrite, % System.configBonusBoxShader, config.ini, System, BonusBoxShader
+	IniWrite, % System.configDamageCheckTime, config.ini, System, DamageCheckTime
 	IniWrite, % Client.boxCors.y1, config.ini, Client, Top
 	IniWrite, % Client.boxCors.y2, config.ini, Client, Bottom
-	IniWrite, % System.petActivated, config.ini, Pet, Activated
+	IniWrite, % System_MoveMode, config.ini, System, MoveMode
+	IniWrite, % System_ReviveMode, config.ini, System, ReviveMode
+	IniWrite, % System.configPetActive, config.ini, Pet, Activated
 }
 
 getUserConfigIni() {
@@ -130,15 +130,15 @@ setSystemConfig() {
 	reviveModeSelected := reviveModeList[System_ReviveMode]
 	moveModeSelected := moveModeList[System_MoveMode]
 
-	System.map := mapSelected
-	System.reviveMode := reviveModeSelected
-	System.moveMode := moveModeSelected
-	System.escapeActivated := EscapeSystem_Activated
-	System.escapeShield := EscapeSystem_Shield
-	System.damageCheckTime := System_DamageCheckTime
-	System.invisibleActivated := InvisibleSystem_Activated
-	System.invisibleCheckTime := System_InvisibleCheckTime
-	System.invisibleCpu := InvisibleSystem_Cpu
-	System.bonusBoxShader := System_BonusBoxShader
-	System.petActivated := PetSystem_Activated
+	System.configMap := mapSelected
+	System.configEscapeActive := EscapeSystem_Activated
+	System.configEscapeShield := EscapeSystem_Shield
+	System.configInvisibleActive := InvisibleSystem_Activated
+	System.configInvisibleCheckTime := System_InvisibleCheckTime
+	System.configInvisibleCpu := InvisibleSystem_Cpu
+	System.configBonusBoxShader := System_BonusBoxShader
+	System.configDamageCheckTime := System_DamageCheckTime
+	System.configReviveMode := reviveModeSelected
+	System.configMoveMode := moveModeSelected
+	System.configPetActive := PetSystem_Activated
 }
