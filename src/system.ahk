@@ -222,7 +222,7 @@ class System {
 
     SetTimer, disconnectCheck, 5000
     SetTimer, deadCheck, 5000
-    SetTimer, clientCheck, 5000
+    SetTimer, clientCheck, 60000
 
 		return
 
