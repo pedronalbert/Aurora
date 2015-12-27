@@ -39,7 +39,7 @@ Gui:
 
   Gui, Tab, 2
   Gui, Add, Text, x40 y60, Bonus Box Shader
-  Gui, Add, Slider, xp+120 yp-3 Range1-50 ThickInterval1 Thick18 ToolTipRight vSystem_BonusBoxShader, % userConfig.system.bonusBoxShader
+  Gui, Add, Slider, xp+120 yp-3 Range1-200 ThickInterval1 Thick18 ToolTipRight vSystem_BonusBoxShader, % userConfig.system.bonusBoxShader
 
   Gui, Add, Text, x40 yp50, Damage Checker (ms)
   Gui, Add, Edit, xp+130 yp-3 w60 vSystem_DamageCheckTime, % userConfig.system.damageCheckTime
