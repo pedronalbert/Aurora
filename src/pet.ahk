@@ -3,17 +3,23 @@ class Pet {
   static boxCors := {}
 
   init() {
-    ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/pet/box.bmp
+    if (!Client.petWindowIsOpen()) {
+      Client.petWindowOpen()
+      Sleep, 2000
+    }
+    
+    if (Client.petWindowIsOpen()) {
+      windowCors := Client.getPetsWindowCors()
 
-    If (ErrorLevel = 0) {
-      this.boxCors.x1 := x
-      this.boxCors.y1 := y
-      this.boxCors.x2 := x + 269
-      this.boxCors.y2 := Client.boxCors.y2
+      this.boxCors.x1 := windowCors[1]
+      this.boxCors.y1 := windowCors[2]
+      this.boxCors.x2 := windowCors[1] + 269
+      this.boxCors.y2 := windowCors[2] + Client.boxCors.y2
 
       return true
     } else {
-      MsgBox, % "ERRROR! the pet window is not visible"
+      MsgBox, % "ERRROR! Pet not found"
+
       return false
     }
   }

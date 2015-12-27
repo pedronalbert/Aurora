@@ -221,9 +221,8 @@ class System {
     }
 
     SetTimer, disconnectCheck, 5000
-    SetTimer, disconnectCheck, On
     SetTimer, deadCheck, 5000
-    SetTimer, deadCheck, On
+    SetTimer, clientCheck, 5000
 
 		return
 
@@ -268,17 +267,22 @@ class System {
     petCheck:
       if (Pet.isDead()) {
         Pet.repair()
-        Sleep, 1000
+        Sleep, 800
       }
 
       if (Pet.isPaused()) {
         Pet.play()
-        Sleep, 1000
+        Sleep, 800
       }
 
       if (Pet.isPasive()) {
         Pet.selectModule("autocollector")
-        Sleep, 1000
+      }
+    return
+
+    clientCheck:
+      if(Client.questsIsOpen) {
+        Client.questsClose()
       }
     return
 	}
@@ -287,6 +291,7 @@ class System {
 		SetTimer, invisibleCheck, Off
 		SetTimer, damageCheck, Off
     SetTimer, petCheck, Off
+    SetTimer, clientCheck, Off
 	}
 
 	setState(state, priority := 0) {

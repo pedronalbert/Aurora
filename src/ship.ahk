@@ -10,25 +10,31 @@ class Ship {
 	static lastCollectCors := [0,0]
 
 	init() {
-		if (this.setStatsBoxCors()) {
+		if (this.setStatsWindowCors()) {
 			return true
 		} else {
 			return false
 		}
 	}
 
-	setStatsBoxCors() {
-		ImageSearch, x, y, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/ship_stats_box.bmp
+	setStatsWindowCors() {
+		if (!Client.shipStatsWindowIsOpen()) {
+			Client.shipStatsWindowOpen()
+			Sleep, 2000
+		}
+		
+		if (Client.shipStatsWindowIsOpen()) {
+			windowCors := Client.getShipStatsWindowCors()
 
-		If (ErrorLevel = 0) {
-			this.statsBoxCors.x1 := x
-			this.statsBoxCors.y1 := y
-			this.statsBoxCors.x2 := x + 190
-			this.statsBoxCors.y2 := y + 105
+			this.statsBoxCors.x1 := windowCors[1]
+			this.statsBoxCors.y1 := windowCors[2]
+			this.statsBoxCors.x2 := windowCors[1] + 190
+			this.statsBoxCors.y2 := windowCors[2] + 105
 
 			return true
 		} else {
-			MsgBox, % "ERRROR! the ship stats are not visible, set to visible or re-configure the client coors"
+			MsgBox, % "ERRROR! re-configure the client"
+
 			return false
 		}
 	}

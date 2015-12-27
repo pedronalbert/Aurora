@@ -206,4 +206,101 @@ class Client {
 		return false
 	}
 
+	questsIsOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/quests_button_open.bmp
+
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	questsClose() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/quests_button_open.bmp
+
+		if (ErrorLevel = 0) {
+			MouseClick, Left, corsX, corsY, 1, 0
+		}
+	}
+
+	shipStatsWindowIsOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/ship_stats_window.bmp
+		
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	shipStatsWindowOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/ship_stats_button.bmp
+
+		if (ErrorLevel = 0) {
+			MouseClick, Left, corsX, corsY, 1, 0
+		}
+	}
+
+	getShipStatsWindowCors() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/ship_stats_window.bmp
+
+		if (ErrorLevel = 0) {
+			return [corsX, corsY]
+		}
+	}
+
+	minimapWindowIsOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/minimap_window.bmp
+		
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	minimapWindowOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/minimap_button.bmp
+
+		if (ErrorLevel = 0) {
+			MouseClick, Left, corsX, corsY, 1, 0
+		}
+	}
+
+	getMinimapWindowCors() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/minimap_window.bmp
+
+		if (ErrorLevel = 0) {
+			return [corsX, corsY]
+		}
+	}
+
+	petWindowIsOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/pet_window.bmp
+		
+		if (ErrorLevel = 0) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	petWindowOpen() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/pet_button.bmp
+
+		if (ErrorLevel = 0) {
+			MouseClick, Left, corsX, corsY, 1, 0
+		}
+	}
+
+	getPetWindowCors() {
+		ImageSearch, corsX, corsY, this.boxCors.x1, this.boxCors.y1, this.boxCors.x2, this.boxCors.y2, *10 ./img/client/pet_window.bmp
+
+		if (ErrorLevel = 0) {
+			return [corsX, corsY]
+		}
+	}
+
+
 }

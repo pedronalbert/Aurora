@@ -19,7 +19,7 @@ class Minimap {
 		this.configMap := configMap
 		this.configMoveMode := configMoveMode
 
-		if (this.setBoxCors()) {
+		if (this.setWindowCors()) {
 			this.setPortalsCors()
 			this.setBackToMapRoutes()
 			this.setSearchPoints()
@@ -421,23 +421,29 @@ class Minimap {
 		this.backToMapRoutes[38] := [38]
 	}
 
-	setBoxCors() {
-		ImageSearch, corsX, corsY, Client.boxCors.x1, Client.boxCors.y1, Client.boxCors.x2, Client.boxCors.y2, *10 ./img/minimap_box.bmp
+	setWindowCors() {
+		if (!Client.minimapWindowIsOpen()) {
+			Client.minimapWindowOpen()
+			Sleep, 2000
+		}
+		
+		if (Client.minimapWindowIsOpen()) {
+			windowCors := Client.getMinimapWindowCors()
 
-		If (ErrorLevel = 0) {
-			this.boxCors.x1 := corsX
-			this.boxCors.y1 := corsY
-			this.boxCors.x2 := corsX + 176
-			this.boxCors.y2 := corsY + 190
+			this.boxCors.x1 := windowCors[1]
+			this.boxCors.y1 := windowCors[2]
+			this.boxCors.x2 := windowCors[1] + 176
+			this.boxCors.y2 := windowCors[2] + 190
 
-			this.availableBoxCors.x1 := corsX + 25
-			this.availableBoxCors.y1 := corsY + 50
+			this.availableBoxCors.x1 := windowCors[1] + 25
+			this.availableBoxCors.y1 := windowCors[2] + 50
 			this.availableBoxCors.x2 := this.availableBoxCors.x1 + 187
 			this.availableBoxCors.y2 := this.availableBoxCors.y1 + 115
 
 			return true
 		} else {
-			MsgBox, % "ERROR!, the minimap is not visible, set to visible or re-configure the client coors"
+			MsgBox, % "ERRROR! re-configure the client"
+
 			return false
 		}
 	}
