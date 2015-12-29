@@ -6,9 +6,9 @@ class ConfigManager {
   static escapeActive := true
   static escapeShield := 85
   static autoCloack := true
-  static cloackCpu := 50
-  static cloacksAmount := 3
-  static invisibleCheckTime := 15000
+  static cloackCpu := 10
+  static cloacksAmount := 1
+  static invisibleCheckTime := 5000
   static damageCheckTime := 1000
   static reviveMode := "PORTAL"
   static petActive := false

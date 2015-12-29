@@ -7,7 +7,7 @@ class Minimap {
   static backToMapRoutes := []
   static backToMapRoutePosition :=
   static backToMapRoute :=
-  static searchPointPosition := 1
+  static searchPointPosition := 
   static searchPoints := []
   static shipLastCors := []
 
@@ -19,6 +19,9 @@ class Minimap {
     if (!this.setWindowCors()) {
       return false
     }
+
+    Random, searchPointPositionRandom, 1, 25
+    this.searchPointPosition := searchPointPositionRandom
 
     this.configMap := ConfigManager.map
     this.configMoveMode := ConfigManager.moveMode

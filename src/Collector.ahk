@@ -165,9 +165,9 @@ class Collector {
 
     cloackCheck:
       if (!Ship.isInvisible()) {
-        if (ConfigManager.cloacksAmount > this.cloacksUsed) {
+        if (ConfigManager.cloacksAmount > Collector.cloacksUsed) {
           Ship.useCloack()
-          this.cloacksUsed++
+          Collector.cloacksUsed++
         } else {
           SetTimer, cloackCheck, Off
         }

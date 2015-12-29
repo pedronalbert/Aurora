@@ -214,7 +214,7 @@ class Ship {
     }
   }
 
-  useCloack(cloackCpu)  {
+  useCloack()  {
     cloackCors := Client.getCloackCors(this.cloackCpu)
 
     if (isObject(cloackCors)) {
