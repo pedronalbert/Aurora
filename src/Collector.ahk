@@ -4,6 +4,7 @@ class Collector {
   static state :=
   static statePriority := 0
   static escapePortal := []
+  static cloacksUsed := 0
 
 
   isReady() {
@@ -197,16 +198,16 @@ class Collector {
   }
 
   setCheckTimers() {
-    if (ConfigManager.invisibleActive) {
-      SetTimer, invisibleCheck, % ConfigManager.invisibleCheckTime
+    if (ConfigManager.autoCloack) {
+      SetTimer, cloackCheck, % ConfigManager.invisibleCheckTime
     }
 
     if (ConfigManager.escapeActive) {
       SetTimer, damageCheck, % ConfigManager.damageCheckTime
     }
 
-    if (ConfigManager.petActive = 1) {
-      SetTimer, petCheck, 10000
+    if (ConfigManager.petActive) {
+      SetTimer, petCheck, 5000
     }
 
     SetTimer, disconnectCheck, 5000
@@ -215,9 +216,12 @@ class Collector {
 
     return
 
-    invisibleCheck:
-      if (!Ship.isInvisible(ConfigManager.invisibleCpu)) {
-        Ship.setInvisible(ConfigManager.invisibleCpu)
+    cloackCheck:
+      if (!Ship.isInvisible()) {
+        if (ConfigManager.cloacksAmount > this.cloacksUsed) {
+          Ship.useCloack()
+          this.cloacksUsed++
+        }
       }
     return
 
@@ -241,7 +245,7 @@ class Collector {
     deadCheck:
       if (Ship.isDead()) {
         Collector.stopCheckTimers()
-        reviveModeUsed := Ship.revive(Collector.configReviveMode)
+        reviveModeUsed := Ship.revive(ConfigManager.reviveMode)
 
         OutputDebug, % "Ship revived on: " reviveModeUsed
 
@@ -270,14 +274,14 @@ class Collector {
     return
 
     clientCheck:
-      if(Client.questsIsOpen) {
+      if (Client.questsIsOpen) {
         Client.questsClose()
       }
     return
   }
 
   stopCheckTimers() {
-    SetTimer, invisibleCheck, Off
+    SetTimer, cloackCheck, Off
     SetTimer, damageCheck, Off
     SetTimer, petCheck, Off
     SetTimer, clientCheck, Off
@@ -287,7 +291,7 @@ class Collector {
     if (priority >= this.statePriority and this.state <> state) {
       this.state := state
 
-      TrayTip, AuroraBot, % "New state: " state " Priority: " priority
+      OutputDebug, % "New state: " state " Priority: " priority
     }
     
   }

@@ -8,8 +8,11 @@ class Ship {
   static shieldBarsShader := 20
   static statsWindowCors := {}
   static lastCollectCors := [0,0]
+  static cloackCpu :=
 
   init() {
+    this.cloackCpu := ConfigManager.cloackCpu
+
     if (this.setStatsWindowCors()) {
       return true
     } else {
@@ -190,8 +193,8 @@ class Ship {
     }
   }
 
-  isInvisible(invisibleCpu) {
-    cloackCors := Client.getCloackCors(invisibleCpu)
+  isInvisible() {
+    cloackCors := Client.getCloackCors(this.cloackCpu)
 
     corsX := cloackCors[1]
     corsY := cloackCors[2]
@@ -211,8 +214,8 @@ class Ship {
     }
   }
 
-  setInvisible(invisibleCpu)  {
-    cloackCors := Client.getCloackCors(invisibleCpu)
+  useCloack(cloackCpu)  {
+    cloackCors := Client.getCloackCors(this.cloackCpu)
 
     if (isObject(cloackCors)) {
       OutputDebug, % "Ship set invisible"
