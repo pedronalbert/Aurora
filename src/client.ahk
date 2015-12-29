@@ -18,17 +18,17 @@ class Client {
   }
 
   setSearchAreas() {
-		percentToIgnore := 0.08
+		percentToIgnore := 0.8
 		pixelsToIgnore := this.windowCors.y2 * percentToIgnore
-		percentPosToIgnore := 0.60
+		percentPosToIgnore := 0.61
 
 		this.searchAreas[1].x1 := this.windowCors.x1
 		this.searchAreas[1].y1 := this.windowCors.y1
 		this.searchAreas[1].x2 := this.windowCors.x2
-		this.searchAreas[1].y2 := this.windowCors.y2 * percentPosToIgnore
+		this.searchAreas[1].y2 := this.windowCors.y2 * percentPosToIgnore - pixelsToIgnore
 
 		this.searchAreas[2].x1 := this.windowCors.x1
-		this.searchAreas[2].y1 := this.searchAreas[1].y2 + pixelsToIgnore
+		this.searchAreas[2].y1 := this.searchAreas[1].y2 + (pixelsToIgnore * 2)
 		this.searchAreas[2].x2 := this.windowCors.x2
 		this.searchAreas[2].y2 := this.windowCors.y2
 

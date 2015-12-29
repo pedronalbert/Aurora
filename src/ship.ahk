@@ -81,9 +81,9 @@ class Ship {
     x := Minimap.windowCors.x1 + 114
     y := Minimap.windowCors.y1 + 37
 
-    PixelSearch, corsX, corsY, x, y, x + 10, y + 2, 0xFFFFFF
+    PixelGetColor, color, x, y
 
-    if (ErrorLevel = 0) {
+    if (color = "0xFFFFFF") {
       return true
     } else {
       return false

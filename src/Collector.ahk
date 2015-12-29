@@ -42,13 +42,15 @@ class Collector {
               Sleep, 100
 
               this.setState("Approaching")
+              continue
             } else {
               if (ConfigManager.soloPet = 1) {
                 Sleep, 500 ;wait for pet collect
               } else {
                 Ship.collect(bonusBoxCors)
-                Sleep, 100
+                Sleep, 150
                 this.setState("CollectingBonusBox") 
+                continue
               }
             }
           } else {
@@ -62,14 +64,15 @@ class Collector {
         if (this.state = "Approaching") {
           if (!Ship.isMoving()) {
             this.setState("Find")
+            continue
           }
         }
 
         if (this.state = "CollectingBonusBox") {
           if (!Ship.isMoving()) {
-            Sleep, 100
             this.bonusBoxCollected++
             this.setState("Find")
+            continue
           }
         }
 
@@ -83,6 +86,7 @@ class Collector {
             Send {j}
 
             this.setState("EscapingToPortal_Next_BackToMap", 1)
+            continue
           }
 
           if (Ship.getShieldPercent() <= 15) {
@@ -97,6 +101,7 @@ class Collector {
             Sleep, 1000
             Send {j}
             this.setState("BackingToMap", 1)
+            continue
           }
 
         }
@@ -104,6 +109,7 @@ class Collector {
         if (this.state = "BackingToMap") {
           if (Minimap.isInNewMap()) {
             this.setState("FinishRepair_Next_Find", 1)
+            continue
           }
         }
 
@@ -121,65 +127,6 @@ class Collector {
             }
           }
         }
-
-        if (this.state = "FinishRepair_Next_Find_SetTimers") {
-          if (Ship.getShieldPercent() >= 95) {
-            Ship.changeConfig()
-            Sleep, 2000
-
-            if (Ship.getShieldPercent() >= 95) {
-              if (Ship.getHealPercent() >= 95) {
-                this.statePriority := 0
-                this.setState("Find")
-                this.setCheckTimers()
-              }
-            }
-          }
-        }
-
-        if (this.state = "FinishRepair_Next_GenerateRoute" ) {
-          if (Ship.getShieldPercent() >= 95) {
-            Ship.changeConfig()
-            Sleep, 2000
-
-            if (Ship.getShieldPercent() >= 95) {
-              if (Ship.getHealPercent() >= 95) {
-                this.setCheckTimers()
-                Minimap.generateBackToMapRoute()
-                this.setState("GoToNextPortal", 1)
-              }
-            }
-          }
-        }
-
-        if (this.state = "GoToNextPortal") {
-          if (Minimap.goToNextPortal()) {
-            Sleep, 200
-            this.setState("WaitForNextPortal_Next_JumpToNewMap", 1)
-          } else {
-            this.statePriority := 0
-            this.setState("Find")
-            this.setCheckTimers()
-          }
-        }
-
-        if (this.state = "WaitForNextPortal_Next_JumpToNewMap") {
-          if (!Ship.isMoving()) {
-            Minimap.saveLastCors()
-            Sleep, 1000
-            Send {j}
-
-            this.setState("WaitForNextMap_Next_GoToNextPortal", 1)
-          }
-        }
-
-        if (this.state = "WaitForNextMap_Next_GoToNextPortal", 1) {
-          if (Minimap.isInNewMap()) {
-            Sleep, 300
-            this.setState("GoToNextPortal", 1)
-          }
-        }
-
 
       } else {
         break
@@ -221,6 +168,8 @@ class Collector {
         if (ConfigManager.cloacksAmount > this.cloacksUsed) {
           Ship.useCloack()
           this.cloacksUsed++
+        } else {
+          SetTimer, cloackCheck, Off
         }
       }
     return
