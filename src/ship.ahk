@@ -150,7 +150,7 @@ class Ship {
    * @param {string} mode - BASE | PORTAL
    * @return {string} mode used
   */
-  revive(mode := "BASE") {
+  revive(mode := "PORTAL") {
     MouseMove, 0, 0 , 0 ;move mouse away
 
     if (mode = "BASE") {

@@ -194,15 +194,9 @@ class Collector {
     deadCheck:
       if (Ship.isDead()) {
         Collector.stopCheckTimers()
-        reviveModeUsed := Ship.revive(ConfigManager.reviveMode)
+        reviveModeUsed := Ship.revive()
 
-        OutputDebug, % "Ship revived on: " reviveModeUsed
-
-        if (reviveModeUsed = "BASE") {
-          Collector.setState("FinishRepair_Next_GenerateRoute", 1)
-        } else {
-          Collector.setState("FinishRepair_Next_Find_SetTimers", 1)
-        }
+        Collector.setState("FinishRepair_Next_Find", 1)
       }
     return
 
