@@ -7,6 +7,10 @@ class Client {
     this.setWindowCors(ConfigManager.clientWindowCors.y1, ConfigManager.clientWindowCors.y2)
     this.setSearchAreas()
 
+    if (this.questsWindowIsOpen()) {
+      this.questsWindowClose()
+    }
+
     return true
   }
 
@@ -49,18 +53,19 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/disconnect.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY + 65, 1, 30
+      MouseClick, Left, corsX, corsY + 58, 1, 0
+      MouseMove, 0, 0, 0
 
-      Loop { ;waiting connected
+      ;Wait connected
+      Loop {
         if (this.isConnected()) {
           return true
-        }
-        else {
-          Sleep, 1000
-          secondsWaiting++
-
-          if (secondsWaiting > 30) {
+        } else {
+          if (secondsWaiting > 15) {
             this.reload()
+          } else {
+            Sleep, 1000
+            secondsWaiting++
           }
         }
       }
@@ -74,20 +79,50 @@ class Client {
 
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
-    MouseClick, Left, corsX + 3, corsY + 3, 1, 25
+    MouseClick, Left, corsX + 3, corsY + 3, 1, 0
 
-    Sleep, 1000
+    ;Wait loading
+    Loop {
+      if (this.isLoading()) {
+        break
+      } else {
+        if (secondsWaiting > 30) {
+          this.reload()
+        } else {
+          Sleep, 1000
+          secondsWaiting++
+        }
+      }
+    }
 
-    Loop { ;waiting connecting message
+    secondsWaiting := 0
+
+    ;Wait connecting appear
+    Loop {
       if (this.isConnecting()) {
         break
-      }
-      else {
-        Sleep, 1000
-        secondsWaiting++
-
+      } else {
         if (secondsWaiting > 120) {
           this.reload()
+        } else {
+          Sleep, 1000
+          secondsWaiting++
+        }
+      }
+    }
+
+    secondsWaiting := 0
+
+    ;Wait connected
+    Loop {
+      if (this.isConnected()) {
+        break
+      } else {
+        if (secondsWaiting > 15) {
+          this.reload()
+        } else {
+          Sleep, 1000
+          secondsWaiting++
         }
       }
     }
@@ -116,6 +151,16 @@ class Client {
       return true
     }
     else {
+      return false
+    }
+  }
+
+  isLoading() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/loading.bmp
+
+    if (ErrorLevel = 0) {
+      return true
+    } else {
       return false
     }
   }
