@@ -16,9 +16,7 @@ class Minimap {
   static configMoveMode :=
 
   init() {
-    if (!this.setWindowCors()) {
-      return false
-    }
+    this.setWindowCors()
 
     Random, searchPointPositionRandom, 1, 25
     this.searchPointPosition := searchPointPositionRandom
@@ -28,8 +26,6 @@ class Minimap {
     this.setPortalsCors()
     this.setBackToMapRoutes()
     this.setSearchPoints()
-
-    return true
   }
   
 
@@ -67,7 +63,7 @@ class Minimap {
     x := cors[1] + this.minimapCors.x1
     y := cors[2] + this.minimapCors.y1
 
-    MouseClick, Left, x, y, 1 , 0
+    MouseClick, Left, x, y, 1 , ConfigManager.mouseSpeed
   }
 
   goToNextPortal() {
@@ -428,12 +424,6 @@ class Minimap {
   }
 
   setWindowCors() {
-    if (!Client.minimapWindowIsOpen()) {
-      Client.minimapWindowOpen()
-      Sleep, 2000
-    }
-    
-    if (Client.minimapWindowIsOpen()) {
       windowCors := Client.getMinimapWindowCors()
 
       this.windowCors.x1 := windowCors[1]
@@ -445,13 +435,6 @@ class Minimap {
       this.minimapCors.y1 := windowCors[2] + 50
       this.minimapCors.x2 := this.minimapCors.x1 + 187
       this.minimapCors.y2 := this.minimapCors.y1 + 115
-
-      return true
-    } else {
-      MsgBox, % "ERRROR! re-configure the client (Minimap.ahk)"
-
-      return false
-    }
   }
 
   /*

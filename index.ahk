@@ -14,7 +14,7 @@ CoordMode, Mouse, Screen
 F2::
 	if (Collector.isReady()) {
 		TrayTip, AuroraBot, Bot iniciado
-		Collector.initCollect()
+		Collector.init()
 	} else {
 		TrayTip, AuroraBot, Error
 	}

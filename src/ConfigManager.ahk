@@ -12,10 +12,11 @@ class ConfigManager {
   static petActive := false
   static soloPet := false
 
-  ;Checkers
+  ;Advanced
   static deadCheckSeconds := 10
   static disconnectCheckSeconds := 10
   static petCheckSeconds := 10
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
+  static mouseSpeed := 0
 }

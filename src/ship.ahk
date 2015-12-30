@@ -12,34 +12,16 @@ class Ship {
 
   init() {
     this.cloackCpu := ConfigManager.cloackCpu
-
-    if (this.setStatsWindowCors()) {
-      return true
-    } else {
-      return false
-    }
+    this.setWindowCors()
   }
 
   setStatsWindowCors() {
-    if (!Client.shipStatsWindowIsOpen()) {
-      Client.shipStatsWindowOpen()
-      Sleep, 2000
-    }
-    
-    if (Client.shipStatsWindowIsOpen()) {
-      windowCors := Client.getShipStatsWindowCors()
+    windowCors := Client.getShipStatsWindowCors()
 
-      this.statsWindowCors.x1 := windowCors[1]
-      this.statsWindowCors.y1 := windowCors[2]
-      this.statsWindowCors.x2 := windowCors[1] + 190
-      this.statsWindowCors.y2 := windowCors[2] + 105
-
-      return true
-    } else {
-      MsgBox, % "ERRROR! re-configure the client (Ship.ahk)"
-
-      return false
-    }
+    this.statsWindowCors.x1 := windowCors[1]
+    this.statsWindowCors.y1 := windowCors[2]
+    this.statsWindowCors.x2 := windowCors[1] + 190
+    this.statsWindowCors.y2 := windowCors[2] + 105
   }
 
   getHealPercent() {
@@ -118,7 +100,8 @@ class Ship {
         corsX := centerX - 170
       }
     }
-    MouseClick, Left, corsX, corsY, 1, 0
+
+    MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
   }
 
   collect(cors) {
@@ -129,7 +112,7 @@ class Ship {
         this.goAway()
     } else {
       this.lastCollectCors := cors
-      MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
+      MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, ConfigManager.mouseSpeed
     }
   }
 
@@ -152,7 +135,7 @@ class Ship {
 
     if (ErrorLevel = 0) {
 
-      MouseClick, Left, corsX + 5, corsY + 5, 1, 15 ;click on mode
+      MouseClick, Left, corsX + 5, corsY + 5, 1, ConfigManager.mouseSpeed ;click on mode
 
       Sleep, 1000
 
@@ -162,7 +145,7 @@ class Ship {
         Random, variationX, 5, 100
         Random, variationY, 5, 20
 
-        MouseClick, Left, corsX + variationX, corsY + variationY, 1, 15 ;click on repair button
+        MouseClick, Left, corsX + variationX, corsY + variationY, 1, ConfigManager.mouseSpeed ;click on repair button
 
         Sleep, 8000
 
@@ -203,7 +186,7 @@ class Ship {
     cloackCors := Client.getCloackCors(this.cloackCpu)
 
     if (isObject(cloackCors)) {
-      MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 1, 5
+      MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 1, ConfigManager.mouseSpeed
 
       return true
     } else {

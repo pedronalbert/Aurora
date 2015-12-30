@@ -13,21 +13,31 @@ class Collector {
   static petChecker := {active: true, lastCheck: 0}
 
   isReady() {
-    if (Client.init() and Minimap.init() and Ship.init()) {
+    if (Client.init()) {
+      Minimap.init()
+      Ship.init()
+
       if (ConfigManager.petActive) {
-        if (Pet.init()) {
-          return true
-        } else {
-          return false
-        }
+        Pet.init()
       }
+
       return true
     } else {
       return false
     }
   }
 
-  initCollect() {
+  init() {
+    if (Client.init()) {
+      Minimap.init()
+      Ship.init()
+
+      if (ConfigManager.petActive) {
+        Pet.init()
+      }
+    } else {
+      return false
+    }
 
     this.escapeChecker.active := ConfigManager.escapeActive
     this.petChecker.active := ConfigManager.petActive

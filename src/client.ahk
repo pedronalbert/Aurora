@@ -7,9 +7,36 @@ class Client {
     this.setWindowCors(ConfigManager.clientWindowCors.y1, ConfigManager.clientWindowCors.y2)
     this.setSearchAreas()
 
-    if (this.questsWindowIsOpen()) {
-      this.questsWindowClose()
+    ;Open Windows
+    if (!this.shipStatsWindowIsOpen()) {
+      if (!this.shipStatsWindowOpen()) {
+        MsgBox, AuroraBot Error, Configure client coors
+        return false
+      }
     }
+
+    if (!this.minimapWindowIsOpen()) {
+      if (!this.minimapWindowOpen()) {
+        MsgBox, AuroraBot Error, Configure client coors
+        return false
+      }
+    }
+
+    if (this.questsWindowIsOpen()) {
+      if (!this.questsWindowClose()) {
+        MsgBox, AuroraBot Error, Configure client coors
+        return false
+      }
+    }
+
+    if (ConfigManager.petActive = true and this.petWindowIsOpen() = false) {
+      if (!this.petWindowOpen()) {
+        MsgBox, AuroraBot Error, Configure client coors
+        return false
+      }
+    }
+
+    Sleep, 3000
 
     return true
   }
@@ -53,8 +80,8 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/disconnect.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY + 58, 1, 0
-      MouseMove, 0, 0, 0
+      MouseClick, Left, corsX, corsY + 58, 1, ConfigManager.mouseSpeed
+      MouseMove, 0, 0, ConfigManager.mouseSpeed
 
       ;Wait connected
       Loop {
@@ -79,7 +106,7 @@ class Client {
 
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
-    MouseClick, Left, corsX + 3, corsY + 3, 1, 0
+    MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
 
     ;Wait loading
     Loop {
@@ -235,7 +262,11 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_open.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY, 1, 0
+      MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+
+      return true
+    } else {
+      return false
     }
   }
 
@@ -253,7 +284,11 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/ship_stats_button.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY, 1, 0
+      MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+
+      return true
+    } else {
+      return false
     }
   }
 
@@ -279,7 +314,11 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/minimap_button.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY, 1, 0
+      MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+
+      return true
+    } else {
+      return false
     }
   }
 
@@ -305,7 +344,11 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/pet_button.bmp
 
     if (ErrorLevel = 0) {
-      MouseClick, Left, corsX, corsY, 1, 0
+      MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+
+      return true
+    } else {
+      return false
     }
   }
 
