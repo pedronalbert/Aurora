@@ -38,6 +38,13 @@ class Client {
 
     Sleep, 3000
 
+    Minimap.init()
+    Ship.init()
+
+    if (ConfigManager.petActive) {
+      Pet.init()
+    }
+
     return true
   }
 
@@ -107,6 +114,7 @@ class Client {
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
     MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
+    MouseMove, 0, 0, ConfigManager.mouseSpeed
 
     ;Wait loading
     Loop {
@@ -153,6 +161,8 @@ class Client {
         }
       }
     }
+
+    Sleep, 1000
   }
   
   isConnected() {

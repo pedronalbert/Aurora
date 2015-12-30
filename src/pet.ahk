@@ -4,8 +4,6 @@ class Pet {
 
   init() {
     this.setWindowCors()
-
-    return true
   }
 
   setWindowCors() {

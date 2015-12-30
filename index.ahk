@@ -12,14 +12,11 @@ CoordMode, Mouse, Screen
 
 ;---------------------------------------------------
 F2::
-	if (Collector.isReady()) {
-		TrayTip, AuroraBot, Bot iniciado
-		Collector.init()
-	} else {
-		TrayTip, AuroraBot, Error
-	}
+	Collector.init()
 return
 
 F3::
-  Collector.pauseCollect()
+  Loop {
+    Sleep, 50000
+  }
 return

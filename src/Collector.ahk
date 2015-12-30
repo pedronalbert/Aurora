@@ -12,30 +12,8 @@ class Collector {
   static autoCloackChecker := {active: true, lastCheck: 0}
   static petChecker := {active: true, lastCheck: 0}
 
-  isReady() {
-    if (Client.init()) {
-      Minimap.init()
-      Ship.init()
-
-      if (ConfigManager.petActive) {
-        Pet.init()
-      }
-
-      return true
-    } else {
-      return false
-    }
-  }
-
   init() {
-    if (Client.init()) {
-      Minimap.init()
-      Ship.init()
-
-      if (ConfigManager.petActive) {
-        Pet.init()
-      }
-    } else {
+    if (!Client.init()) {
       return false
     }
 
@@ -96,7 +74,7 @@ class Collector {
                   }
                 }
 
-                Client.questsWindowClose()
+                Client.init()
                 this.setState("FinishRepairAfterBaseRevive")
                 break
               }
@@ -113,13 +91,13 @@ class Collector {
           this.disconnectChecker.lastCheck := A_Now
 
           if (Client.isDisconnect()) {
-            if (Client.connect()) {
+            if (Client.connect()) { ;Si conecta diractamente
               if (!Ship.isDead()) {
-                Client.questsWindowClose()
+                Client.init()
                 this.setState("Find")
               } else {
                 if (Ship.revive("BASE") <> false) {
-                  Client.questsWindowClose()
+                  Client.init()
                   this.setState("FinishRepairAfterBaseRevive")
                 } else {
                   Loop {
@@ -130,19 +108,19 @@ class Collector {
                         continue ;reload again
                       } else {
                         ;si revivio
-                        Client.questsWindowClose()
+                        Client.init()
                         this.setState("FinishRepairAfterBaseRevive")
                         break
                       }
                     } else {
-                      Client.questsWindowClose()
+                      Client.init()
                       this.setState("Find")
                       break
                     }
                   } 
                 }
               }
-            } else {
+            } else { ;No conectó directamente
               Loop {
                 Client.reload()
 
@@ -151,12 +129,12 @@ class Collector {
                     continue ;reload again
                   } else {
                     ;si revivio
-                    Client.questsWindowClose()
+                    Client.init()
                     this.setState("FinishRepairAfterBaseRevive")
                     break
                   }
                 } else {
-                  Client.questsWindowClose()
+                  Client.init()
                   this.setState("Find")
                   break
                 }
