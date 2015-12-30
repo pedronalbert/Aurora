@@ -47,9 +47,13 @@ class Collector {
 
           if (Ship.getHealPercent() > 0 and Ship.getShieldPercent() <= ConfigManager.escapeShield) {
             this.escapeChecker.active := false
+            this.petChecker.active := false
+            this.autoCloackChecker.active := false
+
             portalCors := Minimap.getNearPortalCors()
             Minimap.goTo(portalCors)
             Sleep, 500
+            
             this.setState("GoingToEscapePortal")
           }
         }
@@ -64,6 +68,7 @@ class Collector {
           if (Ship.isDead()) {
             this.escapeChecker.active := false
             this.deadChecker.active := false
+            this.petChecker.active := false
 
             reviveModeUsed := Ship.revive(System.configReviveMode)
 
@@ -198,8 +203,10 @@ class Collector {
 
           if (Ship.getShieldPercent() >= 95) {
             if (Ship.getHealPercent() >= 95) {
+              this.escapeChecker.active := ConfigManager.escapeActive
+              this.petChecker.active := ConfigManager.petActive
+              this.autoCloackChecker.active := ConfigManager.autoCloack
               this.setState("Find")
-              this.escapeChecker.active := true
             }
           }
         }
@@ -212,8 +219,9 @@ class Collector {
 
           if (Ship.getShieldPercent() >= 95) {
             if (Ship.getHealPercent() >= 95) {
-              this.escapeChecker.active := true
+              this.escapeChecker.active := ConfigManager.escapeActive
               this.deadChecker.active := true
+              this.petChecker.active := ConfigManager.petActive
               this.setState("Find")
             }
           }
