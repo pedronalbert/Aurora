@@ -22,7 +22,7 @@ class Client {
   }
 
   setSearchAreas() {
-		percentToIgnore := 0.08
+		percentToIgnore := 0.06
 		pixelsToIgnore := this.windowCors.y2 * percentToIgnore
 		percentPosToIgnore := 0.61
 
