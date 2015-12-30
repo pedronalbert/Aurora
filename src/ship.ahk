@@ -6,29 +6,29 @@ class Ship {
   static healBarsShader := 15
   static shieldBarsColor := 0xD8D378
   static shieldBarsShader := 20
-  static statsWindowCors := {}
+  static statosWindowCors := {}
   static lastCollectCors := [0,0]
   static cloackCpu :=
 
   init() {
     this.cloackCpu := ConfigManager.cloackCpu
-    this.setWindowCors()
+    this.setStatWindowCors()
   }
 
-  setStatsWindowCors() {
+  setStatWindowCors() {
     windowCors := Client.getShipStatsWindowCors()
 
-    this.statsWindowCors.x1 := windowCors[1]
-    this.statsWindowCors.y1 := windowCors[2]
-    this.statsWindowCors.x2 := windowCors[1] + 190
-    this.statsWindowCors.y2 := windowCors[2] + 105
+    this.statosWindowCors.x1 := windowCors[1]
+    this.statosWindowCors.y1 := windowCors[2]
+    this.statosWindowCors.x2 := windowCors[1] + 190
+    this.statosWindowCors.y2 := windowCors[2] + 105
   }
 
   getHealPercent() {
     this.healPercent := 0
 
-    healBarsCorsX := this.statsWindowCors.x1 + 27
-    healBarsCorsY := this.statsWindowCors.y1 + 46
+    healBarsCorsX := this.statosWindowCors.x1 + 27
+    healBarsCorsY := this.statosWindowCors.y1 + 46
 
     Loop, 21 {
       healBarsCorsX := healBarsCorsX + 3
@@ -43,8 +43,8 @@ class Ship {
 
   getShieldPercent() {
     this.shieldPercent := 0
-    shieldBarsCorsX := this.statsWindowCors.x1 + 27
-    shieldBarsCorsY := this.statsWindowCors.y1 + 63
+    shieldBarsCorsX := this.statosWindowCors.x1 + 27
+    shieldBarsCorsY := this.statosWindowCors.y1 + 63
 
     Loop, 21 {
       shieldBarsCorsX := shieldBarsCorsX + 3

@@ -4,12 +4,12 @@ class ConfigManager {
   static bonusBoxShader := 70
   static clientWindowCors := {y1: 71, y2: 977}
   static escapeActive := true
-  static escapeShield := 95
+  static escapeShield := 90
   static autoCloack := true
   static cloackCpu := 50
   static cloacksAmount := 5
   static reviveMode := "PORTAL"
-  static petActive := false
+  static petActive := true
   static soloPet := false
 
   ;Advanced

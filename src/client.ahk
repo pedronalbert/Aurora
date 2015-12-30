@@ -36,7 +36,7 @@ class Client {
       }
     }
 
-    Sleep, 3000
+    Sleep, 2000
 
     Minimap.init()
     Ship.init()
