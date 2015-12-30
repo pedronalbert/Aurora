@@ -12,5 +12,5 @@ class ConfigManager {
   static damageCheckTime := 1000
   static reviveMode := "PORTAL"
   static petActive := false
-  static soloPet := false
+  static soloPet := true
 }

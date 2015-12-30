@@ -71,6 +71,32 @@ class Client {
     }
   }
 
+  reload() {
+    OutputDebug, % "Client reload"
+    secondsWaiting := 0
+
+    ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
+
+    MouseClick, Left, corsX + 3, corsY + 3, 1, 25
+
+    Sleep, 1000
+
+    Loop { ;waiting connecting message
+      OutputDebug, % "Waiting for connecting"
+      if (this.isConnecting()) {
+        break
+      }
+      else {
+        Sleep, 1000
+        secondsWaiting++
+
+        if (secondsWaiting > 120) {
+          this.reload()
+        }
+      }
+    }
+  }
+  
   isConnected() {
     if (this.isDisconnect()) {
       return false
