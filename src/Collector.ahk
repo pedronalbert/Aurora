@@ -80,9 +80,28 @@ class Collector {
             this.deadChecker.active := false
             this.petChecker.active := false
 
-            Ship.revive()
+            reviveModeUsed := Ship.revive(ConfigManager.reviveMode)
 
-            this.setState("FinishRepairAfterDead")
+            if (reviveModeUsed = "PORTAL") {
+              this.setState("FinishRepairAfterPortalRevive")
+            } else if (reviveModeUsed = "BASE") {
+              this.setState("FinishRepairAfterBaseRevive")
+            } else if (reviveModeUsed = false) {
+              Loop {
+                Client.reload()
+
+                if (Ship.isDead()) {
+                  if (Ship.revive("BASE") = false) {
+                    continue ;reload again
+                  }
+                }
+
+                Client.questsWindowClose()
+                this.setState("FinishRepairAfterBaseRevive")
+                break
+              }
+            }
+
           }
         }
       }
@@ -94,7 +113,56 @@ class Collector {
           this.disconnectChecker.lastCheck := A_Now
 
           if (Client.isDisconnect()) {
-            Client.connect()
+            if (Client.connect()) {
+              if (!Ship.isDead()) {
+                Client.questsWindowClose()
+                this.setState("Find")
+              } else {
+                if (Ship.revive("BASE") <> false) {
+                  Client.questsWindowClose()
+                  this.setState("FinishRepairAfterBaseRevive")
+                } else {
+                  Loop {
+                    Client.reload()
+
+                    if (Ship.isDead()) {
+                      if (Ship.revive("BASE") = false) {
+                        continue ;reload again
+                      } else {
+                        ;si revivio
+                        Client.questsWindowClose()
+                        this.setState("FinishRepairAfterBaseRevive")
+                        break
+                      }
+                    } else {
+                      Client.questsWindowClose()
+                      this.setState("Find")
+                      break
+                    }
+                  } 
+                }
+              }
+            } else {
+              Loop {
+                Client.reload()
+
+                if (Ship.isDead()) {
+                  if (Ship.revive("BASE") = false) {
+                    continue ;reload again
+                  } else {
+                    ;si revivio
+                    Client.questsWindowClose()
+                    this.setState("FinishRepairAfterBaseRevive")
+                    break
+                  }
+                } else {
+                  Client.questsWindowClose()
+                  this.setState("Find")
+                  break
+                }
+              }
+            }
+
           }
         }
       }
@@ -222,7 +290,7 @@ class Collector {
         }
       }
 
-      if (this.state = "FinishRepairAfterDead") {
+      if (this.state = "FinishRepairAfterPortalRevive") {
         if (Ship.getShieldPercent() >= 95) {
           Ship.changeConfig()
           Sleep, 6500

@@ -126,10 +126,15 @@ class Ship {
    * @param {string} mode - BASE | PORTAL
    * @return {string} mode used
   */
-  revive() {
-    MouseMove, 0, 0 , 0 ;move mouse away
+  revive(mode) {
+    MouseMove, 0, 0 , ConfigManager.mouseSpeed ;move mouse away
 
-    image := "repair_portal"
+    if (mode = "BASE") {
+      image := "repair_base"
+    } else {
+      image := "repair_portal"
+    }
+    
 
     ImageSearch, corsX, corsY, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, % "*10 ./img/" image ".bmp"
 
@@ -150,16 +155,18 @@ class Ship {
         Sleep, 8000
 
         if (this.isDead()) {
-          Client.reloadClient()
-        }
-        else {
+          return false
+        } else {
           return mode
         }
       }
 
     } else {
-      this.revive("BASE")
-      return "BASE"
+      if (this.revive("BASE")) {
+        return "BASE"
+      } else {
+        return false
+      }
     }
   }
 

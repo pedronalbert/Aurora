@@ -89,7 +89,7 @@ class Client {
           return true
         } else {
           if (secondsWaiting > 15) {
-            this.reload()
+            return false
           } else {
             Sleep, 1000
             secondsWaiting++
@@ -97,7 +97,7 @@ class Client {
         }
       }
     } else {
-      this.reload()
+      return false
     }
   }
 
