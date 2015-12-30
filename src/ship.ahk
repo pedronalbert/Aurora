@@ -143,14 +143,10 @@ class Ship {
    * @param {string} mode - BASE | PORTAL
    * @return {string} mode used
   */
-  revive(mode := "PORTAL") {
+  revive() {
     MouseMove, 0, 0 , 0 ;move mouse away
 
-    if (mode = "BASE") {
-      image := "repair_base"
-    } else if (mode = "PORTAL") {
-      image := "repair_portal"
-    }
+    image := "repair_portal"
 
     ImageSearch, corsX, corsY, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, % "*10 ./img/" image ".bmp"
 

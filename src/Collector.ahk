@@ -53,7 +53,7 @@ class Collector {
             portalCors := Minimap.getNearPortalCors()
             Minimap.goTo(portalCors)
             Sleep, 500
-            
+
             this.setState("GoingToEscapePortal")
           }
         }
@@ -70,7 +70,7 @@ class Collector {
             this.deadChecker.active := false
             this.petChecker.active := false
 
-            reviveModeUsed := Ship.revive(System.configReviveMode)
+            Ship.revive()
 
             this.setState("FinishRepairAfterDead")
           }
@@ -215,7 +215,7 @@ class Collector {
       if (this.state = "FinishRepairAfterDead") {
         if (Ship.getShieldPercent() >= 95) {
           Ship.changeConfig()
-          Sleep, 3000
+          Sleep, 6500
 
           if (Ship.getShieldPercent() >= 95) {
             if (Ship.getHealPercent() >= 95) {

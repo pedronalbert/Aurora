@@ -1,7 +1,7 @@
 class ConfigManager {
   static map := 24
   static moveMode := "COMPLETE"
-  static bonusBoxShader := 69
+  static bonusBoxShader := 70
   static clientWindowCors := {y1: 71, y2: 977}
   static escapeActive := true
   static escapeShield := 95
