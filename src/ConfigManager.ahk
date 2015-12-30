@@ -9,7 +9,9 @@ class ConfigManager {
   static cloackCpu := 50
   static cloacksAmount := 5
   static reviveMode := "PORTAL"
-  static petActive := true
+  static reviveTimes := 99
+  static reviveAfterSeconds := 10
+  static petActive := false
   static soloPet := false
 
   ;Advanced

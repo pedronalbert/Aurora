@@ -5,6 +5,7 @@ class Collector {
   static statePriority := 0
   static escapePortal := []
   static cloacksUsed := 0
+  static reviveTimes := 0
 
   static escapeChecker := {active: true, lastCheck: 0}
   static deadChecker := {active: true, lastCheck: 0}
@@ -54,32 +55,42 @@ class Collector {
           this.deadChecker.lastCheck := A_Now
 
           if (Ship.isDead()) {
-            this.escapeChecker.active := false
-            this.deadChecker.active := false
-            this.petChecker.active := false
+            if (this.reviveTimes <= ConfigManager.reviveTimes) {
+              this.escapeChecker.active := false
+              this.deadChecker.active := false
+              this.petChecker.active := false
 
-            reviveModeUsed := Ship.revive(ConfigManager.reviveMode)
+              ;Wait reviveSeconds 
+              seconds := ConfigManager.reviveAfterSeconds * 1000
+              Sleep, seconds
 
-            if (reviveModeUsed = "PORTAL") {
-              this.setState("FinishRepairAfterPortalRevive")
-            } else if (reviveModeUsed = "BASE") {
-              this.setState("FinishRepairAfterBaseRevive")
-            } else if (reviveModeUsed = false) {
-              Loop {
-                Client.reload()
+              revive := Ship.revive(ConfigManager.reviveMode)
 
-                if (Ship.isDead()) {
-                  if (Ship.revive("BASE") = false) {
-                    continue ;reload again
-                  }
-                }
-
-                Client.init()
+              if (revive = "PORTAL") {
+                this.reviveTimes++
+                this.setState("FinishRepairAfterPortalRevive")
+              } else if (revive = "BASE") {
+                this.reviveTimes++
                 this.setState("FinishRepairAfterBaseRevive")
-                break
-              }
-            }
+              } else if (revive = false) {
+                Loop {
+                  Client.reload()
 
+                  if (Ship.isDead()) {
+                    if (Ship.revive("BASE") = false) {
+                      continue ;reload again
+                    }
+                  }
+
+                  Client.init()
+                  this.reviveTimes++
+                  this.setState("FinishRepairAfterBaseRevive")
+                  break
+                }
+              }
+            } else {
+              return false ;Pause
+            }
           }
         }
       }
@@ -92,55 +103,82 @@ class Collector {
 
           if (Client.isDisconnect()) {
             if (Client.connect()) { ;Si conecta diractamente
-              if (!Ship.isDead()) {
-                Client.init()
-                this.setState("Find")
-              } else {
-                if (Ship.revive("BASE") <> false) {
-                  Client.init()
-                  this.setState("FinishRepairAfterBaseRevive")
-                } else {
-                  Loop {
-                    Client.reload()
+              if (Ship.isDead()) {
+                if (this.reviveTimes <= ConfigManager.reviveTimes) {
+                  ;Wait reviveSeconds 
+                  seconds := ConfigManager.reviveAfterSeconds * 1000
+                  Sleep, seconds
 
-                    if (Ship.isDead()) {
-                      if (Ship.revive("BASE") = false) {
-                        continue ;reload again
-                      } else {
-                        ;si revivio
-                        Client.init()
-                        this.setState("FinishRepairAfterBaseRevive")
-                        break
+                  revive := Ship.revive("BASE")
+
+                  if (revive <> false) {
+                    this.reviveTimes++
+                    this.setState("FinishRepairAfterBaseRevive")
+                  } else { ;Si no revivio
+                    Loop {
+                      Client.reload()
+
+                      if (Ship.isDead()) {
+                        if (Ship.revive("BASE") = false) {
+                          continue ;reload again
+                        }
                       }
-                    } else {
+
                       Client.init()
-                      this.setState("Find")
+                      this.reviveTimes++
+                      this.setState("FinishRepairAfterBaseRevive")
                       break
                     }
-                  } 
+                  }
+                } else {
+                  return false ;Stop bot
                 }
+
+              } else { ;Si no esta muerto
+                Client.init()
+                this.setState("Find")
               }
             } else { ;No conectó directamente
               Loop {
                 Client.reload()
 
                 if (Ship.isDead()) {
-                  if (Ship.revive("BASE") = false) {
-                    continue ;reload again
+                  if (this.reviveTimes <= ConfigManager.reviveTimes) {
+                    ;Wait reviveSeconds 
+                    seconds := ConfigManager.reviveAfterSeconds * 1000
+                    Sleep, seconds
+
+                    revive := Ship.revive("BASE")
+
+                    if (revive <> false) {
+                      this.reviveTimes++
+                      this.setState("FinishRepairAfterBaseRevive")
+                    } else { ;Si no revivio
+                      Loop {
+                        Client.reload()
+
+                        if (Ship.isDead()) {
+                          if (Ship.revive("BASE") = false) {
+                            continue ;reload again
+                          }
+                        }
+
+                        Client.init()
+                        this.reviveTimes++
+                        this.setState("FinishRepairAfterBaseRevive")
+                        break
+                      }
+                    }
                   } else {
-                    ;si revivio
-                    Client.init()
-                    this.setState("FinishRepairAfterBaseRevive")
-                    break
+                    return false ;Stop bot
                   }
-                } else {
+                } else { ;Si no esta muerto
                   Client.init()
                   this.setState("Find")
                   break
                 }
               }
             }
-
           }
         }
       }
@@ -194,10 +232,14 @@ class Collector {
 
             this.setState("Approaching")
           } else {
-            Ship.collect(bonusBoxCors)
-            Sleep, 100
+            if (ConfigManager.soloPet) {
+              ;Wait pet collect
+            } else {
+              Ship.collect(bonusBoxCors)
+              Sleep, 100
 
-            this.setState("CollectingBonusBox")
+              this.setState("CollectingBonusBox")
+            }
           }
         } else {
           if (!Ship.isMoving()) {
