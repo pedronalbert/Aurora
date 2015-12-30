@@ -4,8 +4,8 @@ class ConfigManager {
   static collectBonusBoxes := true
   static bonusBoxShader := 70
   static collectGreenBoxes := true
-  static greenBoxesAmount := 2
-  static greenBoxShader := 50
+  static greenBoxesAmount := 99
+  static greenBoxShader := 40
   static clientWindowCors := {y1: 71, y2: 977}
   static escapeActive := true
   static escapeShield := 90
