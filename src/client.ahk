@@ -258,6 +258,22 @@ class Client {
 		return false
   }
 
+  findGreenBox() {
+    bonusBoxShader := ConfigManager.greenBoxShader
+    i := 1
+
+    Loop, 4 {
+      ImageSearch, corsX, corsY, this.searchAreas[i].x1, this.searchAreas[i].y1, this.searchAreas[i].x2, this.searchAreas[i].y2 , *%bonusBoxShader% ./img/client/green_box.bmp
+
+      if (ErrorLevel = 0) {
+        return [corsX, corsY]
+      }
+      i++
+    }
+
+    return false
+  }
+
   questsWindowIsOpen() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_open.bmp
 

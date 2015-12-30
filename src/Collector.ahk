@@ -12,6 +12,7 @@ class Collector {
   static disconnectChecker := {active: true, lastCheck: 0}
   static autoCloackChecker := {active: true, lastCheck: 0}
   static petChecker := {active: true, lastCheck: 0}
+  static greenBoxesCollected := 0
 
   init() {
     if (!Client.init()) {
@@ -223,29 +224,58 @@ class Collector {
 
       ;----- States------
       if (this.state = "Find") {
-        bonusBoxCors := Client.findBonusBox()
+        roaming := false
 
-        if (isObject(bonusBoxCors)) {
-          if (Ship.isMoving()) {
-            Ship.approach(bonusBoxCors)
-            Sleep, 100
+        if (ConfigManager.collectGreenBoxes = true and this.greenBoxesCollected < ConfigManager.greenBoxesAmount) {
+          greenBoxCors := Client.findGreenBox()
 
-            this.setState("Approaching")
-          } else {
-            if (ConfigManager.soloPet) {
-              ;Wait pet collect
-            } else {
-              Ship.collect(bonusBoxCors)
+          if (isObject(greenBoxCors)) {
+            if (Ship.isMoving()) {
+              Ship.approach(greenBoxCors)
               Sleep, 100
 
-              this.setState("CollectingBonusBox")
+              roaming := false
+              this.setState("Approaching")
+            } else {
+              Ship.collect(greenBoxCors)
+              Sleep, 100
+
+              roaming := false
+              this.setState("CollectingGreenBox")
             }
+          } else {
+            roaming := true
           }
-        } else {
-          if (!Ship.isMoving()) {
-            Minimap.move()
-            Sleep, 500
+        } else if(ConfigManager.collectBonusBoxes) {
+          bonusBoxCors := Client.findBonusBox()
+
+          if (isObject(bonusBoxCors)) {
+            if (Ship.isMoving()) {
+              Ship.approach(bonusBoxCors)
+              Sleep, 100
+
+              roaming := false
+              this.setState("Approaching")
+            } else {
+              if (ConfigManager.soloPet) {
+                ;Wait pet collect
+                roaming := false
+              } else {
+                Ship.collect(bonusBoxCors)
+                Sleep, 100
+
+                roaming := false
+                this.setState("CollectingBonusBox")
+              }
+            }
+          } else {
+            roaming := true
           }
+        }
+
+        if (roaming = true and Ship.isMoving() = false) {
+          Minimap.move()
+          Sleep, 500
         }
       }
 
@@ -258,6 +288,14 @@ class Collector {
       if (this.state = "CollectingBonusBox") {
         if (!Ship.isMoving()) {
           Sleep, 100
+          this.setState("Find")
+        }
+      }
+
+      if (this.state = "CollectingGreenBox") {
+        if (!Ship.isMoving()) {
+          Sleep, 6000
+          this.greenBoxesCollected++
           this.setState("Find")
         }
       }
