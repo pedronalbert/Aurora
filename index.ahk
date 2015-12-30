@@ -18,6 +18,7 @@ return
 
 F3::
   Loop {
-    Sleep, 50000
+    TrayTip, AuroraBot, Paused
+    Sleep, 10000
   }
 return
