@@ -1,16 +1,21 @@
 class ConfigManager {
-  static map := 23
+  static map := 24
   static moveMode := "COMPLETE"
-  static bonusBoxShader := 65
+  static bonusBoxShader := 69
   static clientWindowCors := {y1: 71, y2: 977}
   static escapeActive := true
-  static escapeShield := 85
+  static escapeShield := 95
   static autoCloack := true
-  static cloackCpu := 10
-  static cloacksAmount := 1
-  static invisibleCheckTime := 5000
-  static damageCheckTime := 1000
+  static cloackCpu := 50
+  static cloacksAmount := 5
   static reviveMode := "PORTAL"
   static petActive := false
-  static soloPet := true
+  static soloPet := false
+
+  ;Checkers
+  static deadCheckSeconds := 10
+  static disconnectCheckSeconds := 10
+  static petCheckSeconds := 10
+  static autoCloackCheckSeconds := 60
+  static escapeCheckSeconds := 3
 }

@@ -18,7 +18,7 @@ class Client {
   }
 
   setSearchAreas() {
-		percentToIgnore := 0.8
+		percentToIgnore := 0.08
 		pixelsToIgnore := this.windowCors.y2 * percentToIgnore
 		percentPosToIgnore := 0.61
 
@@ -44,7 +44,6 @@ class Client {
 	}
 
   connect() {
-    OutputDebug, % "Client connect"
     secondsWaiting := 0
 
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/disconnect.bmp
@@ -53,7 +52,6 @@ class Client {
       MouseClick, Left, corsX, corsY + 65, 1, 30
 
       Loop { ;waiting connected
-        OutputDebug, % "Waiting for connected"
         if (this.isConnected()) {
           return true
         }
@@ -72,7 +70,6 @@ class Client {
   }
 
   reload() {
-    OutputDebug, % "Client reload"
     secondsWaiting := 0
 
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
@@ -82,7 +79,6 @@ class Client {
     Sleep, 1000
 
     Loop { ;waiting connecting message
-      OutputDebug, % "Waiting for connecting"
       if (this.isConnecting()) {
         break
       }
@@ -105,11 +101,9 @@ class Client {
       ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/minimap_window.bmp
 
       if (ErrorLevel = 0) {
-        OutputDebug, % "Client is connected because minimap is visible"
         return true
       }
       else {
-        OutputDebug, % "Client is disconnect because minimap is not visible"
         return false
       }
     }
@@ -119,11 +113,9 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/disconnect.bmp
 
     if (ErrorLevel = 0) {
-      OutputDebug, % "Client is disconnect"
       return true
     }
     else {
-      OutputDebug, % "Clien is not disconnect"
       return false
     }
   }
@@ -132,10 +124,8 @@ class Client {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/connecting.bmp
 
     if (ErrorLevel = 0) {
-      OutputDebug, % "Client is connecting"
       return true
     } else {
-      OutputDebug, % "Client is not connecting"
       return false
     }
   }
@@ -144,10 +134,8 @@ class Client {
     ImageSearch, x, y, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, % "*10 ./img/cloack_" cpuType ".bmp"
 
     if (ErrorLevel = 0) {
-      OutputDebug, % "Cloack CPU " cpuType " found"
       return [x, y]
     } else {
-      OutputDebug, % "ERROR! Cloack CPU " cpuType " is not found"
       return false
     }
   }
@@ -177,7 +165,7 @@ class Client {
 		i := 1
 
 		Loop, 4 {
-			ImageSearch, corsX, corsY, thissearchAreas[i].x1, thissearchAreas[i].y1, this.searchAreas[i].x2, this.searchAreas[i].y2 , *%bonusBoxShader% ./img/client/bonus_box.bmp
+			ImageSearch, corsX, corsY, this.searchAreas[i].x1, this.searchAreas[i].y1, this.searchAreas[i].x2, this.searchAreas[i].y2 , *%bonusBoxShader% ./img/client/bonus_box.bmp
 
 			if (ErrorLevel = 0) {
 				return [corsX, corsY]

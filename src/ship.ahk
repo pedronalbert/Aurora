@@ -55,7 +55,6 @@ class Ship {
       if ErrorLevel = 0
         this.healPercent += this.percentPerBar
     }
-    OutputDebug, % "Ship heal: " this.healPercent
     return this.healPercent
 
   }
@@ -73,7 +72,6 @@ class Ship {
       if ErrorLevel = 0
         this.shieldPercent += this.percentPerBar
     }
-    OutputDebug, % "Ship shield: " this.shieldPercent
     return this.shieldPercent
   }
 
@@ -94,10 +92,8 @@ class Ship {
     ImageSearch, corsX, corsY, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/repair_button.bmp
 
     if (ErrorLevel = 0) {
-      OutputDebug, % "Ship is dead"
       return true
     } else {
-        OutputDebug, % "Ship is alive"
       return false
     }
   }
@@ -122,7 +118,6 @@ class Ship {
         corsX := centerX - 170
       }
     }
-    OutputDebug, % "Ship approach to: " corsX " , " corsY
     MouseClick, Left, corsX, corsY, 1, 0
   }
 
@@ -134,13 +129,11 @@ class Ship {
         this.goAway()
     } else {
       this.lastCollectCors := cors
-      OutputDebug, % "Ship collect: " cors[1] " , " cors[2]
       MouseClick, Left, cors[1] + 3, cors[2] + 3, 1, 0
     }
   }
 
   goAway() {
-    OutputDebug,% "Ship goAway"
     Minimap.move()
     Sleep, 3000
   }
@@ -181,14 +174,12 @@ class Ship {
           Client.reloadClient()
         }
         else {
-          OutputDebug, % "Ship revived on " mode
           return mode
         }
       }
 
     } else {
       this.revive("BASE")
-      OutputDebug, % "Ship revived on BASE"
       return "BASE"
     }
   }
@@ -203,10 +194,8 @@ class Ship {
       PixelGetColor, color, corsX - 2, corsY + 2
 
       if (color = "0x846B29") {
-        OutputDebug, % "Ship is invisible"
         return false
       } else {
-        OutputDebug, % "Ship is not invisible"
         return true
       }
     } else {
@@ -218,13 +207,15 @@ class Ship {
     cloackCors := Client.getCloackCors(this.cloackCpu)
 
     if (isObject(cloackCors)) {
-      OutputDebug, % "Ship set invisible"
       MouseClick, Left,  % cloackCors[1] + 5, % cloackCors[2] + 5, 1, 5
+
+      return true
+    } else {
+      return false
     }
   }
 
   changeConfig() {
-    OutputDebug, % "Ship change config"
     Send {c}
   }
 
