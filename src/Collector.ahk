@@ -62,7 +62,7 @@ class Collector {
           if (Ship.isDead()) {
             Client.takeScreenshot()
 
-            if (this.reviveTimes <= ConfigManager.reviveTimes) {
+            if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
               this.escapeChecker.active := false
               this.deadChecker.active := false
               this.petChecker.active := false
@@ -113,7 +113,7 @@ class Collector {
               if (Ship.isDead()) {
                 Client.takeScreenshot()
 
-                if (this.reviveTimes <= ConfigManager.reviveTimes) {
+                if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
                   ;Wait reviveSeconds 
                   seconds := ConfigManager.reviveAfterSeconds * 1000
                   Sleep, seconds
@@ -154,7 +154,7 @@ class Collector {
                 if (Ship.isDead()) {
                   Client.takeScreenshot()
                   
-                  if (this.reviveTimes <= ConfigManager.reviveTimes) {
+                  if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
                     ;Wait reviveSeconds 
                     seconds := ConfigManager.reviveAfterSeconds * 1000
                     Sleep, seconds

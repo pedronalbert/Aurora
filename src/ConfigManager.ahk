@@ -9,12 +9,12 @@ class ConfigManager {
 
   ;GreenBoxes
   static collectGreenBooty := false
-  static greenBootiesAmount := 99
+  static greenBootiesAmount := 10
   static greenBootyShader := 40
 
   ;Revive
   static reviveMode := "PORTAL"
-  static reviveTimes := 99
+  static reviveTimes := 0
   static reviveAfterSeconds := 10
 
   ;Pet
