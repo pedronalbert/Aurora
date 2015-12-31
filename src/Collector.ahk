@@ -236,7 +236,7 @@ class Collector {
       if (this.state = "Find") {
         roaming := false
 
-        if (ConfigManager.collectGreenBoxes = true and this.greenBoxesCollected < ConfigManager.greenBoxesAmount) {
+        if (ConfigManager.collectGreenBooty = true and this.greenBoxesCollected < ConfigManager.greenBootiesAmount) {
           greenBoxCors := Client.findGreenBox()
 
           if (isObject(greenBoxCors)) {

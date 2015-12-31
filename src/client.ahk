@@ -259,7 +259,7 @@ class Client {
   }
 
   findGreenBox() {
-    bonusBoxShader := ConfigManager.greenBoxShader
+    bonusBoxShader := ConfigManager.greenBootyShader
     i := 1
 
     Loop, 4 {

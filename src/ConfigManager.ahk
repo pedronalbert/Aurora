@@ -8,9 +8,9 @@ class ConfigManager {
   static bonusBoxShader := 70
 
   ;GreenBoxes
-  static collectGreenBoxes := false
-  static greenBoxesAmount := 99
-  static greenBoxShader := 40
+  static collectGreenBooty := false
+  static greenBootiesAmount := 99
+  static greenBootyShader := 40
 
   ;Revive
   static reviveMode := "PORTAL"
