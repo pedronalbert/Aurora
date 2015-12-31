@@ -8,28 +8,28 @@ class Client {
     this.setSearchAreas()
 
     ;Open Windows
-    if (!this.shipStatsWindowIsOpen()) {
+    if (!this.shipStatsWindowIsOpened()) {
       if (!this.shipStatsWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
       }
     }
 
-    if (!this.minimapWindowIsOpen()) {
+    if (!this.minimapWindowIsOpened()) {
       if (!this.minimapWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
       }
     }
 
-    if (this.questsWindowIsOpen()) {
+    if (this.questsWindowIsOpened()) {
       if (!this.questsWindowClose()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
       }
     }
 
-    if (ConfigManager.petActive = true and this.petWindowIsOpen() = false) {
+    if (ConfigManager.petActive = true and this.petWindowIsOpened() = false) {
       if (!this.petWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
@@ -274,8 +274,8 @@ class Client {
     return false
   }
 
-  questsWindowIsOpen() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_open.bmp
+  questsWindowIsOpened() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_opened.bmp
 
     if (ErrorLevel = 0) {
       return true
@@ -285,7 +285,7 @@ class Client {
   }
 
   questsWindowClose() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_open.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_opened.bmp
 
     if (ErrorLevel = 0) {
       MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
@@ -296,7 +296,7 @@ class Client {
     }
   }
 
-  shipStatsWindowIsOpen() {
+  shipStatsWindowIsOpened() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/ship_stats_window.bmp
     
     if (ErrorLevel = 0) {
@@ -326,7 +326,7 @@ class Client {
     }
   }
 
-  minimapWindowIsOpen() {
+  minimapWindowIsOpened() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/minimap_window.bmp
     
     if (ErrorLevel = 0) {
@@ -356,7 +356,7 @@ class Client {
     }
   }
 
-  petWindowIsOpen() {
+  petWindowIsOpened() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/pet_window.bmp
     
     if (ErrorLevel = 0) {

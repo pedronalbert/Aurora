@@ -5,3 +5,4 @@ TODO
 - [ ] Add GUI
 - [ ] Add gold boxes
 - [ ] Use ImageSearch instead of Pixels (perfomance issue)
+- [ ] Back to map
