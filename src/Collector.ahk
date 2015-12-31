@@ -1,4 +1,5 @@
 class Collector {
+  static active := false
   static bonusBoxCollected := 0
   static state :=
   static statePriority := 0
@@ -20,10 +21,15 @@ class Collector {
     this.escapeChecker.active := ConfigManager.escapeActive
     this.petChecker.active := ConfigManager.petActive
     this.autoCloackChecker.active := ConfigManager.autoCloack
+    this.active := true
 
     this.setState("Find")
 
     Loop {
+      if (this.active = false) {
+        return false
+      }
+
       nowTime := A_Now
 
       ;----- Checkers -----

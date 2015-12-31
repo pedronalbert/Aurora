@@ -15,13 +15,11 @@ CoordMode, Mouse, Screen
 
 ;---------------------------------------------------
 F2::
-  TrayTip, AuroraBot, Initializing...
+  TrayTip, AuroraBot, Starting...
 	Collector.init()
 return
 
 F3::
-  Loop {
-    TrayTip, AuroraBot, Paused
-    Sleep, 10000
-  }
+  TrayTip, AuroraBot, Paused...
+  Collector.active := false
 return
