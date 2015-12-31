@@ -3,6 +3,9 @@
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
 
+;------------Vendors--------------
+#Include, ./vendor/Gdip.ahk
+
 #Include, ./src/ConfigManager.ahk
 #Include, ./src/Client.ahk
 #Include, ./src/Minimap.ahk

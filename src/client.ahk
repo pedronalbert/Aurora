@@ -385,4 +385,17 @@ class Client {
       return [corsX, corsY]
     }
   }
+
+  takeScreenshot() {
+    raster:=0x40000000 + 0x00CC0020
+    screen=0|0|%A_ScreenWidth%|%A_ScreenHeight%
+    outfile := A_ScriptDir "\screenshots\" A_Now ".bmp"
+    pToken := Gdip_Startup()
+
+    pBitmap := Gdip_BitmapFromScreen(screen, raster)
+
+    Gdip_SaveBitmapToFile(pBitmap, outfile, 50)
+    Gdip_DisposeImage(pBitmap)
+    Gdip_Shutdown(pToken)
+  }
 }

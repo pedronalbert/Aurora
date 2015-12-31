@@ -1,18 +1,16 @@
 class Collector {
-  static healToRepair := 95
   static bonusBoxCollected := 0
   static state :=
   static statePriority := 0
-  static escapePortal := []
   static cloacksUsed := 0
   static reviveTimes := 0
+  static greenBoxesCollected := 0
 
   static escapeChecker := {active: true, lastCheck: 0}
   static deadChecker := {active: true, lastCheck: 0}
   static disconnectChecker := {active: true, lastCheck: 0}
   static autoCloackChecker := {active: true, lastCheck: 0}
   static petChecker := {active: true, lastCheck: 0}
-  static greenBoxesCollected := 0
 
   init() {
     if (!Client.init()) {
@@ -56,6 +54,8 @@ class Collector {
           this.deadChecker.lastCheck := A_Now
 
           if (Ship.isDead()) {
+            Client.takeScreenshot()
+
             if (this.reviveTimes <= ConfigManager.reviveTimes) {
               this.escapeChecker.active := false
               this.deadChecker.active := false
@@ -105,6 +105,8 @@ class Collector {
           if (Client.isDisconnect()) {
             if (Client.connect()) { ;Si conecta diractamente
               if (Ship.isDead()) {
+                Client.takeScreenshot()
+
                 if (this.reviveTimes <= ConfigManager.reviveTimes) {
                   ;Wait reviveSeconds 
                   seconds := ConfigManager.reviveAfterSeconds * 1000
@@ -144,6 +146,8 @@ class Collector {
                 Client.reload()
 
                 if (Ship.isDead()) {
+                  Client.takeScreenshot()
+                  
                   if (this.reviveTimes <= ConfigManager.reviveTimes) {
                     ;Wait reviveSeconds 
                     seconds := ConfigManager.reviveAfterSeconds * 1000
