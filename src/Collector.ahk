@@ -234,7 +234,7 @@ class Collector {
 
       ;----- States------
       if (this.state = "Find") {
-        roaming := false
+        objectFound := false
 
         if (ConfigManager.collectGreenBooty = true and this.greenBoxesCollected < ConfigManager.greenBootiesAmount) {
           greenBoxCors := Client.findGreenBox()
@@ -244,19 +244,48 @@ class Collector {
               Ship.approach(greenBoxCors)
               Sleep, 100
 
-              roaming := false
+              objectFound := true
               this.setState("Approaching")
             } else {
               Ship.collect(greenBoxCors)
               Sleep, 100
 
-              roaming := false
+              objectFound := true
               this.setState("CollectingGreenBox")
             }
           } else {
-            roaming := true
+            objectFound := false
           }
-        } else if(ConfigManager.collectBonusBoxes) {
+        }
+
+        if (ConfigManager.collectEventBoxes = true and objectFound = false) {
+          eventBox := Client.findEventBox()
+
+          if (isObject(eventBox)) {
+            if (Ship.isMoving()) {
+              Ship.approach(eventBox)
+              Sleep, 100
+
+              objectFound := true
+              this.setState("Approaching")
+            } else {
+              if (ConfigManager.soloPet) {
+                ;Wait pet collect
+                objectFound := true
+              } else {
+                Ship.collect(eventBox)
+                Sleep, 100
+
+                objectFound := true
+                this.setState("CollectingBonusBox")
+              }
+            }
+          } else {
+            objectFound := false
+          }
+        }
+
+        if (ConfigManager.collectBonusBoxes = true and objectFound = false) {
           bonusBoxCors := Client.findBonusBox()
 
           if (isObject(bonusBoxCors)) {
@@ -264,26 +293,26 @@ class Collector {
               Ship.approach(bonusBoxCors)
               Sleep, 100
 
-              roaming := false
+              objectFound := true
               this.setState("Approaching")
             } else {
               if (ConfigManager.soloPet) {
                 ;Wait pet collect
-                roaming := false
+                objectFound := true
               } else {
                 Ship.collect(bonusBoxCors)
                 Sleep, 100
 
-                roaming := false
+                objectFound := true
                 this.setState("CollectingBonusBox")
               }
             }
           } else {
-            roaming := true
+            objectFound := false
           }
         }
 
-        if (roaming = true and Ship.isMoving() = false) {
+        if (objectFound = false and Ship.isMoving() = false) {
           Minimap.move()
           Sleep, 500
         }

@@ -258,6 +258,22 @@ class Client {
 		return false
   }
 
+  findEventBox() {
+    eventBoxShader := ConfigManager.eventBoxShader
+    i := 1
+
+    Loop, 4 {
+      ImageSearch, corsX, corsY, this.searchAreas[i].x1, this.searchAreas[i].y1, this.searchAreas[i].x2, this.searchAreas[i].y2 , *%eventBoxShader% ./img/client/event_box.bmp
+
+      if (ErrorLevel = 0) {
+        return [corsX, corsY]
+      }
+      i++
+    }
+
+    return false
+  }
+
   findGreenBox() {
     bonusBoxShader := ConfigManager.greenBootyShader
     i := 1

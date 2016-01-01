@@ -7,6 +7,11 @@ class ConfigManager {
   static collectBonusBoxes := true
   static bonusBoxShader := 70
 
+
+  ;Event box
+  static collectEventBoxes := true
+  static eventBoxShader := 50
+
   ;GreenBoxes
   static collectGreenBooty := false
   static greenBootiesAmount := 10
@@ -14,11 +19,11 @@ class ConfigManager {
 
   ;Revive
   static reviveMode := "PORTAL"
-  static reviveTimes := 0
-  static reviveAfterSeconds := 10
+  static reviveTimes := 20
+  static reviveAfterSeconds := 15
 
   ;Pet
-  static petActive := false
+  static petActive := true
   static soloPet := false
 
   ;AutoSystems
@@ -31,7 +36,7 @@ class ConfigManager {
   ;Advanced
   static deadCheckSeconds := 10
   static disconnectCheckSeconds := 10
-  static petCheckSeconds := 10
+  static petCheckSeconds := 60
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
   static mouseSpeed := 2
