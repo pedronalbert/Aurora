@@ -110,7 +110,7 @@ class Client {
 
   reload() {
     secondsWaiting := 0
-
+    TrayTip, Aurora, Reloading
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
     MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
@@ -150,7 +150,7 @@ class Client {
 
     ;Wait connected
     Loop {
-      if (this.isConnected()) {
+      if (this.isConnected() or this.isDead()) {
         break
       } else {
         if (secondsWaiting > 15) {
