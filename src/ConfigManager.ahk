@@ -7,15 +7,9 @@ class ConfigManager {
   static collectBonusBoxes := true
   static bonusBoxShader := 75
 
-
   ;Event box
   static collectEventBoxes := false
   static eventBoxShader := 50
-
-  ;GreenBoxes
-  static collectGreenBooty := false
-  static greenBootiesAmount := 45
-  static greenBootyShader := 40
 
   ;Revive
   static reviveMode := "PORTAL"
@@ -24,11 +18,13 @@ class ConfigManager {
 
   ;Pet
   static petActive := true
-  static soloPet := false
+  static soloPet := true
 
   ;AutoSystems
   static escapeActive := true
   static escapeShield := 90
+
+  ;Autocloack
   static autoCloack := true
   static cloackCpu := 50
   static cloacksAmount := 5

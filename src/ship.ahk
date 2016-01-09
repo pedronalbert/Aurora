@@ -172,7 +172,7 @@ class Ship {
 
   isInvisible() {
     cloackCors := Client.getCloackCors(this.cloackCpu)
-
+ 
     corsX := cloackCors[1]
     corsY := cloackCors[2]
 

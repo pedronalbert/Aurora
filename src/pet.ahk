@@ -18,7 +18,7 @@ class Pet {
   play() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/play.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       MouseClick, Left, x, y, 1, ConfigManager.mouseSpeed
       MouseMove, 0, 0, ConfigManager.mouseSpeed
     }
@@ -28,7 +28,7 @@ class Pet {
   repair() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/repair.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       MouseClick, Left, x, y, 1, ConfigManager.mouseSpeed
       MouseMove, 0, 0, ConfigManager.mouseSpeed
     }
@@ -37,7 +37,7 @@ class Pet {
   openModules() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/arrow.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       MouseClick, Left,% x + 2,% y + 2, 1, ConfigManager.mouseSpeed
       Sleep, 1000
     }
@@ -48,7 +48,7 @@ class Pet {
 
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2,% "*10 ./img/pet/module_" module ".bmp"
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       MouseClick, Left, x, y, 1, ConfigManager.mouseSpeed
     }
   }
@@ -56,7 +56,7 @@ class Pet {
   isDead() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/repair.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       return true
     } else {
       return false
@@ -66,7 +66,7 @@ class Pet {
   isPaused() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/play.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       return true
     } else {
       return false
@@ -76,7 +76,7 @@ class Pet {
   isPasive() {
     ImageSearch, x, y, Client.windowCors.x1, Client.windowCors.y1, Client.windowCors.x2, Client.windowCors.y2, *10 ./img/pet/pasive.bmp
 
-    If (ErrorLevel = 0) {
+    if (ErrorLevel = 0) {
       return true
     } else {
       return false

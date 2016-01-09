@@ -17,7 +17,7 @@ class Minimap {
 
   init() {
     this.setWindowCors()
-
+ 
     Random, searchPointPositionRandom, 1, 25
     this.searchPointPosition := searchPointPositionRandom
 

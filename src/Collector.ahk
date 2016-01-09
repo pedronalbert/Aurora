@@ -236,28 +236,6 @@ class Collector {
       if (this.state = "Find") {
         objectFound := false
 
-        if (ConfigManager.collectGreenBooty = true and this.greenBoxesCollected < ConfigManager.greenBootiesAmount) {
-          greenBoxCors := Client.findGreenBox()
-
-          if (isObject(greenBoxCors)) {
-            if (Ship.isMoving()) {
-              Ship.approach(greenBoxCors)
-              Sleep, 100
-
-              objectFound := true
-              this.setState("Approaching")
-            } else {
-              Ship.collect(greenBoxCors)
-              Sleep, 100
-
-              objectFound := true
-              this.setState("CollectingGreenBox")
-            }
-          } else {
-            objectFound := false
-          }
-        }
-
         if (ConfigManager.collectEventBoxes = true and objectFound = false) {
           eventBox := Client.findEventBox()
 
