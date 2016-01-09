@@ -25,6 +25,8 @@ class Collector {
 
     this.setState("Find")
 
+    MouseClick, Left, Client.windowCors.x2 / 2, Client.windowCors.y2 / 2 ;Click client
+    
     Loop {
       if (this.active = false) {
         return false
@@ -202,16 +204,14 @@ class Collector {
 
           if (Pet.isDead()) {
             Pet.repair()
-            Sleep, 800
           }
 
-          if (Pet.isPaused()) {
+          if (Pet.isPlaying() = false) {
             Pet.play()
-            Sleep, 800
           }
 
           if (Pet.isPasive()) {
-            Pet.selectModule("autocollector")
+            Pet.setAutocollector()
           }
         }
       }

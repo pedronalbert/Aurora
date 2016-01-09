@@ -6,12 +6,15 @@ class Client {
   init() {
     this.setWindowCors(ConfigManager.clientWindowCors.y1, ConfigManager.clientWindowCors.y2)
     this.setSearchAreas()
+    windowsOpened := false
 
     ;Open Windows
     if (!this.shipStatsWindowIsOpened()) {
       if (!this.shipStatsWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
+      } else {
+        windowsOpened := true
       }
     }
 
@@ -19,6 +22,8 @@ class Client {
       if (!this.minimapWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
+      } else {
+        windowsOpened := true
       }
     }
 
@@ -26,6 +31,8 @@ class Client {
       if (!this.questsWindowClose()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
+      } else {
+        windowsOpened := true
       }
     }
 
@@ -33,10 +40,15 @@ class Client {
       if (!this.petWindowOpen()) {
         MsgBox, AuroraBot Error, Configure client coors
         return false
+      } else {
+        windowsOpened := true
       }
     }
 
-    Sleep, 2000
+    if(windowsOpened) {
+      Sleep, 2000 ;wait for open complete
+    }
+
 
     Minimap.init()
     Ship.init()
