@@ -32,7 +32,7 @@ class ConfigManager {
   ;Advanced
   static deadCheckSeconds := 10
   static disconnectCheckSeconds := 10
-  static petCheckSeconds := 5
+  static petCheckSeconds := 60
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
   static mouseSpeed := 2

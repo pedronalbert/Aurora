@@ -143,12 +143,18 @@ class Pet {
   }
 
   play() {
-    Send {n}
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/paused.bmp
+
+    if(ErrorLevel = 0) {
+      MouseGetPos, mouseX, mouseY
+      MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+      MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
+    }
 
     timeWaiting := 0
 
     Loop { ;wait reviven
-      if(this.isPaused()) {
+      if(this.isPasive()) {
         break
       } else {
 

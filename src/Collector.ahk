@@ -203,10 +203,10 @@ class Collector {
           this.petChecker.lastCheck := A_Now
 
           if (Pet.isDead()) {
-            Pet.repair()
+            Pet.revive()
           }
 
-          if (Pet.isPlaying() = false) {
+          if (Pet.isPaused()) {
             Pet.play()
           }
 
