@@ -14,7 +14,7 @@ class Pet {
   }
 
   isDead() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/dead.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/dead.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -24,7 +24,7 @@ class Pet {
   }
 
   isPasive() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/module_pasive.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_pasive.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -34,7 +34,7 @@ class Pet {
   }
 
   isPlaying() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/playing.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/playing.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -45,7 +45,7 @@ class Pet {
 
 
   isPaused() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/paused.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/paused.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -55,7 +55,7 @@ class Pet {
   }
 
   modulesIsOpen() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/modules_button_open.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/modules_button_open.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -66,7 +66,7 @@ class Pet {
 
   openModules() {
     if(this.modulesIsOpen() = false) {
-      ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/modules_button.bmp
+      ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/modules_button.bmp
 
       if(ErrorLevel = 0) {
         MouseGetPos, mouseX, mouseY
@@ -100,7 +100,7 @@ class Pet {
   setAutocollector() {
     this.openModules()
 
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/module_autocollector.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_autocollector.bmp
 
     if(ErrorLevel = 0) {
       MouseGetPos, mouseX, mouseY
@@ -115,7 +115,7 @@ class Pet {
 
 
   revive() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/dead.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/dead.bmp
 
     if(ErrorLevel = 0) {
       MouseGetPos, mouseX, mouseY
@@ -141,7 +141,7 @@ class Pet {
   }
 
   play() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/paused.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/paused.bmp
 
     if(ErrorLevel = 0) {
       MouseGetPos, mouseX, mouseY
