@@ -7,8 +7,6 @@ class Pet {
   }
 
   setWindowCors() {
-    windowCors := Client.getPetWindowCors()
-
     this.windowCors.x1 := windowCors[1]
     this.windowCors.y1 := windowCors[2]
     this.windowCors.x2 := windowCors[1] + 275

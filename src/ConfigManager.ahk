@@ -13,7 +13,7 @@ class ConfigManager {
   static eventBoxShader := 50
 
   ;Revive
-  static reviveMode := "PORTAL"
+  static reviveMode := "BASE"
   static reviveTimes := 20
   static reviveAfterSeconds := 15
 

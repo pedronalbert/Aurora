@@ -34,44 +34,36 @@ class Collector {
 
         return false
       }
-    } else if(Minimap.getActualMap() <> ConfigManager.targetMap){ ;Not in target map
-      if (!Client.init()) {
-        return false
-      }
-
-      this.active := true
-
-      ;Checkers
-      this.escapeChecker.active := false
-      this.deadChecker.active := true
-      this.disconnectChecker.active := true
-      this.autoCloackChecker.active := ConfigManager.autoCloack
-      this.petChecker.active := false
-
-      Minimap.generateBackToTargetMap()
-      this.setState("GoToNextBackToMapPortal")
-    } else {
-      ;Normal init
-      if (!Client.init()) {
-        return false
-      }
+    } else { ;Not in target map
+      Client.init()
 
       actualMap := Minimap.getActualMap()
 
-      if(actualMap > 0 and ConfigManager.targetMap <> actualMap) {
-        ConfigManager.targetMap := actualMap ;Cambio de mapa temporal en caso de estar en mapa incorrecto
+      if(actualMap <> ConfigManager.targetMap) {
+        this.active := true
+
+        ;Checkers
+        this.escapeChecker.active := false
+        this.deadChecker.active := true
+        this.disconnectChecker.active := true
+        this.autoCloackChecker.active := ConfigManager.autoCloack
+        this.petChecker.active := false
+
+        Minimap.generateBackToTargetMap()
+        this.setState("GoToNextBackToMapPortal")
+        
+      } else {
+        this.active := true
+
+        ;Active checkers
+        this.escapeChecker.active := ConfigManager.escapeActive
+        this.deadChecker.active := true
+        this.disconnectChecker.active := true
+        this.autoCloackChecker.active := ConfigManager.autoCloack
+        this.petChecker.active := ConfigManager.petActive
+
+        this.setState("Find")
       }
-
-      this.active := true
-
-      ;Active checkers
-      this.escapeChecker.active := ConfigManager.escapeActive
-      this.deadChecker.active := true
-      this.disconnectChecker.active := true
-      this.autoCloackChecker.active := ConfigManager.autoCloack
-      this.petChecker.active := ConfigManager.petActive
-
-      this.setState("Find")
     }
 
     
