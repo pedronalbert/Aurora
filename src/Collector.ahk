@@ -319,7 +319,6 @@ class Collector {
 
       if (this.state = "GoingToEscapePortal") {
         if (!Ship.isMoving()) {
-          Minimap.saveLastCors()
           Sleep, 500
           Send {j}
           Sleep, 3000
@@ -333,8 +332,7 @@ class Collector {
       }
 
       if (this.state ="JumpingEscapePortal") {
-        if (Minimap.isInNewMap()) {
-          Minimap.saveLastCors()
+        if (Minimap.isInTargetMap() == false) {
           Send {j}
           Sleep, 1000
 
@@ -344,7 +342,7 @@ class Collector {
       }
 
       if (this.state = "BackingToMapAfterEscape") {
-        if (Minimap.isInNewMap()) {
+        if (Minimap.isInTargetMap()) {
           this.setState("FinishRepairAfterEscape")
         }
       }

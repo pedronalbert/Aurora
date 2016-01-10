@@ -9,23 +9,31 @@ class Minimap {
   static backToMapRoute :=
   static searchPointPosition := 
   static searchPoints := []
-  static shipLastCors := []
 
   ;User config
-  static configMap :=
+  static targetMap :=
   static configMoveMode :=
 
   init() {
     this.setWindowCors()
  
+    ;Random position on search
     Random, searchPointPositionRandom, 1, 25
     this.searchPointPosition := searchPointPositionRandom
 
-    this.configMap := ConfigManager.map
+    this.targetMap := this.getActualMap()
+
+    if(this.targetMap = 0) {
+      MsgBox, Error!, No se puede detectar el mapa actual
+      return false
+    }
+
     this.configMoveMode := ConfigManager.moveMode
     this.setPortalsCors()
     this.setBackToMapRoutes()
     this.setSearchPoints()
+
+    return true
   }
   
 
@@ -54,7 +62,7 @@ class Minimap {
   }
 
   generateBackToMapRoute() {
-    this.backToMapRoute :=  this.backToMapRoutes[this.configMap]
+    this.backToMapRoute :=  this.backToMapRoutes[this.targetMap]
     this.backToMapRoutePosition := 1
   }
 
@@ -70,7 +78,7 @@ class Minimap {
     nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
     actualMap := this.backToMapRoute[this.backToMapRoutePosition]
 
-    if (actualMap = this.configMap) {
+    if (actualMap = this.targetMap) {
       return false
     }
 
@@ -149,7 +157,7 @@ class Minimap {
     portalNearPos := 0
     shipCors := this.getShipCors()
 
-    for k, portalCors in this.portalsCors[this.configMap] {
+    for k, portalCors in this.portalsCors[this.targetMap] {
       a := (portalCors.cors[1] - shipCors[1])
       a := a * a
 
@@ -164,7 +172,7 @@ class Minimap {
       }
     }
 
-    cors := [this.portalsCors[this.configMap][portalNearPos].cors[1], this.portalsCors[this.configMap][portalNearPos].cors[2]]
+    cors := [this.portalsCors[this.targetMap][portalNearPos].cors[1], this.portalsCors[this.targetMap][portalNearPos].cors[2]]
 
     return cors
   }
@@ -437,37 +445,62 @@ class Minimap {
       this.minimapCors.y2 := this.minimapCors.y1 + 115
   }
 
-  /*
-    Save in lastCors
-  */
-  saveLastCors() {
-    this.shipLastCors := this.getShipCors()
+  isInTargetMap() {
+    if(this.targetMap <> this.getActualMap()) {
+      return false
+    } else {
+      return true
+    }
   }
 
-  isInNewMap() {
-    lastCors := this.shipLastCors
-    newCors := this.getShipCors()
+  getActualMap() {
+    firstNumberX1 := this.windowCors.x1 + 25
+    firstNumberY1 := this.windowCors.y1 + 33
+    map := 10
+    valid := true
 
+    number := 1
+    Loop {
+      ImageSearch, corsX, corsY, firstNumberX1, firstNumberY1, firstNumberX1 + 8, firstNumberY1 + 9,% "*50 ./img/minimap_numbers/" number ".bmp"
 
-    if (lastCors[1] > newCors[1]) {
-      diff := lastCors[1] - newCors[1]
+      if(ErrorLevel = 0) {
+        map *= number
+        break
+      } else {
+        if(number > 4) {
+          valid := false
+          break
+        } else {
+          number++
+        }
+      }
+    }
+
+    secondNumberX1 := this.windowCors.x1 + 36
+    secondNumberY1 := this.windowCors.y1 + 33
+
+    number := 1
+
+    Loop {
+      ImageSearch, corsX, corsY, secondNumberX1, secondNumberY1, secondNumberX1 + 8, secondNumberY1 + 9,% "*50 ./img/minimap_numbers/" number ".bmp"
+
+      if(ErrorLevel = 0) {
+        map += number
+        break
+      } else {
+        if(number > 8) {
+          valid := false
+          break
+        } else {
+          number++
+        }
+      }
+    }
+
+    if(valid) {
+      return map
     } else {
-      diff := newCors[1] - lastCors[1]
+      return 0
     }
-
-    if diff > 40
-      return true
-
-    if (lastCors[2] > newCors[2]) {
-      diff := lastCors[2] - newCors[2]
-    } else {
-      diff := newCors[2] - lastCors[2]
-    }
-
-    if (diff > 40) {
-      return true
-    }
-
-    return false
   }
 }

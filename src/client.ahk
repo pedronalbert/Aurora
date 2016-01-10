@@ -50,7 +50,10 @@ class Client {
     }
 
 
-    Minimap.init()
+    if(Minimap.init() == false) {
+      return false
+    }
+
     Ship.init()
 
     if (ConfigManager.petActive) {
