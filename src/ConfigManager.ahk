@@ -1,6 +1,8 @@
 class ConfigManager {
   static map := 33
   static moveMode := "COMPLETE"
+  static clientCoorsY1 := 71
+  static clientCoorsY2 :=  978
 
   ;BonusBox
   static collectBonusBoxes := true

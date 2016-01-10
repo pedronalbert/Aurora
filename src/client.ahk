@@ -3,11 +3,7 @@ class Client {
   static searchAreas := [{}, {}, {}, {}]
 
   init() {
-    if(this.setWindowCors() == false) {
-      MsgBox, Error!, Darkorbit window not found!
-
-      return false
-    }
+    this.setWindowCors()
 
     this.setSearchAreas()
     windowsOpened := false
@@ -65,18 +61,10 @@ class Client {
   }
 
   setWindowCors() {
-    ControlGetPos, posX, posY, width, height, GeckoFPSandboxChildWindow1, ahk_class MozillaWindowClass
-
-    if(posY) {
-      this.windowCors.x1 := posX
-      this.windowCors.y1 := posY
-      this.windowCors.x2 := this.windowCors.x1 + width
-      this.windowCors.y2 := this.windowCors.y1 + height
-
-      return true
-    } else {
-      return false
-    }
+    this.windowCors.x1 := 0
+    this.windowCors.y1 := ConfigManager.clientCoorsY1
+    this.windowCors.x2 := A_ScreenWidth
+    this.windowCors.y2 := ConfigManager.clientCoorsY2
   }
 
   setSearchAreas() {
