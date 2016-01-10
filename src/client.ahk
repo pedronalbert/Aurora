@@ -2,16 +2,20 @@ class Client {
   static windowCors := {}
   static searchAreas := [{}, {}, {}, {}]
 
-
   init() {
-    this.setWindowCors(ConfigManager.clientWindowCors.y1, ConfigManager.clientWindowCors.y2)
+    if(this.setWindowCors() == false) {
+      MsgBox, Error!, Darkorbit window not found!
+
+      return false
+    }
+
     this.setSearchAreas()
     windowsOpened := false
 
     ;Open Windows
     if (!this.shipStatsWindowIsOpened()) {
       if (!this.shipStatsWindowOpen()) {
-        MsgBox, AuroraBot Error, Configure client coors
+        MsgBox, AuroraBot Error, Ship window not visible!
         return false
       } else {
         windowsOpened := true
@@ -20,7 +24,7 @@ class Client {
 
     if (!this.minimapWindowIsOpened()) {
       if (!this.minimapWindowOpen()) {
-        MsgBox, AuroraBot Error, Configure client coors
+        MsgBox, AuroraBot Error, Minimap window not visible!
         return false
       } else {
         windowsOpened := true
@@ -29,7 +33,7 @@ class Client {
 
     if (this.questsWindowIsOpened()) {
       if (!this.questsWindowClose()) {
-        MsgBox, AuroraBot Error, Configure client coors
+        MsgBox, AuroraBot Error, Quests window cant close
         return false
       } else {
         windowsOpened := true
@@ -60,11 +64,19 @@ class Client {
     return true
   }
 
-  setWindowCors(y1, y2) {
-    this.windowCors.x1 := 0
-    this.windowCors.y1 := y1
-    this.windowCors.x2 := A_ScreenWidth
-    this.windowCors.y2 := y2
+  setWindowCors() {
+    ControlGetPos, posX, posY, width, height, GeckoFPSandboxChildWindow1, ahk_class MozillaWindowClass
+
+    if(posY) {
+      this.windowCors.x1 := posX
+      this.windowCors.y1 := posY
+      this.windowCors.x2 := this.windowCors.x1 + width
+      this.windowCors.y2 := this.windowCors.y1 + height
+
+      return true
+    } else {
+      return false
+    }
   }
 
   setSearchAreas() {
@@ -122,59 +134,63 @@ class Client {
 
   reload() {
     secondsWaiting := 0
-    TrayTip, Aurora, Reloading
     ImageSearch, corsX, corsY, 0, 0, A_ScreenWidth, A_ScreenHeight, *10 ./img/reload_firefox.bmp
 
-    MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
-    MouseMove, 0, 0, ConfigManager.mouseSpeed
+    if (ErrorLevel = 0) {
+      MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
+      MouseMove, 0, 0, ConfigManager.mouseSpeed 
 
-    ;Wait loading
-    Loop {
-      if (this.isLoading()) {
-        break
-      } else {
-        if (secondsWaiting > 30) {
-          this.reload()
+      ;Wait loading
+      Loop {
+        if (this.isLoading()) {
+          break
         } else {
-          Sleep, 1000
-          secondsWaiting++
+          if (secondsWaiting > 30) {
+            this.reload()
+          } else {
+            Sleep, 1000
+            secondsWaiting++
+          }
         }
       }
-    }
 
-    secondsWaiting := 0
+      secondsWaiting := 0
 
-    ;Wait connecting appear
-    Loop {
-      if (this.isConnecting()) {
-        break
-      } else {
-        if (secondsWaiting > 120) {
-          this.reload()
+      ;Wait connecting appear
+      Loop {
+        if (this.isConnecting()) {
+          break
         } else {
-          Sleep, 1000
-          secondsWaiting++
+          if (secondsWaiting > 120) {
+            this.reload()
+          } else {
+            Sleep, 1000
+            secondsWaiting++
+          }
         }
       }
-    }
 
-    secondsWaiting := 0
+      secondsWaiting := 0
 
-    ;Wait connected
-    Loop {
-      if (this.isConnected() or this.isDead()) {
-        break
-      } else {
-        if (secondsWaiting > 15) {
-          this.reload()
+      ;Wait connected
+      Loop {
+        if (this.isConnected() or this.isDead()) {
+          break
         } else {
-          Sleep, 1000
-          secondsWaiting++
+          if (secondsWaiting > 15) {
+            this.reload()
+          } else {
+            Sleep, 1000
+            secondsWaiting++
+          }
         }
       }
+
+      Sleep, 1000
+    } else {
+      MsgBox, ERROR!, Reload button not found
     }
 
-    Sleep, 1000
   }
   
   isConnected() {

@@ -1,6 +1,5 @@
 class ConfigManager {
   static map := 33
-  static clientWindowCors := {y1: 71, y2: 977}
   static moveMode := "COMPLETE"
 
   ;BonusBox
