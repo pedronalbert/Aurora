@@ -1,4 +1,5 @@
 class ConfigManager {
+  static targetMap := 32
   static moveMode := "COMPLETE"
   static clientCoorsY1 := 71
   static clientCoorsY2 :=  978
@@ -35,5 +36,5 @@ class ConfigManager {
   static petCheckSeconds := 10
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
-  static mouseSpeed := 2
+  static mouseSpeed := 4
 }

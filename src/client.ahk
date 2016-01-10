@@ -3,8 +3,6 @@ class Client {
   static searchAreas := [{}, {}, {}, {}]
 
   init() {
-    this.setWindowCors()
-
     this.setSearchAreas()
     windowsOpened := false
 

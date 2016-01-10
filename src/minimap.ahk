@@ -21,10 +21,10 @@ class Minimap {
     Random, searchPointPositionRandom, 1, 25
     this.searchPointPosition := searchPointPositionRandom
 
-    this.targetMap := this.getActualMap()
+    this.targetMap := ConfigManager.targetMap
 
     if(this.targetMap = 0) {
-      MsgBox, Error!, No se puede detectar el mapa actual
+      MsgBox, Aurora Error!, Map number not found
       return false
     }
 

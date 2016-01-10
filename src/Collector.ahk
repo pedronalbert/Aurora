@@ -14,18 +14,49 @@ class Collector {
   static petChecker := {active: true, lastCheck: 0}
 
   init() {
-    if (!Client.init()) {
-      return false
+    Client.setWindowCors()
+
+    if(Ship.isDead()) {
+      if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
+        revive := Ship.revive(ConfigManager.reviveMode)
+
+        if (revive = "PORTAL") {
+          this.active := true
+          this.reviveTimes++
+          this.setState("FinishRepairAfterPortalRevive")
+        } else if (revive = "BASE") {
+          this.active := true
+          this.reviveTimes++
+          this.setState("FinishRepairAfterBaseRevive")
+        } else if (revive = false) {
+          Client.reload()
+          this.init()
+        }
+      } else {
+        MsgBox, Aurora Stoped, Revive times limit reach
+
+        return false
+      }
+    } else {
+      ;Normal init
+      if (!Client.init()) {
+        return false
+      }
+
+      actualMap := Minimap.getActualMap()
+
+      if(actualMap > 0 and ConfigManager.targetMap <> actualMap) {
+        ConfigManager.targetMap := actualMap ;Cambio de mapa temporal en caso de estar en mapa incorrecto
+      }
+
+      this.escapeChecker.active := ConfigManager.escapeActive
+      this.petChecker.active := ConfigManager.petActive
+      this.autoCloackChecker.active := ConfigManager.autoCloack
+      this.active := true
+
+      this.setState("Find")
     }
 
-    this.escapeChecker.active := ConfigManager.escapeActive
-    this.petChecker.active := ConfigManager.petActive
-    this.autoCloackChecker.active := ConfigManager.autoCloack
-    this.active := true
-
-    this.setState("Find")
-
-    MouseClick, Left, Client.windowCors.x2 / 2, Client.windowCors.y2 / 2 ;Click client
     
     Loop {
       if (this.active = false) {
@@ -82,23 +113,13 @@ class Collector {
                 this.reviveTimes++
                 this.setState("FinishRepairAfterBaseRevive")
               } else if (revive = false) {
-                Loop {
-                  Client.reload()
-
-                  if (Ship.isDead()) {
-                    if (Ship.revive("BASE") = false) {
-                      continue ;reload again
-                    }
-                  }
-
-                  Client.init()
-                  this.reviveTimes++
-                  this.setState("FinishRepairAfterBaseRevive")
-                  break
-                }
+                Client.reload()
+                this.init()
               }
             } else {
-              return false ;Pause
+              MsgBox, Aurora Stoped, Revive times limit reach
+
+              return false
             }
           }
         }
@@ -112,85 +133,10 @@ class Collector {
 
           if (Client.isDisconnect()) {
             if (Client.connect()) { ;Si conecta diractamente
-              if (Ship.isDead()) {
-                Client.takeScreenshot()
-
-                if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
-                  ;Wait reviveSeconds 
-                  seconds := ConfigManager.reviveAfterSeconds * 1000
-                  Sleep, seconds
-
-                  revive := Ship.revive("BASE")
-
-                  if (revive <> false) {
-                    this.reviveTimes++
-                    this.setState("FinishRepairAfterBaseRevive")
-                  } else { ;Si no revivio
-                    Loop {
-                      Client.reload()
-
-                      if (Ship.isDead()) {
-                        if (Ship.revive("BASE") = false) {
-                          continue ;reload again
-                        }
-                      }
-
-                      Client.init()
-                      this.reviveTimes++
-                      this.setState("FinishRepairAfterBaseRevive")
-                      break
-                    }
-                  }
-                } else {
-                  return false ;Stop bot
-                }
-
-              } else { ;Si no esta muerto
-                Client.init()
-                this.setState("Find")
-              }
+              this.init()
             } else { ;No conectó directamente
-              Loop {
-                Client.reload()
-
-                if (Ship.isDead()) {
-                  Client.takeScreenshot()
-                  
-                  if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
-                    ;Wait reviveSeconds 
-                    seconds := ConfigManager.reviveAfterSeconds * 1000
-                    Sleep, seconds
-
-                    revive := Ship.revive("BASE")
-
-                    if (revive <> false) {
-                      this.reviveTimes++
-                      this.setState("FinishRepairAfterBaseRevive")
-                    } else { ;Si no revivio
-                      Loop {
-                        Client.reload()
-
-                        if (Ship.isDead()) {
-                          if (Ship.revive("BASE") = false) {
-                            continue ;reload again
-                          }
-                        }
-
-                        Client.init()
-                        this.reviveTimes++
-                        this.setState("FinishRepairAfterBaseRevive")
-                        break
-                      }
-                    }
-                  } else {
-                    return false ;Stop bot
-                  }
-                } else { ;Si no esta muerto
-                  Client.init()
-                  this.setState("Find")
-                  break
-                }
-              }
+              Client.reload()
+              this.init()
             }
           }
         }
@@ -354,26 +300,22 @@ class Collector {
 
           if (Ship.getShieldPercent() >= 95) {
             if (Ship.getHealPercent() >= 95) {
-              this.escapeChecker.active := ConfigManager.escapeActive
-              this.petChecker.active := ConfigManager.petActive
-              this.autoCloackChecker.active := ConfigManager.autoCloack
-              this.setState("Find")
+              this.init()
             }
           }
         }
       }
 
       if (this.state = "FinishRepairAfterPortalRevive") {
+        Client.init()
+
         if (Ship.getShieldPercent() >= 95) {
           Ship.changeConfig()
           Sleep, 6500
 
           if (Ship.getShieldPercent() >= 95) {
             if (Ship.getHealPercent() >= 95) {
-              this.escapeChecker.active := ConfigManager.escapeActive
-              this.deadChecker.active := true
-              this.petChecker.active := ConfigManager.petActive
-              this.setState("Find")
+              this.init()
             }
           }
         }
