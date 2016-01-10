@@ -1,5 +1,5 @@
 class ConfigManager {
-  static targetMap := 32
+  static targetMap := 34
   static moveMode := "COMPLETE"
   static clientCoorsY1 := 71
   static clientCoorsY2 :=  978
