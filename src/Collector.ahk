@@ -6,12 +6,13 @@ class Collector {
   static cloacksUsed := 0
   static reviveTimes := 0
   static greenBoxesCollected := 0
+  static mapSaved := ;helper
 
-  static escapeChecker := {active: true, lastCheck: 0}
-  static deadChecker := {active: true, lastCheck: 0}
-  static disconnectChecker := {active: true, lastCheck: 0}
-  static autoCloackChecker := {active: true, lastCheck: 0}
-  static petChecker := {active: true, lastCheck: 0}
+  static escapeChecker := {active: false, lastCheck: 0}
+  static deadChecker := {active: false, lastCheck: 0}
+  static disconnectChecker := {active: false, lastCheck: 0}
+  static autoCloackChecker := {active: false, lastCheck: 0}
+  static petChecker := {active: false, lastCheck: 0}
 
   init() {
     Client.setWindowCors()
@@ -20,15 +21,11 @@ class Collector {
       if (this.reviveTimes <= ConfigManager.reviveTimes || ConfigManager.reviveTimes = 0) {
         revive := Ship.revive(ConfigManager.reviveMode)
 
-        if (revive = "PORTAL") {
+        if (revive <> false) {
           this.active := true
           this.reviveTimes++
-          this.setState("FinishRepairAfterPortalRevive")
-        } else if (revive = "BASE") {
-          this.active := true
-          this.reviveTimes++
-          this.setState("FinishRepairAfterBaseRevive")
-        } else if (revive = false) {
+          this.setState("FinishRepair")
+        } else {
           Client.reload()
           this.init()
         }
@@ -37,6 +34,22 @@ class Collector {
 
         return false
       }
+    } else if(Minimap.getActualMap() <> ConfigManager.targetMap){ ;Not in target map
+      if (!Client.init()) {
+        return false
+      }
+
+      this.active := true
+
+      ;Checkers
+      this.escapeChecker.active := false
+      this.deadChecker.active := true
+      this.disconnectChecker.active := true
+      this.autoCloackChecker.active := ConfigManager.autoCloack
+      this.petChecker.active := false
+
+      Minimap.generateBackToTargetMap()
+      this.setState("GoToNextBackToMapPortal")
     } else {
       ;Normal init
       if (!Client.init()) {
@@ -49,10 +62,14 @@ class Collector {
         ConfigManager.targetMap := actualMap ;Cambio de mapa temporal en caso de estar en mapa incorrecto
       }
 
-      this.escapeChecker.active := ConfigManager.escapeActive
-      this.petChecker.active := ConfigManager.petActive
-      this.autoCloackChecker.active := ConfigManager.autoCloack
       this.active := true
+
+      ;Active checkers
+      this.escapeChecker.active := ConfigManager.escapeActive
+      this.deadChecker.active := true
+      this.disconnectChecker.active := true
+      this.autoCloackChecker.active := ConfigManager.autoCloack
+      this.petChecker.active := ConfigManager.petActive
 
       this.setState("Find")
     }
@@ -106,13 +123,10 @@ class Collector {
 
               revive := Ship.revive(ConfigManager.reviveMode)
 
-              if (revive = "PORTAL") {
+              if (revive <> false) {
                 this.reviveTimes++
-                this.setState("FinishRepairAfterPortalRevive")
-              } else if (revive = "BASE") {
-                this.reviveTimes++
-                this.setState("FinishRepairAfterBaseRevive")
-              } else if (revive = false) {
+                this.setState("FinishRepair")
+              } else {
                 Client.reload()
                 this.init()
               }
@@ -289,25 +303,12 @@ class Collector {
 
       if (this.state = "BackingToMapAfterEscape") {
         if (Minimap.isInTargetMap()) {
-          this.setState("FinishRepairAfterEscape")
+          this.setState("FinishRepair")
         }
       }
 
-      if (this.state = "FinishRepairAfterEscape") {
-        if (Ship.getShieldPercent() >= 95) {
-          Ship.changeConfig()
-          Sleep, 3000
-
-          if (Ship.getShieldPercent() >= 95) {
-            if (Ship.getHealPercent() >= 95) {
-              this.init()
-            }
-          }
-        }
-      }
-
-      if (this.state = "FinishRepairAfterPortalRevive") {
-        Client.init()
+      if (this.state = "FinishRepair") {
+        this.init()
 
         if (Ship.getShieldPercent() >= 95) {
           Ship.changeConfig()
@@ -320,12 +321,46 @@ class Collector {
           }
         }
       }
+
+      if (this.state = "GoToNextBackToMapPortal") {
+        portalCors := Minimap.getNextBackToTargetMapPortal()
+
+        if(portalCors <> false) {
+          Minimap.goTo(portalCors)
+          Sleep, 1000
+          this.setState("ApproachingToBackToMapPortal")
+        } else {
+          this.init()
+        }
+      }
+
+      if (this.state = "ApproachingToBackToMapPortal") {
+        this.mapSaved := Minimap.getActualMap()
+
+        if (!Ship.isMoving()) {
+          Sleep, 500
+          Send {j}
+          Sleep, 5000
+          this.setState("JumpingBackToMapPortal")
+        }
+
+        if (Ship.getShieldPercent() <= 15) {
+          Ship.changeConfig()
+          Sleep, 500
+        }
+      }
+
+      if (this.state = "JumpingBackToMapPortal") {
+        actualMap := Minimap.getActualMap()
+
+        if (Minimap.getActualMap() <> this.mapSaved) {
+          this.setState("GoToNextBackToMapPortal")
+        }
+      }
     }
   }
 
   setState(newState) {
     this.state := newState
-
-    OutputDebug, % "new state: " newState 
   }
 }

@@ -4,11 +4,9 @@ class Minimap {
   static portalsCors := []
   static pixelEquivalentX := 1.112299465
   static pixelEquivalentY := 1.18360869565217
-  static backToMapRoutes := []
-  static backToMapRoutePosition :=
-  static backToMapRoute :=
-  static searchPointPosition := 
-  static searchPoints := []
+  static roamingPointPosition := 
+  static roamingPoints := []
+  static backToTargetMap := {route: [], actualIndex: 0}
 
   ;User config
   static targetMap :=
@@ -19,7 +17,7 @@ class Minimap {
  
     ;Random position on search
     Random, searchPointPositionRandom, 1, 25
-    this.searchPointPosition := searchPointPositionRandom
+    this.roamingPointPosition := searchPointPositionRandom
 
     this.targetMap := ConfigManager.targetMap
 
@@ -30,23 +28,22 @@ class Minimap {
 
     this.configMoveMode := ConfigManager.moveMode
     this.setPortalsCors()
-    this.setBackToMapRoutes()
     this.setSearchPoints()
 
     return true
   }
   
 
-  moveNextPoint() {
+  moveNextRoamingPoint() {
     shipCors := this.getShipCors()
-    pointToGo := this.searchPoints[this.searchPointPosition]
+    pointToGo := this.roamingPoints[this.roamingPointPosition]
 
     if ((shipCors[1] >= (pointToGo[1] - 2)) and  (shipCors[1] <= (pointToGo[1] + 2)) and (shipCors[2] >= (pointToGo[2] - 3)) and (shipCors[2] <= (pointToGo[2] + 3))) {
       ;Move to next point
-      if (this.searchPointPosition = 25) {
-        this.searchPointPosition := 1
+      if (this.roamingPointPosition = 25) {
+        this.roamingPointPosition := 1
       } else {
-        this.searchPointPosition++
+        this.roamingPointPosition++
       }
 
     }
@@ -55,17 +52,13 @@ class Minimap {
     Random, variationY, 0, 2
 
     cors := []
-    cors[1] := this.searchPoints[this.searchPointPosition][1] + variationX
-    cors[2] := this.searchPoints[this.searchPointPosition][2] + variationY
+    cors[1] := this.roamingPoints[this.roamingPointPosition][1] + variationX
+    cors[2] := this.roamingPoints[this.roamingPointPosition][2] + variationY
 
     this.goTo(cors)
   }
 
-  generateBackToMapRoute() {
-    this.backToMapRoute :=  this.backToMapRoutes[this.targetMap]
-    this.backToMapRoutePosition := 1
-  }
-
+  ;Cors: minimap relative cors
   goTo(cors) {
 
     x := cors[1] + this.minimapCors.x1
@@ -74,32 +67,9 @@ class Minimap {
     MouseClick, Left, x, y, 1 , ConfigManager.mouseSpeed
   }
 
-  goToNextPortal() {
-    nextMap := this.backToMapRoute[this.backToMapRoutePosition + 1]
-    actualMap := this.backToMapRoute[this.backToMapRoutePosition]
-
-    if (actualMap = this.targetMap) {
-      return false
-    }
-
-    if (nextMap >= 11 and nextMap <= 38) {
-      for k, portal in this.portalsCors[actualMap] {
-        if (portal.map = nextMap) {
-          this.goTo(portal.cors)
-          this.backToMapRoutePosition++
-
-          return true
-        }
-      }
-      return false
-    } else {
-      return false
-    }
-  }
-
   move() {
     if (this.configMoveMode = "COMPLETE") {
-      this.moveNextPoint()
+      this.moveNextRoamingPoint()
     } else {
       this.moveRandom()
     }
@@ -373,60 +343,31 @@ class Minimap {
   }
 
   setSearchPoints() {
-    this.searchPoints[1] := [36, 2]
-    this.searchPoints[2] := [36, 110]
-    this.searchPoints[3] := [53, 110]
-    this.searchPoints[4] := [53, 2]
-    this.searchPoints[5] := [72, 2]
-    this.searchPoints[6] := [72, 110]
-    this.searchPoints[7] := [90, 110]
-    this.searchPoints[8] := [90, 2]
-    this.searchPoints[9] := [108, 2]
-    this.searchPoints[10] := [108, 110]
-    this.searchPoints[11] := [126, 110]
-    this.searchPoints[12] := [126, 2]
-    this.searchPoints[13] := [144, 2]
-    this.searchPoints[14] := [144, 110]
-    this.searchPoints[15] := [136, 110]
-    this.searchPoints[16] := [136, 2]
-    this.searchPoints[17] := [118, 2]
-    this.searchPoints[18] := [118, 110]
-    this.searchPoints[19] := [99, 110]
-    this.searchPoints[20] := [99, 2]
-    this.searchPoints[21] := [81, 2]
-    this.searchPoints[22] := [81, 110]
-    this.searchPoints[23] := [63, 110]
-    this.searchPoints[24] := [63, 2]
-    this.searchPoints[25] := [44, 2]
-  }
-
-  setBackToMapRoutes() {
-    this.backToMapRoutes[11] := [11]
-    this.backToMapRoutes[12] := [11, 12]
-    this.backToMapRoutes[13] := [11, 12, 13]
-    this.backToMapRoutes[14] := [11, 12, 14]
-    this.backToMapRoutes[15] := [18, 17, 15]
-    this.backToMapRoutes[16] := [18, 16]
-    this.backToMapRoutes[17] := [18, 17]
-    this.backToMapRoutes[18] := [18]
-
-    this.backToMapRoutes[21] := [21]
-    this.backToMapRoutes[22] := [21, 22]
-    this.backToMapRoutes[23] := [21, 22, 23]
-    this.backToMapRoutes[24] := [21, 22, 24]
-    this.backToMapRoutes[25] := [28, 27, 25]
-    this.backToMapRoutes[26] := [28, 26]
-    this.backToMapRoutes[27] := [28, 27]
-    this.backToMapRoutes[28] := [28]
-
-    this.backToMapRoutes[31] := [31]
-    this.backToMapRoutes[32] := [31, 32]
-    this.backToMapRoutes[33] := [31, 32, 33]
-    this.backToMapRoutes[34] := [31, 32, 34]
-    this.backToMapRoutes[35] := [38, 37, 35]
-    this.backToMapRoutes[36] := [38, 36]
-    this.backToMapRoutes[37] := [38, 37]
-    this.backToMapRoutes[38] := [38]
+    this.roamingPoints[1] := [36, 2]
+    this.roamingPoints[2] := [36, 110]
+    this.roamingPoints[3] := [53, 110]
+    this.roamingPoints[4] := [53, 2]
+    this.roamingPoints[5] := [72, 2]
+    this.roamingPoints[6] := [72, 110]
+    this.roamingPoints[7] := [90, 110]
+    this.roamingPoints[8] := [90, 2]
+    this.roamingPoints[9] := [108, 2]
+    this.roamingPoints[10] := [108, 110]
+    this.roamingPoints[11] := [126, 110]
+    this.roamingPoints[12] := [126, 2]
+    this.roamingPoints[13] := [144, 2]
+    this.roamingPoints[14] := [144, 110]
+    this.roamingPoints[15] := [136, 110]
+    this.roamingPoints[16] := [136, 2]
+    this.roamingPoints[17] := [118, 2]
+    this.roamingPoints[18] := [118, 110]
+    this.roamingPoints[19] := [99, 110]
+    this.roamingPoints[20] := [99, 2]
+    this.roamingPoints[21] := [81, 2]
+    this.roamingPoints[22] := [81, 110]
+    this.roamingPoints[23] := [63, 110]
+    this.roamingPoints[24] := [63, 2]
+    this.roamingPoints[25] := [44, 2]
   }
 
   setWindowCors() {
@@ -500,5 +441,101 @@ class Minimap {
     } else {
       return 0
     }
+  }
+
+  generateBackRoute(originMap, destinyMap) {
+    nextMap := originMap
+    actualMap := originMap
+    route := []
+
+    if(originMap < destinyMap) {
+      nextMap++
+    } else {
+      nextMap--
+    }
+
+    Loop {
+      loops := this.portalsCors[actualMap].MaxIndex()
+
+      ;Find destiny map
+      i := 1
+      destinyFound := false
+
+      Loop %loops% {
+        portalMap := this.portalsCors[actualMap][i].map
+
+        if(portalMap = destinyMap) {
+          route.Push(destinyMap)
+          actualMap := destinyMap
+          destinyFound := true
+        } 
+        i++
+      }
+
+      ;Find next map
+      if(destinyFound = false) {
+        i := 1
+        destinyFound := false
+
+        Loop %loops% {
+          portalMap := this.portalsCors[actualMap][i].map
+
+          if(portalMap = nextMap) {
+            route.Push(nextMap)
+            actualMap := nextMap
+            destinyFound := true
+          } 
+          i++
+        }
+      }
+
+      if(actualMap = destinyMap) {
+        break
+      } else {
+        if(originMap < destinyMap) {
+          nextMap++
+        } else {
+          nextMap--
+        }
+      }
+    }
+
+    return route
+  }
+
+  getPortalCors(origenMap, destinyMap) {
+    portalCors :=
+    loops := this.portalsCors[origenMap].MaxIndex()
+
+    i := 1
+    Loop %loops% {
+      portalMap := this.portalsCors[origenMap][i].map
+
+      if(portalMap = destinyMap) {
+        return this.portalsCors[origenMap][i].cors
+      } 
+      
+      i++
+    }
+
+    return false
+  }
+
+  generateBackToTargetMap() {
+    this.backToTargetMap.route := this.generateBackRoute(this.getActualMap(), this.targetMap)
+    this.backToTargetMap.actualIndex := 1
+  }
+
+  getNextBackToTargetMapPortal() {
+    actualMap := this.getActualMap()
+
+    if(this.targetMap = actualMap) {
+      return false
+    }
+
+    nextMap := this.backToTargetMap.route[this.backToTargetMap.actualIndex]
+    this.backToTargetMap.actualIndex++
+
+    return this.getPortalCors(actualMap, nextMap)
   }
 }

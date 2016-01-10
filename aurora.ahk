@@ -16,6 +16,7 @@ CoordMode, Mouse, Screen
 
 
 F2::
+  ;TrayTip, AuroraBot, Starting...
   TrayTip, AuroraBot, Starting...
   Collector.init()
 return
