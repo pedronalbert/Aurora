@@ -129,20 +129,6 @@ class Client {
       MouseClick, Left, corsX + 3, corsY + 3, 1, ConfigManager.mouseSpeed
       MouseMove, 0, 0, ConfigManager.mouseSpeed 
 
-      ;Wait loading
-      Loop {
-        if (this.isLoading()) {
-          break
-        } else {
-          if (secondsWaiting > 30) {
-            this.reload()
-          } else {
-            Sleep, 1000
-            secondsWaiting++
-          }
-        }
-      }
-
       secondsWaiting := 0
 
       ;Wait connecting appear
@@ -150,7 +136,7 @@ class Client {
         if (this.isConnecting()) {
           break
         } else {
-          if (secondsWaiting > 120) {
+          if (secondsWaiting > 300) {
             this.reload()
           } else {
             Sleep, 1000
@@ -166,7 +152,7 @@ class Client {
         if (this.isConnected() or this.isDead()) {
           break
         } else {
-          if (secondsWaiting > 15) {
+          if (secondsWaiting > 60) {
             this.reload()
           } else {
             Sleep, 1000
