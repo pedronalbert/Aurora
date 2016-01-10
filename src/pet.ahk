@@ -11,8 +11,8 @@ class Pet {
 
     this.windowCors.x1 := windowCors[1]
     this.windowCors.y1 := windowCors[2]
-    this.windowCors.x2 := windowCors[1] + 269
-    this.windowCors.y2 := windowCors[2] + Client.windowCors.y2
+    this.windowCors.x2 := windowCors[1] + 275
+    this.windowCors.y2 := windowCors[2] + 300
   }
 
   isDead() {
@@ -26,7 +26,7 @@ class Pet {
   }
 
   isPasive() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_pasive.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *5 ./img/pet/module_pasive.bmp
 
     if(ErrorLevel = 0) {
       return true
@@ -72,8 +72,8 @@ class Pet {
 
       if(ErrorLevel = 0) {
         MouseGetPos, mouseX, mouseY
-        MouseClick, Left, corsX + 1, corsY + 1, 1, 0
-        MouseMove, mouseX, mouseY, 0
+        MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+        MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
         
         timeWaiting += 0
 
@@ -106,8 +106,8 @@ class Pet {
 
     if(ErrorLevel = 0) {
       MouseGetPos, mouseX, mouseY
-      MouseClick, Left, corsX + 1, corsY + 1, 1, 0
-      MouseMove, mouseX, mouseY, 0
+      MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+      MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
 
       return true
     } else {
@@ -121,8 +121,8 @@ class Pet {
 
     if(ErrorLevel = 0) {
       MouseGetPos, mouseX, mouseY
-      MouseClick, Left, corsX + 1, corsY + 1, 1, 0
-      MouseMove, mouseX, mouseY, 0
+      MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+      MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
 
       timeWaiting := 0
 
