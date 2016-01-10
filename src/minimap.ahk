@@ -98,12 +98,10 @@ class Minimap {
   }
 
   move() {
-    if (this.configMoveMode = "RANDOM") {
-      this.moveRandom()
-    } else if (this.configMoveMode = "COMPLETE") {
+    if (this.configMoveMode = "COMPLETE") {
       this.moveNextPoint()
     } else {
-      this.movePaladioMode()
+      this.moveRandom()
     }
   }
 
