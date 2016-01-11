@@ -300,8 +300,6 @@ class Collector {
       }
 
       if (this.state = "FinishRepair") {
-        this.init()
-
         if (Ship.getShieldPercent() >= 95) {
           Ship.changeConfig()
           Sleep, 6500
@@ -354,5 +352,6 @@ class Collector {
 
   setState(newState) {
     this.state := newState
+    OutputDebug, % "New state: " this.state 
   }
 }
