@@ -25,6 +25,14 @@ class Pet {
     }
   }
 
+  isAlive() {
+    if(this.isDead()) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   isPasive() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_pasive.bmp
 
@@ -71,9 +79,7 @@ class Pet {
       ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/modules_button.bmp
 
       if(ErrorLevel = 0) {
-        MouseGetPos, mouseX, mouseY
         MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
-        MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
         
         timeWaiting += 0
 
@@ -105,9 +111,7 @@ class Pet {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_autocollector.bmp
 
     if(ErrorLevel = 0) {
-      MouseGetPos, mouseX, mouseY
       MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
-      MouseMove, mouseX, mouseY, ConfigManager.mouseSpeed
 
       return true
     } else {

@@ -154,15 +154,15 @@ class Collector {
         if (timeDiff >= ConfigManager.petCheckSeconds) {
           this.petChecker.lastCheck := A_Now
 
-          if (Pet.isDead()) {
+          if (ConfigManager.petRevive and Pet.isDead()) {
             Pet.revive()
           }
 
-          if (Pet.isPaused()) {
+          if (ConfigManager.petActive and Pet.isPaused()) {
             Pet.play()
           }
 
-          if (Pet.isPasive()) {
+          if (ConfigManager.petAutoLooter and Pet.isPasive()) {
             Pet.setAutocollector()
           }
         }
@@ -199,7 +199,7 @@ class Collector {
               objectFound := true
               this.setState("Approaching")
             } else {
-              if (ConfigManager.soloPet) {
+              if (ConfigManager.soloPetCollect) {
                 ;Wait pet collect
                 objectFound := true
               } else {
@@ -226,7 +226,7 @@ class Collector {
               objectFound := true
               this.setState("Approaching")
             } else {
-              if (ConfigManager.soloPet) {
+              if (ConfigManager.soloPetCollect) {
                 ;Wait pet collect
                 objectFound := true
               } else {

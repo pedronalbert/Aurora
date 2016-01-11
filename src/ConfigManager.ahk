@@ -1,11 +1,12 @@
 class ConfigManager {
-  static targetMap := 34
+  static targetMap := 33
   static moveMode := "COMPLETE"
   static clientCoorsY1 := 71
   static clientCoorsY2 :=  978
 
   ;BonusBox
   static collectBonusBoxes := true
+  static soloPetCollect := true
   static bonusBoxShader := 75
 
   ;Event box
@@ -13,13 +14,14 @@ class ConfigManager {
   static eventBoxShader := 50
 
   ;Revive
-  static reviveMode := "BASE"
+  static reviveMode := "PORTAL"
   static reviveTimes := 20
   static reviveAfterSeconds := 15
 
   ;Pet
   static petActive := true
-  static soloPet := true
+  static petRevive := true
+  static petAutoLooter := true
 
   ;AutoSystems
   static escapeActive := true
