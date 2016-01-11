@@ -294,7 +294,7 @@ class Client {
   }
 
   questsWindowIsOpened() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_opened.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_window.bmp
 
     if (ErrorLevel = 0) {
       return true
@@ -304,7 +304,7 @@ class Client {
   }
 
   questsWindowClose() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_button_opened.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/quests_window.bmp
 
     if (ErrorLevel = 0) {
       MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
