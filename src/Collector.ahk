@@ -13,6 +13,7 @@ class Collector {
   static disconnectChecker := {active: false, lastCheck: 0}
   static autoCloackChecker := {active: false, lastCheck: 0}
   static petChecker := {active: false, lastCheck: 0}
+  static garbageChecker := {active: false, lastCheck: 0}
 
   init() {
     Client.setWindowCors()
@@ -61,6 +62,7 @@ class Collector {
         this.disconnectChecker.active := true
         this.autoCloackChecker.active := ConfigManager.autoCloack
         this.petChecker.active := ConfigManager.petActive
+        this.garbageChecker.active := ConfigManager.refinateGarbage
 
         this.setState("Find")
       }
@@ -190,6 +192,19 @@ class Collector {
                 this.cloacksUsed++
               }
             }
+          }
+        }
+      }
+
+      if (this.garbageChecker.active) {
+        timeDiff := nowTime - this.garbageChecker.lastCheck
+
+        if (timeDiff >= ConfigManager.garbageCheckSeconds) {
+          this.garbageChecker.lastCheck := A_Now
+          garbagePercent := Ship.getGarbagePercent()
+
+          if (garbagePercent >= 90) {
+            Refinator.refinateAll()
           }
         }
       }

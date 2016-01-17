@@ -12,6 +12,7 @@ CoordMode, Mouse, Screen
 #Include, ./src/Ship.ahk
 #Include, ./src/Collector.ahk
 #Include, ./src/Pet.ahk
+#Include, ./src/Refinator.ahk
 ;---------------------------------------------------
 
 

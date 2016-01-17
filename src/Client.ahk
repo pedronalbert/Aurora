@@ -405,6 +405,54 @@ class Client {
     }
   }
 
+  openRefinatorWindow() {
+    ImageSearch, corsX, corsY, 0, 0, this.windowCors.x2, this.windowCors.y2, *5 ./img/client/refinator_window_button.bmp
+
+    if(ErrorLevel = 0) {
+      MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+      timeWaiting := 0
+
+      Loop { ;wait for prometid
+        ImageSearch, corsX, corsY, 0, 0, this.windowCors.x2, this.windowCors.y2, *5 ./img/client/prometid.bmp
+
+        if(ErrorLevel = 0) {
+          break
+        } else {
+
+          if(timeWaiting >= 3000) {
+            break
+            return false
+          }
+
+          Sleep, 100
+          timeWaiting += 100
+        }
+      }
+    }
+  }
+
+  closeRefinatorWindow() {
+    timeWaiting := 0
+
+    Loop {
+        ImageSearch, corsX, corsY, 0, 0, this.windowCors.x2, this.windowCors.y2, *5 ./img/client/refinator_window.bmp
+
+        if(ErrorLevel = 0) {
+          MouseClick, Left, corsX, corsY, 1, ConfigManager.mouseSpeed
+          break
+        } else {
+
+          if(timeWaiting >= 2000) {
+            break
+            return false
+          }
+
+          Sleep 100
+          timeWaiting += 100
+        }
+      }
+  }
+
   takeScreenshot() {
     raster:=0x40000000 + 0x00CC0020
     screen=0|0|%A_ScreenWidth%|%A_ScreenHeight%

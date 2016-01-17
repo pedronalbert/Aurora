@@ -6,8 +6,9 @@ class ConfigManager {
 
   ;BonusBox
   static collectBonusBoxes := true
-  static soloPetCollect := false
-  static bonusBoxShader := 78
+  static soloPetCollect := true
+  static refinateGarbage := true
+  static bonusBoxShader := 75
 
   ;Event box
   static collectEventBoxes := false
@@ -16,10 +17,10 @@ class ConfigManager {
   ;Revive
   static reviveMode := "BASE"
   static reviveTimes := 20
-  static reviveAfterSeconds := 15
+  static reviveAfterSeconds := 10
 
   ;Pet
-  static petActive := false
+  static petActive := true
   static petRevive := true
   static petAutoLooter := true
   static petFullRepair := true
@@ -36,8 +37,9 @@ class ConfigManager {
   ;Advanced
   static deadCheckSeconds := 10
   static disconnectCheckSeconds := 10
-  static petCheckSeconds := 10
+  static petCheckSeconds := 5
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
+  static garbageCheckSeconds := 10
   static mouseSpeed := 1
 }

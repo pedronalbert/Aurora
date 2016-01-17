@@ -1,11 +1,14 @@
 class Ship {
   static healPercent :=
   static shieldPercent :=
+  static garbagePercent :=
+  static garbageBarsColor := 0x78C6D8
+  static garbageBarsShader := 15
   static percentPerBar := 4.761904761904762
   static healBarsColor := 0x7FD878
   static healBarsShader := 15
   static shieldBarsColor := 0xD8D378
-  static shieldBarsShader := 20
+  static shieldBarsShader := 15
   static statosWindowCors := {}
   static lastCollectCors := [0,0]
   static cloackCpu :=
@@ -49,12 +52,32 @@ class Ship {
     Loop, 21 {
       shieldBarsCorsX := shieldBarsCorsX + 3
 
+
+
       PixelSearch, x, y, shieldBarsCorsX, shieldBarsCorsY, shieldBarsCorsX, shieldBarsCorsY, % this.shieldBarsColor, % this.shieldBarsShader, Fast
 
       if ErrorLevel = 0
         this.shieldPercent += this.percentPerBar
     }
+
     return this.shieldPercent
+  }
+
+  getGarbagePercent() {
+    this.garbagePercent := 0
+    garbageCorsX := this.statosWindowCors.x1 + 124
+    garbageCorsY := this.statosWindowCors.y1 + 46
+
+    Loop, 21 {
+      garbageCorsX := garbageCorsX + 3
+
+      PixelSearch, x, y, garbageCorsX, garbageCorsY, garbageCorsX, garbageCorsY, % this.garbageBarsColor, % this.garbageBarsShader, Fast
+
+      if ErrorLevel = 0
+        this.garbagePercent += this.percentPerBar
+    }
+
+    return this.garbagePercent
   }
 
   isMoving() {
