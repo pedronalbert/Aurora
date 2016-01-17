@@ -74,6 +74,16 @@ class Pet {
     }
   }
 
+  isAutocollectorActive() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/autocollector_active.bmp
+
+    if(ErrorLevel = 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   isInColdown() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/coldown.bmp
 

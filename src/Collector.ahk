@@ -174,7 +174,7 @@ class Collector {
             Pet.play()
           }
 
-          if (ConfigManager.petAutoLooter and Pet.isPasive()) {
+          if (ConfigManager.petAutoLooter and Pet.isAutocollectorActive() == false) {
             Pet.setAutocollector()
           }
         }

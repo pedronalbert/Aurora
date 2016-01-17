@@ -38,7 +38,7 @@ class ConfigManager {
   ;Advanced
   static deadCheckSeconds := 10
   static disconnectCheckSeconds := 10
-  static petCheckSeconds := 5
+  static petCheckSeconds := 10
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
   static garbageCheckSeconds := 15

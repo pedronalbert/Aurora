@@ -115,7 +115,6 @@ class Refinator {
     Client.openRefinatorWindow()
     this.refinateResource("prometid")
     this.refinateResource("duranium")
-    this.refinateResource("promerium")
     Client.closeRefinatorWindow()
   }
 }
