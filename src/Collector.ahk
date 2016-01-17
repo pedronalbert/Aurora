@@ -206,6 +206,18 @@ class Collector {
           if (garbagePercent >= 90) {
             Refinator.refinateAll()
           }
+          
+          if (Ship.getGarbagePercent() >= 90) {
+            this.petChecker.active := false
+            this.garbageChecker.active := false
+
+            portalCors := Minimap.getNearPortalCors()
+            
+            Minimap.goTo(portalCors)
+            Sleep, 1000
+
+            this.setState("GoingToPortalForSellMaterials")
+          }
         }
       }
 
@@ -387,6 +399,30 @@ class Collector {
       if (this.state = "WaitingForFinishPetRepair") {
         if (Pet.isRepairing() = false) {
           this.init()
+        }
+      }
+
+      if (this.state = "GoingToPortalForSellMaterials") {
+        if (Ship.isMoving() = false) {
+          if (Pet.isDead()) {
+            Pet.revive()
+          }
+
+          if (Pet.isPlaying() = false) {
+            Pet.play()
+          }
+
+          Pet.sellMaterials()
+
+          this.setState("WaitingForFinishSellMaterials")
+        }
+      }
+
+      if (this.state = "WaitingForFinishSellMaterials") {
+        if (Pet.isInColdown() == false) {
+          Pet.repair()
+
+          this.setState("WaitingForFinishPetRepair")
         }
       }
     }

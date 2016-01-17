@@ -12,7 +12,7 @@ class Pet {
     this.windowCors.x1 := windowCors[1]
     this.windowCors.y1 := windowCors[2]
     this.windowCors.x2 := windowCors[1] + 275
-    this.windowCors.y2 := windowCors[2] + 300
+    this.windowCors.y2 := windowCors[2] + 400
   }
 
   isDead() {
@@ -74,6 +74,16 @@ class Pet {
     }
   }
 
+  isInColdown() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/coldown.bmp
+
+    if(ErrorLevel = 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   modulesIsOpen() {
     ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/modules_button_open.bmp
 
@@ -122,6 +132,59 @@ class Pet {
 
     if(ErrorLevel = 0) {
       MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+      Sleep, 500
+
+      return true
+    } else {
+      return false
+    }
+  }
+
+  openCommerceWindow() {
+    this.openModules()
+
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_commerce.bmp
+
+    if(ErrorLevel = 0) {
+      MouseClick, Left, corsX + 1, corsY + 1, 1, ConfigManager.mouseSpeed
+
+      timeWaiting := 0
+
+      Loop { ;wait for prometid
+        if(Client.commerceWindowIsOpen()) {
+          return true
+        } else {
+
+          if(timeWaiting >= 4000) {
+            return false
+          }
+
+          Sleep, 100
+          timeWaiting += 100
+        }
+      }
+    } else {
+      return false
+    }
+  }
+
+  sellMaterials() {
+    if(this.openCommerceWindow()) {
+      commerceWindowCors := Client.getCommerceWindowCors()
+
+      anchor := []
+      anchor[1] := commerceWindowCors[1] + 40
+      anchor[2] := commerceWindowCors[2] + 178
+
+      Loop 6 {
+        MouseClick, Left, anchor[1], anchor[2], 1, ConfigManager.mouseSpeed
+        Sleep, 500
+
+        anchor[1] += 80
+      }
+
+      MouseClick, Left, commerceWindowCors[1], commerceWindowCors[2], 1, ConfigManager.mouseSpeed
+      Sleep, 3000
 
       return true
     } else {

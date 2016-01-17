@@ -405,6 +405,22 @@ class Client {
     }
   }
 
+  getCommerceWindowCors() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/commerce_window.bmp
+
+    if (ErrorLevel = 0) {
+      return [corsX, corsY]
+    }
+  }
+
+  commerceWindowIsOpen() {
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/client/commerce_window.bmp
+
+    if (ErrorLevel = 0) {
+      return [corsX, corsY]
+    }
+  }
+
   openRefinatorWindow() {
     ImageSearch, corsX, corsY, 0, 0, this.windowCors.x2, this.windowCors.y2, *5 ./img/client/refinator_window_button.bmp
 

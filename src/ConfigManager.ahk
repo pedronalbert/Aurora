@@ -24,6 +24,7 @@ class ConfigManager {
   static petRevive := true
   static petAutoLooter := true
   static petFullRepair := true
+  static petSellMaterials := true
 
   ;AutoSystems
   static escapeActive := true
@@ -40,6 +41,6 @@ class ConfigManager {
   static petCheckSeconds := 5
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
-  static garbageCheckSeconds := 10
+  static garbageCheckSeconds := 15
   static mouseSpeed := 1
 }
