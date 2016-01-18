@@ -34,7 +34,7 @@ class Pet {
   }
 
   isPasive() {
-    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/module_pasive.bmp
+    ImageSearch, corsX, corsY, this.windowCors.x1, this.windowCors.y1, this.windowCors.x2, this.windowCors.y2, *10 ./img/pet/pasive.bmp
 
     if(ErrorLevel = 0) {
       return true

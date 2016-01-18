@@ -41,6 +41,6 @@ class ConfigManager {
   static petCheckSeconds := 10
   static autoCloackCheckSeconds := 60
   static escapeCheckSeconds := 3
-  static garbageCheckSeconds := 15
+  static garbageCheckSeconds := 10
   static mouseSpeed := 1
 }
