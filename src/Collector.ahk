@@ -203,11 +203,11 @@ class Collector {
           this.garbageChecker.lastCheck := A_Now
           garbagePercent := Ship.getGarbagePercent()
 
-          if (garbagePercent >= 90) {
+          if (garbagePercent >= 90 and ConfigManager.refinateGarbage = true) {
             Refinator.refinateAll()
           }
           
-          if (Ship.getGarbagePercent() >= 90) {
+          if (Ship.getGarbagePercent() >= 90 and ConfigManager.petSellMaterials = true) {
             this.petChecker.active := false
             this.garbageChecker.active := false
 
